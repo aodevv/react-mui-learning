@@ -13,12 +13,12 @@
 }
 
 .sidemenu {
-  width: 220px;
+  min-width: 220px;
   border-right: 1px solid rgba(128, 128, 128, 0.363);
 }
 
 .content {
   flex-grow: 1;
   background-color: #f0f2f5;
-  padding-top: 20px;
+  padding: 24px;
 }

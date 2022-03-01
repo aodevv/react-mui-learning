@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import List from "@mui/material/List";
@@ -9,16 +9,22 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import DraftsIcon from "@mui/icons-material/Drafts";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
-
-const Sidemenu = () => {
+const Sidemenu = ({ pathname }) => {
+  console.log(pathname);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
+
+  useEffect(() => {
+    const mapPathToNav = {
+      files: 1,
+    };
+    pathname === ""
+      ? setSelectedIndex(0)
+      : setSelectedIndex(mapPathToNav[pathname]);
+  }, [pathname]);
   return (
     <List
       sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
@@ -26,7 +32,7 @@ const Sidemenu = () => {
     >
       <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
         <ListItemButton
-          selected={selectedIndex === 0}
+          selected={selectedIndex === 0 && pathname === ""}
           onClick={(event) => handleListItemClick(event, 0)}
         >
           <ListItemIcon>
@@ -38,7 +44,7 @@ const Sidemenu = () => {
 
       <Link to="/files" style={{ textDecoration: "none", color: "inherit" }}>
         <ListItemButton
-          selected={selectedIndex === 1}
+          selected={selectedIndex === 1 && pathname === "files"}
           onClick={(event) => handleListItemClick(event, 1)}
         >
           <ListItemIcon>

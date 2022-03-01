@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import "@fontsource/roboto/400.css";
 
@@ -10,22 +10,21 @@ import Sidemenu from "./Components/Sidemenu/Sidemenu";
 import ContentRouter from "./Components/ContentRouter";
 
 const App = () => {
+  const { pathname } = useLocation();
   return (
-    <Router>
-      <div className="App">
-        <div className="App__top">
-          <Topnav />
+    <div className="App">
+      <div className="App__top">
+        <Topnav />
+      </div>
+      <div className="App__bottom">
+        <div className="sidemenu">
+          <Sidemenu pathname={pathname.split("/")[1]} />
         </div>
-        <div className="App__bottom">
-          <div className="sidemenu">
-            <Sidemenu />
-          </div>
-          <div className="content">
-            <ContentRouter />
-          </div>
+        <div className="content">
+          <ContentRouter />
         </div>
       </div>
-    </Router>
+    </div>
   );
 };
 

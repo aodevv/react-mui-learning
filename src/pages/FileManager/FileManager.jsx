@@ -1,7 +1,7 @@
 import React from "react";
 
 // MUI components
-import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -14,16 +14,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 
 // Local components
-import FilesTable from "../../Components/FilesTable/FilesTable";
+import FilesTable from "../../Components/Tables/FilesTable";
 
 const FileManager = () => {
   return (
-    <Container>
+    <Grid>
       <Card>
         <CardHeader
           disableTypography={false}
           titleTypographyProps={{ fontWeight: "bold" }}
-          title={"Dashboard"}
+          title={"Liste des dossiers"}
         />
         <CardContent>
           <Stack direction="row" spacing={2}>
@@ -39,12 +39,12 @@ const FileManager = () => {
               Supprimer
             </Button>
           </Stack>
-          <Box mt={2}>
+          <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
             <FilesTable />
           </Box>
         </CardContent>
       </Card>
-    </Container>
+    </Grid>
   );
 };
 

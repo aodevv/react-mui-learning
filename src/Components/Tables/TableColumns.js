@@ -7,6 +7,7 @@ import { renderCellExpand } from "./CellExpand";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 export const filesTableColumns = [
   {
@@ -38,7 +39,7 @@ export const filesTableColumns = [
     minWidth: 140,
     valueFormatter: (params) => {
       const valueFormatted = ins1000Sep(formatNum(params.value));
-      return `$ ${valueFormatted}`;
+      return `$${valueFormatted}`;
     },
   },
   {
@@ -47,8 +48,8 @@ export const filesTableColumns = [
     type: "number",
     width: 140,
     valueFormatter: (params) => {
-      const valueFormatted = ins1000Sep(formatNum(params.value));
-      return `$ ${valueFormatted}`;
+      const valueFormatted = currencyFormatter.format(Number(params.value));
+      return `${valueFormatted}`;
     },
   },
   {
@@ -57,8 +58,8 @@ export const filesTableColumns = [
     type: "number",
     width: 140,
     valueFormatter: (params) => {
-      const valueFormatted = ins1000Sep(formatNum(params.value));
-      return `$ ${valueFormatted}`;
+      const valueFormatted = currencyFormatter.format(Number(params.value));
+      return `${valueFormatted}`;
     },
   },
   {
@@ -67,8 +68,8 @@ export const filesTableColumns = [
     type: "number",
     width: 140,
     valueFormatter: (params) => {
-      const valueFormatted = ins1000Sep(formatNum(params.value));
-      return `$ ${valueFormatted}`;
+      const valueFormatted = currencyFormatter.format(Number(params.value));
+      return `${valueFormatted}`;
     },
   },
   {
@@ -82,3 +83,58 @@ export const filesTableColumns = [
     ],
   },
 ];
+
+export const facturesColumns = [
+  {
+    field: "id",
+    headerName: "ID",
+  },
+  {
+    field: "desc_fact",
+    headerName: "Description",
+    flex: 1,
+    minWidth: 300,
+    renderCell: renderCellExpand,
+  },
+  {
+    field: "date_fact",
+    headerName: "Date de la facture",
+    flex: 1,
+    minWidth: 130,
+  },
+  {
+    field: "site_con",
+    headerName: "Site concerné",
+    flex: 1,
+    minWidth: 140,
+  },
+  {
+    field: "montant_rec",
+    headerName: "Montant réclamé",
+    flex: 1,
+    minWidth: 140,
+  },
+  {
+    field: "tax",
+    headerName: "Taxable ?",
+    type: "boolean",
+  },
+  {
+    field: "actions",
+    type: "actions",
+    width: 80,
+    getActions: (params) => [
+      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
+      <GridActionsCellItem
+        icon={<PictureAsPdfIcon />}
+        label="Télécharger"
+        showInMenu
+      />,
+    ],
+  },
+];
+
+const currencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});

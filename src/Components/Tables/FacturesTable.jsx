@@ -1,24 +1,24 @@
 import React from "react";
 
-import { filesTableColumns } from "./TableColumns";
-import { filesTableData } from "./tempdata";
+import { facturesColumns } from "./TableColumns";
+import { facturesTableData } from "./tempdata";
 import { DataGrid } from "@mui/x-data-grid";
 
-const FilesTable = () => {
+const FacturesTable = () => {
   return (
     <div style={{ width: "100%", display: "flex" }}>
       <div style={{ flexGrow: 1 }}>
         <DataGrid
           autoHeight
-          rows={filesTableData}
-          columns={filesTableColumns}
+          rows={facturesTableData[1]}
+          columns={facturesColumns}
           pageSize={10}
           rowsPerPageOptions={[10]}
-          checkboxSelection={false}
+          checkboxSelection
         />
       </div>
     </div>
   );
 };
 
-export default FilesTable;
+export default FacturesTable;

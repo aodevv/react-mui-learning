@@ -10,7 +10,6 @@ import DraftsIcon from "@mui/icons-material/Drafts";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const Sidemenu = ({ pathname }) => {
-  console.log(pathname);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   const handleListItemClick = (event, index) => {
@@ -20,6 +19,7 @@ const Sidemenu = ({ pathname }) => {
   useEffect(() => {
     const mapPathToNav = {
       files: 1,
+      factures: 2,
     };
     pathname === ""
       ? setSelectedIndex(0)
@@ -27,7 +27,12 @@ const Sidemenu = ({ pathname }) => {
   }, [pathname]);
   return (
     <List
-      sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+      sx={{
+        width: "100%",
+        height: "100%",
+        maxWidth: 360,
+        bgcolor: "background.paper",
+      }}
       component="nav"
     >
       <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
@@ -54,15 +59,17 @@ const Sidemenu = ({ pathname }) => {
         </ListItemButton>
       </Link>
 
-      <ListItemButton
-        selected={selectedIndex === 2}
-        onClick={(event) => handleListItemClick(event, 2)}
-      >
-        <ListItemIcon>
-          <DraftsIcon />
-        </ListItemIcon>
-        <ListItemText primary="Drafts" />
-      </ListItemButton>
+      <Link to="/factures" style={{ textDecoration: "none", color: "inherit" }}>
+        <ListItemButton
+          selected={selectedIndex === 2 && pathname === "factures"}
+          onClick={(event) => handleListItemClick(event, 2)}
+        >
+          <ListItemIcon>
+            <DraftsIcon />
+          </ListItemIcon>
+          <ListItemText primary="Drafts" />
+        </ListItemButton>
+      </Link>
     </List>
   );
 };

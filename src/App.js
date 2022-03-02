@@ -9,22 +9,35 @@ import Topnav from "./Components/Topnav/Topnav";
 import Sidemenu from "./Components/Sidemenu/Sidemenu";
 import ContentRouter from "./Components/ContentRouter";
 
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { frFR } from "@mui/material/locale";
+
 const App = () => {
   const { pathname } = useLocation();
+  const theme = createTheme(
+    {
+      palette: {
+        mode: "light",
+      },
+    },
+    frFR
+  );
   return (
-    <div className="App">
-      <div className="App__top">
-        <Topnav />
-      </div>
-      <div className="App__bottom">
-        <div className="sidemenu">
-          <Sidemenu pathname={pathname.split("/")[1]} />
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <div className="App__top">
+          <Topnav />
         </div>
-        <div className="content">
-          <ContentRouter />
+        <div className="App__bottom">
+          <div className="sidemenu">
+            <Sidemenu pathname={pathname.split("/")[1]} />
+          </div>
+          <div className="content">
+            <ContentRouter />
+          </div>
         </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 

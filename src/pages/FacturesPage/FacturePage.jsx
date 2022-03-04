@@ -1,4 +1,10 @@
 import React from "react";
+import { useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
+
+// REDUX
+import { createStructuredSelector } from "reselect";
+import { connect } from "react-redux";
+import { selectFacturesMemo } from "../../redux/Factures/Factures.selectors";
 
 // MUI components
 import Grid from "@mui/material/Grid";
@@ -13,9 +19,29 @@ import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 
+// Custom components
 import FacturesTable from "../../Components/Tables/FacturesTable";
 
-const FacturePage = () => {
+const FacturePage = ({ type, factures }) => {
+  const params = useParams();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const { dossierId } = params;
+
+  let facturesPluk;
+  if (dossierId) {
+    facturesPluk = factures[type.toUpperCase()][dossierId];
+  }
+
+  const toggleForm = () => {
+    navigate(`${pathname}/new`);
+  };
+
+  const types = {
+    dab: "Dommages au biens",
+    mpt: "Mesures préventifs temporaires",
+    mi: "Mesures d'interventions",
+  };
   return (
     <Grid>
       <Card>
@@ -26,7 +52,12 @@ const FacturePage = () => {
         />
         <CardContent>
           <Stack direction="row" spacing={2}>
-            <Button variant="contained" size="small" startIcon={<AddIcon />}>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={toggleForm}
+              startIcon={<AddIcon />}
+            >
               Ajouter
             </Button>
             <Button
@@ -39,12 +70,17 @@ const FacturePage = () => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <FacturesTable />
+            <FacturesTable data={facturesPluk} />
           </Box>
         </CardContent>
       </Card>
+      <Outlet />
     </Grid>
   );
 };
 
-export default FacturePage;
+const mapStateToProps = createStructuredSelector({
+  factures: selectFacturesMemo,
+});
+
+export default connect(mapStateToProps)(FacturePage);

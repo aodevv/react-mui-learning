@@ -4,13 +4,13 @@ import { facturesColumns } from "./TableColumns";
 import { facturesTableData } from "./tempdata";
 import { DataGrid } from "@mui/x-data-grid";
 
-const FacturesTable = () => {
+const FacturesTable = ({ data }) => {
   return (
     <div style={{ width: "100%", display: "flex" }}>
       <div style={{ flexGrow: 1 }}>
         <DataGrid
           autoHeight
-          rows={facturesTableData[1]}
+          rows={data ? data : facturesTableData[1]}
           columns={facturesColumns}
           pageSize={10}
           rowsPerPageOptions={[10]}

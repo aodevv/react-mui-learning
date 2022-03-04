@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { ins1000Sep, formatNum } from "./TableColumnsUtils";
 
 import { GridActionsCellItem } from "@mui/x-data-grid";
@@ -78,7 +79,13 @@ export const filesTableColumns = [
     width: 80,
     getActions: (params) => [
       <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem icon={<SearchIcon />} label="Afficher" showInMenu />,
+      <GridActionsCellItem
+        icon={<SearchIcon />}
+        component={Link}
+        to={`/dossier/${params.id}`}
+        label="Afficher"
+        showInMenu
+      />,
       <GridActionsCellItem icon={<EditIcon />} label="Modifier" showInMenu />,
     ],
   },

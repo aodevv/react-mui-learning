@@ -179,3 +179,58 @@ export const facturesTableData = {
   9: [],
   10: [],
 };
+
+export const machineriesTempData = {
+  1: [
+    {
+      code: "Caterpillar",
+      desc: "Big machine",
+      maintenance: 10,
+      site_conc: "Madrid",
+      hrs_fonc: 12,
+      hrs_stat: 20,
+      cout: 0,
+      taux_fonc: 12,
+    },
+    {
+      code: "Caterpillar 2",
+      desc: "Big machine 2",
+      maintenance: 15,
+      site_conc: "Madrid",
+      hrs_fonc: 12,
+      hrs_stat: 20,
+      cout: 0,
+      taux_fonc: 12,
+    },
+  ],
+  2: [
+    {
+      code: "Hitachi",
+      desc: "Big machine",
+      maintenance: 2,
+      site_conc: "Madrid",
+      hrs_fonc: 12,
+      hrs_stat: 20,
+      cout: 0,
+      taux_fonc: 12,
+    },
+    {
+      code: "Hitachi 2",
+      desc: "Big machine 2",
+      maintenance: 0,
+      site_conc: "Madrid",
+      hrs_fonc: 12,
+      hrs_stat: 20,
+      cout: 0,
+      taux_fonc: 12,
+    },
+  ],
+  3: [],
+  4: [],
+  5: [],
+  6: [],
+  7: [],
+  8: [],
+  9: [],
+  10: [],
+};

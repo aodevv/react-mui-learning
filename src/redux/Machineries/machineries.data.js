@@ -1,7 +1,7 @@
 export const machineriesDABData = {
   1: [
     {
-      code: "Caterpillar",
+      id: "Caterpillar",
       desc: "Big machine",
       maintenance: 10,
       site_conc: "Madrid",
@@ -11,7 +11,7 @@ export const machineriesDABData = {
       taux_fonc: 12,
     },
     {
-      code: "Caterpillar 2",
+      id: "Caterpillar 2",
       desc: "Big machine 2",
       maintenance: 15,
       site_conc: "Madrid",
@@ -23,7 +23,7 @@ export const machineriesDABData = {
   ],
   2: [
     {
-      code: "Hitachi",
+      id: "Hitachi",
       desc: "Big machine",
       maintenance: 2,
       site_conc: "Madrid",
@@ -33,7 +33,7 @@ export const machineriesDABData = {
       taux_fonc: 12,
     },
     {
-      code: "Hitachi 2",
+      id: "Hitachi 2",
       desc: "Big machine 2",
       maintenance: 0,
       site_conc: "Madrid",
@@ -56,7 +56,7 @@ export const machineriesDABData = {
 export const machineriesMPTData = {
   1: [
     {
-      code: "Honda",
+      id: "Honda",
       desc: "Big machine",
       maintenance: 11,
       site_conc: "Madrid",
@@ -66,7 +66,7 @@ export const machineriesMPTData = {
       taux_fonc: 12,
     },
     {
-      code: "Honda 2",
+      id: "Honda 2",
       desc: "Big machine 2",
       maintenance: 24,
       site_conc: "Madrid",
@@ -76,7 +76,7 @@ export const machineriesMPTData = {
       taux_fonc: 12,
     },
     {
-      code: "Mercedes 3",
+      id: "Mercedes 3",
       desc: "Big machine",
       maintenance: 3,
       site_conc: "Madrid",
@@ -88,7 +88,7 @@ export const machineriesMPTData = {
   ],
   2: [
     {
-      code: "BobCat",
+      id: "BobCat",
       desc: "Big machine",
       maintenance: 12,
       site_conc: "Madrid",
@@ -98,7 +98,7 @@ export const machineriesMPTData = {
       taux_fonc: 12,
     },
     {
-      code: "Actros",
+      id: "Actros",
       desc: "Big machine 2",
       maintenance: 5,
       site_conc: "Madrid",
@@ -121,7 +121,7 @@ export const machineriesMPTData = {
 export const machineriesMIData = {
   1: [
     {
-      code: "Hyandai",
+      id: "Hyandai",
       desc: "Big machine",
       maintenance: 10,
       site_conc: "Madrid",
@@ -131,7 +131,7 @@ export const machineriesMIData = {
       taux_fonc: 12,
     },
     {
-      code: "Lamborghini",
+      id: "Lamborghini",
       desc: "Big machine 2",
       maintenance: 0,
       site_conc: "Madrid",
@@ -143,7 +143,7 @@ export const machineriesMIData = {
   ],
   2: [
     {
-      code: "Bulldozer",
+      id: "Bulldozer",
       desc: "Big machine",
       maintenance: 1,
       site_conc: "Madrid",
@@ -153,7 +153,7 @@ export const machineriesMIData = {
       taux_fonc: 12,
     },
     {
-      code: "Front Loader",
+      id: "Front Loader",
       desc: "Big machine 2",
       maintenance: 0,
       site_conc: "Madrid",

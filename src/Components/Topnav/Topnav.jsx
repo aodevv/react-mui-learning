@@ -7,7 +7,10 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 
-const Topnav = () => {
+const Topnav = ({ sideNav, setSideNav }) => {
+  const toggleSideNav = () => {
+    setSideNav(!sideNav);
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">
@@ -18,6 +21,7 @@ const Topnav = () => {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            onClick={toggleSideNav}
           >
             <MenuIcon />
           </IconButton>

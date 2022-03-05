@@ -12,6 +12,22 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 export const filesTableColumns = [
   {
+    field: "actions",
+    type: "actions",
+    width: 80,
+    getActions: (params) => [
+      <GridActionsCellItem
+        icon={<SearchIcon />}
+        component={Link}
+        to={`/dossier/${params.id}`}
+        label="Afficher"
+      />,
+      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" showInMenu />,
+
+      <GridActionsCellItem icon={<EditIcon />} label="Modifier" showInMenu />,
+    ],
+  },
+  {
     field: "id",
     headerName: "ID",
   },
@@ -73,22 +89,6 @@ export const filesTableColumns = [
       return `${valueFormatted}`;
     },
   },
-  {
-    field: "actions",
-    type: "actions",
-    width: 80,
-    getActions: (params) => [
-      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem
-        icon={<SearchIcon />}
-        component={Link}
-        to={`/dossier/${params.id}`}
-        label="Afficher"
-        showInMenu
-      />,
-      <GridActionsCellItem icon={<EditIcon />} label="Modifier" showInMenu />,
-    ],
-  },
 ];
 
 export const facturesColumns = [
@@ -145,3 +145,63 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
+
+export const machineriesColumns = [
+  {
+    field: "id",
+    headerName: "Code et appelation",
+  },
+  {
+    field: "desc",
+    headerName: "Description",
+    flex: 1,
+    minWidth: 250,
+    renderCell: renderCellExpand,
+  },
+  {
+    field: "hrs_fonc",
+    headerName: "Heures en fonctionnement",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "hrs_stat",
+    headerName: "Heures stationnaire",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "taux_fonc",
+    headerName: "Taux horaire de fonctionnement",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "maiontenance",
+    headerName: "Taux de maintenance",
+    flex: 1,
+  },
+  {
+    field: "cout",
+    headerName: "Côut total",
+    flex: 1,
+    minWidth: 80,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "actions",
+    type: "actions",
+    width: 80,
+    getActions: (params) => [
+      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
+      <GridActionsCellItem
+        icon={<PictureAsPdfIcon />}
+        label="Télécharger"
+        showInMenu
+      />,
+    ],
+  },
+];

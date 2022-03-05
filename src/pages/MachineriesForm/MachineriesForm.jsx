@@ -183,7 +183,11 @@ const MachineriesForm = ({
                           >
                             Réinitialiser
                           </Button>
-                          <Button size="small" startIcon={<CloseIcon />}>
+                          <Button
+                            size="small"
+                            onClick={exitForm}
+                            startIcon={<CloseIcon />}
+                          >
                             Annuler
                           </Button>
                         </Stack>

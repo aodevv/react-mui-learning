@@ -1,7 +1,8 @@
 export const salairesDABData = {
   1: [
     {
-      name: "Said",
+      id: 1,
+      name: "Aimarah Oussama",
       status: "Occasionnel",
       date_per: "2021-01-11",
       montant_rec: 2460,
@@ -17,6 +18,7 @@ export const salairesDABData = {
       csst: false,
     },
     {
+      id: 2,
       name: "Karim",
       status: "Régulier",
       date_per: "2021-01-11",
@@ -35,6 +37,7 @@ export const salairesDABData = {
   ],
   2: [
     {
+      id: 1,
       name: "Said 2",
       status: "Régulier",
       date_per: "2021-01-11",
@@ -51,6 +54,7 @@ export const salairesDABData = {
       csst: false,
     },
     {
+      id: 2,
       name: "Karim 2",
       status: "Occasionnel",
       date_per: "2021-01-11",
@@ -80,6 +84,7 @@ export const salairesDABData = {
 export const salairesMPTData = {
   1: [
     {
+      id: 1,
       name: "Mstapha",
       status: "Occasionnel",
       date_per: "2021-01-11",
@@ -96,6 +101,7 @@ export const salairesMPTData = {
       csst: false,
     },
     {
+      id: 2,
       name: "3li",
       status: "Régulier",
       date_per: "2021-01-11",
@@ -114,6 +120,7 @@ export const salairesMPTData = {
   ],
   2: [
     {
+      id: 1,
       name: "John Doe",
       status: "Régulier",
       date_per: "2021-01-11",
@@ -130,6 +137,7 @@ export const salairesMPTData = {
       csst: false,
     },
     {
+      id: 2,
       name: "Hans Landa",
       status: "Occasionnel",
       date_per: "2021-01-11",
@@ -159,6 +167,7 @@ export const salairesMPTData = {
 export const salairesMIData = {
   1: [
     {
+      id: 1,
       name: "Muller",
       status: "Occasionnel",
       date_per: "2021-01-11",
@@ -175,6 +184,7 @@ export const salairesMIData = {
       csst: false,
     },
     {
+      id: 2,
       name: "Thomas",
       status: "Régulier",
       date_per: "2021-01-11",
@@ -193,6 +203,7 @@ export const salairesMIData = {
   ],
   2: [
     {
+      id: 1,
       name: "Schmickel",
       status: "Régulier",
       date_per: "2021-01-11",
@@ -209,6 +220,7 @@ export const salairesMIData = {
       csst: false,
     },
     {
+      id: 2,
       name: "Shrek",
       status: "Occasionnel",
       date_per: "2021-01-11",
@@ -236,6 +248,12 @@ export const salairesMIData = {
 };
 
 export const listeSal = {
-  1: { name: "Oussama", taux_vac: 0.25 },
-  2: { name: "Hicham", taux_vac: 0.3 },
+  1: {
+    name: "Oussama",
+    taux_vac: 0.25,
+  },
+  2: {
+    name: "Hicham",
+    taux_vac: 0.3,
+  },
 };

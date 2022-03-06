@@ -205,3 +205,105 @@ export const machineriesColumns = [
     ],
   },
 ];
+
+export const salairesColumns = [
+  {
+    field: "id",
+    headerName: "",
+    hide: true,
+  },
+  {
+    field: "name",
+    headerName: "name",
+    minWidth: 150,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "date_per",
+    headerName: "Date",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "Hreg",
+    headerName: "Hreg",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "Treg",
+    headerName: "Treg",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "Hsup",
+    headerName: "Hsup",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "Tsup",
+    headerName: "Tsup",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "taux_vac",
+    headerName: "Taux de vacances",
+    flex: 1,
+    minWidth: 120,
+    valueFormatter: (params) => {
+      const valueFormatted = params.value * 100;
+      return `${valueFormatted} %`;
+    },
+  },
+  {
+    field: "ae",
+    headerName: "AE",
+    type: "boolean",
+  },
+  {
+    field: "rrq",
+    headerName: "RRQ",
+    type: "boolean",
+  },
+  {
+    field: "rqap",
+    headerName: "RQAP",
+    type: "boolean",
+  },
+  {
+    field: "fss",
+    headerName: "FSS",
+    type: "boolean",
+  },
+  {
+    field: "csst",
+    headerName: "CSST",
+    type: "boolean",
+  },
+  {
+    field: "montant_rec",
+    headerName: "Montant réclamé",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+];

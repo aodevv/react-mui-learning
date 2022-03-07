@@ -8,6 +8,7 @@ import "./App.css";
 import Topnav from "./Components/Topnav/Topnav";
 import Sidemenu from "./Components/Sidemenu/Sidemenu";
 import ContentRouter from "./Components/ContentRouter";
+import BreadCrumb from "./Components/BreadCrumb/BreadCrumb";
 import Collapse from "@mui/material/Collapse";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -40,6 +41,7 @@ const App = () => {
           </Collapse>
 
           <div className="content">
+            <BreadCrumb />
             <ContentRouter />
           </div>
         </div>

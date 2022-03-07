@@ -36,19 +36,13 @@ const SalairesPage = ({ salaires, type }) => {
     navigate(`${pathname}/new`);
   };
 
-  const types = {
-    dab: "Dommages au biens",
-    mpt: "Mesures préventifs temporaires",
-    mi: "Mesures d'interventions",
-  };
-
   return (
     <Grid>
       <Card>
         <CardHeader
           disableTypography={false}
           titleTypographyProps={{ fontWeight: "bold" }}
-          title={"Liste des factures"}
+          title={"Liste des salariés"}
         />
         <CardContent>
           <Stack direction="row" spacing={2}>

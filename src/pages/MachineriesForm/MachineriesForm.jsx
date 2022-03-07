@@ -69,7 +69,6 @@ const MachineriesForm = ({
   };
 
   const handleSubmit = (values) => {
-    console.log(values);
     let newMachine;
     let machineriesType = machineries[type.toUpperCase()];
 

@@ -19,7 +19,7 @@ const Sidemenu = ({ pathname }) => {
 
   useEffect(() => {
     const mapPathToNav = {
-      files: 1,
+      dossier: 1,
       factures: 2,
     };
     pathname === ""
@@ -50,10 +50,10 @@ const Sidemenu = ({ pathname }) => {
       </ListItemButton>
 
       <ListItemButton
-        selected={selectedIndex === 1 && pathname === "files"}
+        selected={selectedIndex === 1 && pathname === "dossier"}
         onClick={(event) => {
           handleListItemClick(event, 1);
-          navigate("/files");
+          navigate("/dossier");
         }}
       >
         <ListItemIcon>

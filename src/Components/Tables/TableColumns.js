@@ -22,7 +22,11 @@ export const filesTableColumns = [
         to={`/dossier/${params.id}`}
         label="Afficher"
       />,
-      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" showInMenu />,
+      <GridActionsCellItem
+        icon={<DeleteIcon />}
+        label="Supprimer"
+        showInMenu
+      />,
 
       <GridActionsCellItem icon={<EditIcon />} label="Modifier" showInMenu />,
     ],

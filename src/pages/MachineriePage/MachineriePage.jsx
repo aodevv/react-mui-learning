@@ -35,11 +35,6 @@ const MachineriePage = ({ machinerie, type }) => {
     navigate(`${pathname}/new`);
   };
 
-  const types = {
-    dab: "Dommages au biens",
-    mpt: "Mesures préventifs temporaires",
-    mi: "Mesures d'interventions",
-  };
   return (
     <Grid>
       <Card>

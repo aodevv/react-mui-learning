@@ -1,10 +1,21 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+
+import { createStructuredSelector } from "reselect";
+import { connect } from "react-redux";
+
+import { selectSalairesMemo } from "../../redux/Salaires/salaires.selectors";
+import {
+  addSalairesDAB,
+  addSalairesMI,
+  addSalairesMPT,
+} from "../../redux/Salaires/salaires.actions";
 
 // ICONS
 import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
+import InputAdornment from "@mui/material/InputAdornment";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
@@ -21,9 +32,26 @@ import Submit from "../../Components/FormUI/Submit";
 
 import SalaireTotal from "../SalairesForm/SalaireTotal";
 
-const SalairesForm = () => {
+import Tsup from "./Tsup";
+
+const SalairesForm = ({
+  salaires,
+  addSalairesDAB,
+  addSalairesMI,
+  addSalairesMPT,
+}) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const params = useParams();
+  const { type, dossierId } = params;
+  const ids = salaires[type.toUpperCase()][dossierId]
+    .map((sal) => sal.id)
+    .sort(function (a, b) {
+      return a - b;
+    });
+  let newId;
+  newId = ids ? ids[ids.length - 1] + 1 : 1;
+  //console.log(salaires);
   const INITIAL_FORM_STATE = {
     id: null,
     name: "",
@@ -45,15 +73,55 @@ const SalairesForm = () => {
   const exitForm = () => {
     navigate(pathname.split("/").slice(0, -1).join("/"));
   };
+  var today = new Date();
+
+  var date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
   const FORM_VALIDATION = Yup.object().shape({
-    name: Yup.string().required("Chanmp obligatoire"),
+    name: Yup.string().required("Champ obligatoire"),
     taux_vac: Yup.number()
       .max(100, "Ne doit pas dépasser 100%")
       .required("Requis"),
+    date_per: Yup.date()
+      .typeError("INVALID_DATE")
+      .min("2012-01-01", `La date doit être après 2012-01-01`)
+      .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
+      .required("Champ obligatoire"),
+    status: Yup.string().required("Champ obligatoire"),
+    Hreg: Yup.number().when("status", {
+      is: "occ",
+      then: Yup.number().min(1, "Champ obligatoire"),
+    }),
   });
   const handleSubmit = (values) => {
+    values.id = newId;
     console.log(values);
+
+    let newSalaire;
+    let salairesType = salaires[type.toUpperCase()];
+
+    newSalaire = [...salairesType[dossierId], values];
+    console.log(newSalaire);
+    Object.keys(salairesType).map(function (key, index) {
+      if (key === dossierId) {
+        salairesType[key] = newSalaire;
+      }
+    });
+    switch (type) {
+      case "dab":
+        addSalairesDAB(salairesType);
+        break;
+      case "mpt":
+        addSalairesMPT(salairesType);
+        break;
+      case "mi":
+        addSalairesMI(salairesType);
+        break;
+      default:
+        break;
+    }
+    exitForm();
   };
   const data = {
     occ: "Occasionel",
@@ -70,7 +138,7 @@ const SalairesForm = () => {
               onSubmit={handleSubmit}
             >
               {(formikProps) => {
-                const { values } = formikProps;
+                const { values, handleReset } = formikProps;
                 return (
                   <Form>
                     <Grid item lg={10} xl={8}>
@@ -113,17 +181,20 @@ const SalairesForm = () => {
                           />
                         </Grid>
                         <Grid item xs={4}>
-                          <Textfield
-                            name="Tsup"
-                            label="Taux sup"
-                            type="number"
-                          />
+                          <Tsup name="Tsup" label="Taux sup" type="number" />
                         </Grid>
                         <Grid item xs={4}>
                           <Textfield
                             name="taux_vac"
                             label="Taux vacances"
                             type="number"
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  %
+                                </InputAdornment>
+                              ),
+                            }}
                           />
                         </Grid>
                       </Grid>
@@ -150,7 +221,7 @@ const SalairesForm = () => {
                             Salaire réclamé:{" "}
                             <Box sx={{ fontWeight: 600, display: "inline" }}>
                               {/* {`$ ${ins1000Sep(formatNum(values.cout))}`} */}
-                              <SalaireTotal />
+                              <SalaireTotal name="montant_rec" />
                             </Box>
                           </Typography>
                         </Box>
@@ -160,7 +231,7 @@ const SalairesForm = () => {
                           Ajouter
                         </Submit>
                         <Button
-                          type="reset"
+                          onClick={handleReset}
                           size="small"
                           startIcon={<UndoIcon />}
                         >
@@ -186,4 +257,14 @@ const SalairesForm = () => {
   );
 };
 
-export default SalairesForm;
+const mapStateToProps = createStructuredSelector({
+  salaires: selectSalairesMemo,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  addSalairesDAB: (newFacts) => dispatch(addSalairesDAB(newFacts)),
+  addSalairesMPT: (newFacts) => dispatch(addSalairesMPT(newFacts)),
+  addSalairesMI: (newFacts) => dispatch(addSalairesMI(newFacts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SalairesForm);

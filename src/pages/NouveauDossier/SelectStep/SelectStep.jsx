@@ -9,10 +9,16 @@ const stepsFull = [
   "Mesures d'intervention",
 ];
 
-const SelectStep = ({ step }) => {
+const SelectStep = ({ step, globalValues, currSubmit, setCurrSubmit }) => {
   switch (step) {
     case 0:
-      return <InfosDossierForm />;
+      return (
+        <InfosDossierForm
+          globalValues={globalValues}
+          currSubmit={currSubmit}
+          setCurrSubmit={setCurrSubmit}
+        />
+      );
 
     default:
       return <Typography>Comming soon</Typography>;

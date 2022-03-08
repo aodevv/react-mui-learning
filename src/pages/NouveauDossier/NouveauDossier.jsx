@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 
+// FORMIK and YUP
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 
 import MyStepper from "../../Components/Stepper/Stepper";
 import SelectStep from "./SelectStep/SelectStep";
@@ -20,6 +24,33 @@ const stepsFull = [
 const NouveauDossier = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
+  const [currSubmit, setCurrSubmit] = useState(null);
+
+  const INITIAL_FORM_STATE = {
+    infosDossier: {
+      id: "",
+      date_ev: "",
+      date_ouv: "",
+      desc_doss: "",
+      act_of: "",
+      prgm: "",
+    },
+    dab: {
+      factures: [],
+      salaires: [],
+      machineries: [],
+    },
+    mpt: {
+      factures: [],
+      salaires: [],
+      machineries: [],
+    },
+    mi: {
+      factures: [],
+      salaires: [],
+      machineries: [],
+    },
+  };
 
   const isStepOptional = (step) => {
     return [1, 2, 3].includes(step);
@@ -36,6 +67,8 @@ const NouveauDossier = () => {
       newSkipped.delete(activeStep);
     }
 
+    submitCurrent();
+    console.log("Before submit:", activeStep);
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
   };
@@ -59,6 +92,17 @@ const NouveauDossier = () => {
     });
   };
 
+  const submitCurrent = () => {
+    switch (activeStep) {
+      case 0:
+        setCurrSubmit(0);
+        break;
+
+      default:
+        break;
+    }
+  };
+
   const handleReset = () => {
     setActiveStep(0);
   };
@@ -78,6 +122,11 @@ const NouveauDossier = () => {
     }
   };
 
+  const handleSubmit = (values) => {
+    console.log("GLOBAL");
+    console.log(values);
+  };
+
   return (
     <Grid>
       <Card>
@@ -94,9 +143,22 @@ const NouveauDossier = () => {
           />
         </CardContent>
       </Card>
-      <Box mt={2}>
-        <SelectStep step={activeStep} />
-      </Box>
+      <Formik initialValues={{ ...INITIAL_FORM_STATE }} onSubmit={handleSubmit}>
+        {(formikProps) => {
+          const { values, handleReset, submitForm } = formikProps;
+          return (
+            <Box mt={2}>
+              <SelectStep
+                step={activeStep}
+                globalValues={values}
+                currSubmit={currSubmit}
+                setCurrSubmit={setCurrSubmit}
+              />
+              <Button onClick={submitForm}>SUBMIT</Button>
+            </Box>
+          );
+        }}
+      </Formik>
     </Grid>
   );
 };

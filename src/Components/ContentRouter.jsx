@@ -10,6 +10,7 @@ import FactureForm from "../pages/FacturesForm/FactureForm";
 import MachineriesForm from "../pages/MachineriesForm/MachineriesForm";
 import DossierDetails from "../pages/Dossier/DossierDetails";
 import SalairesTypes from "../pages/TypeHandlers/SalairesTypes";
+import NouveauDossier from "../pages/NouveauDossier/NouveauDossier";
 
 // testing
 import SalairesForm from "../pages/SalairesForm/SalairesForm";
@@ -35,7 +36,7 @@ const ContentRouter = () => {
       </Route>
 
       <Route path="/factures" element={<FacturePage />} />
-      <Route path="/new" element={<SalairesForm />} />
+      <Route path="/testing" element={<NouveauDossier />} />
     </Routes>
   );
 };

@@ -6,7 +6,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import DraftsIcon from "@mui/icons-material/Drafts";
+import ConstructionIcon from "@mui/icons-material/Construction";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const Sidemenu = ({ pathname }) => {
@@ -20,7 +20,7 @@ const Sidemenu = ({ pathname }) => {
   useEffect(() => {
     const mapPathToNav = {
       dossier: 1,
-      factures: 2,
+      testing: 2,
     };
     pathname === ""
       ? setSelectedIndex(0)
@@ -63,16 +63,16 @@ const Sidemenu = ({ pathname }) => {
       </ListItemButton>
 
       <ListItemButton
-        selected={selectedIndex === 2 && pathname === "factures"}
+        selected={selectedIndex === 2 && pathname === "testing"}
         onClick={(event) => {
           handleListItemClick(event, 2);
-          navigate("/new");
+          navigate("/testing");
         }}
       >
         <ListItemIcon>
-          <DraftsIcon />
+          <ConstructionIcon />
         </ListItemIcon>
-        <ListItemText primary="Drafts" />
+        <ListItemText primary="Testing" />
       </ListItemButton>
     </List>
   );

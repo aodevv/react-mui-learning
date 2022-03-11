@@ -21,3 +21,8 @@ export const selectMIFactures = createSelector(
   [selectFactures],
   (factures) => factures.MI
 );
+
+export const selectAllFactures = createSelector(
+  [selectFactures],
+  (factures) => factures.all
+);

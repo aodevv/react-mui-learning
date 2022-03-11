@@ -138,3 +138,55 @@ export const facturesMIData = {
   9: [],
   10: [],
 };
+
+export const allFactures = {
+  1: [
+    {
+      id: "11",
+      desc_fact: "Facture MI 1",
+      date_fact: "2021-01-11",
+      site_con: "Casablanca",
+      montant_rec: 3655.54,
+      tax: false,
+      prejudice: "dab",
+    },
+
+    {
+      id: "12",
+      desc_fact: "Facture MI 2",
+      date_fact: "2021-09-30",
+      site_con: "Rabat",
+      montant_rec: 2978.3,
+      tax: true,
+      prejudice: "MPT",
+    },
+  ],
+  2: [
+    {
+      id: "21",
+      desc_fact: "Facture MI 1",
+      date_fact: "2021-01-11",
+      site_con: "Casablanca",
+      montant_rec: 123456,
+      tax: false,
+      prejudice: "dab",
+    },
+    {
+      id: "22",
+      desc_fact: "Facture MI 2",
+      date_fact: "2021-09-30",
+      site_con: "Rabat",
+      montant_rec: 99999,
+      tax: true,
+      prejudice: "dab",
+    },
+  ],
+  3: [],
+  4: [],
+  5: [],
+  6: [],
+  7: [],
+  8: [],
+  9: [],
+  10: [],
+};

@@ -1,11 +1,13 @@
 import { facturesDABData } from "./Factures.data";
 import { facturesMPTData } from "./Factures.data";
 import { facturesMIData } from "./Factures.data";
+import { allFactures } from "./Factures.data";
 
 const INITIAL_STATE = {
   DAB: facturesDABData,
   MPT: facturesMPTData,
   MI: facturesMIData,
+  all: allFactures,
 };
 
 const facturesReducer = (state = INITIAL_STATE, action) => {

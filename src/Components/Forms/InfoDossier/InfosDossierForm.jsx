@@ -14,19 +14,13 @@ import DatePicker from "../../../Components/FormUI/DateTime";
 import Checkbox from "../../FormUI/Checkbox";
 import Submit from "../../../Components/FormUI/Submit";
 
-const InfosDossierForm = ({
-  setFieldValue,
-  formDisabled,
-  setFormDisabled,
-  values,
-}) => {
+const InfosDossierForm = ({ values }) => {
   return (
     <>
       <CardWrapper title="Infos dossier">
         <Grid container>
           <Grid item xs={12}>
             <Grid item lg={10} xl={8}>
-              <Typography>Formulaire</Typography>
               <Grid container spacing={2} mb={1}>
                 <Grid item xs={4}>
                   <Textfield name="id" label="Identification dossier" />
@@ -44,13 +38,17 @@ const InfosDossierForm = ({
                   <DatePicker name="date_ev" label="Date événement" />
                 </Grid>
                 <Grid item xs={6}>
-                  <DatePicker name="date_ouv" label="Date d'ouverture" />
+                  <DatePicker
+                    disabled={values.date_ev ? false : true}
+                    name="date_ouv"
+                    label="Date d'ouverture"
+                  />
                 </Grid>
               </Grid>
 
               <Grid item xs={12}>
                 <Textfield
-                  name="desc_doss"
+                  name="desc_ev"
                   multiline
                   rows={4}
                   label="Description"

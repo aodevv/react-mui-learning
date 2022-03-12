@@ -11,8 +11,8 @@ const MachineriesMiniTable = ({ data }) => {
           autoHeight
           rows={data}
           columns={machineriesColumns}
-          pageSize={10}
-          rowsPerPageOptions={[10]}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
           checkboxSelection={false}
         />
       </div>

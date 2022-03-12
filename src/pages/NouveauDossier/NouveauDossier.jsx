@@ -5,10 +5,10 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
-import { Box, Typography, Button, Modal } from "@mui/material";
+// import Card from "@mui/material/Card";
+// import CardHeader from "@mui/material/CardHeader";
+// import CardContent from "@mui/material/CardContent";
+import { Box, Typography, Button, Modal, Backdrop, Fade } from "@mui/material";
 
 import FacturesMiniTables from "../../Components/MiniTables/Factures/FacturesMiniTable";
 
@@ -18,9 +18,13 @@ import InfosDossierForm from "../../Components/Forms/InfoDossier/InfosDossierFor
 import MiniTableWrapper from "../../Components/MiniTableWrapper/MiniTableWrapper";
 import MachineriesMiniTable from "../../Components/MiniTables/Machineries/MachineriesMiniTable";
 import SalairesMiniTable from "../../Components/MiniTables/Salaires/SalairesMiniTable";
+import SiteConcerneMiniTable from "../../Components/MiniTables/SiteConcerne/SiteConcerneMiniTable";
 
 //FORMS
 import FactureModalForm from "../../Components/Forms/FactureModalForm/FactureModalForm";
+import SalaireModalForm from "../../Components/Forms/SalaireModalForm/SalaireModalForm";
+import MachinerieModalForm from "../../Components/Forms/MachinerieModalForm/MachinerieModalForm";
+import SiteModalForm from "../../Components/Forms/SitesModalForm/SiteModalForm";
 
 import PrecisionManufacturingOutlinedIcon from "@mui/icons-material/PrecisionManufacturingOutlined";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -41,6 +45,9 @@ const style = {
 
 const NouveauDossier = () => {
   const [factureModal, setFactureModal] = useState(false);
+  const [salaireModal, setSalaireModal] = useState(false);
+  const [machinerieModal, setMachinerieModal] = useState(false);
+  const [siteModal, setSiteModal] = useState(false);
   const INITIAL_FORM_STATE = {
     id: "",
     date_ev: "",
@@ -56,7 +63,37 @@ const NouveauDossier = () => {
     factures: [],
     salaires: [],
     machineries: [],
+    sites: [],
   };
+
+  var today = new Date();
+
+  var date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+
+  const FORM_VALIDATION = Yup.object().shape({
+    id: Yup.string().required("Champ obligatoire"),
+    prgm: Yup.string().required("Champ obligatoire"),
+    act_of: Yup.string().required("Champ obligatoire"),
+    date_ev: Yup.date()
+      .typeError("INVALID_DATE")
+      .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
+      .required("Champ obligatoire"),
+    date_ouv: Yup.date()
+      .typeError("INVALID_DATE")
+      .when(
+        "date_ev",
+        (date_ev, Yup) =>
+          date_ev &&
+          Yup.min(
+            date_ev,
+            "La date d'ouverture ne peut pas précéder la date d'événement"
+          )
+      )
+      .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
+      .required("Champ obligatoire"),
+    desc_ev: Yup.string().required("Champ obligatoire"),
+  });
 
   const handleSubmit = (values) => {
     console.log(values);
@@ -65,9 +102,29 @@ const NouveauDossier = () => {
   const openFacture = () => {
     setFactureModal(true);
   };
-
   const closeFacture = () => {
     setFactureModal(false);
+  };
+
+  const openSalaire = () => {
+    setSalaireModal(true);
+  };
+  const closeSalaire = () => {
+    setSalaireModal(false);
+  };
+
+  const openMachinerie = () => {
+    setMachinerieModal(true);
+  };
+  const closeMachinerie = () => {
+    setMachinerieModal(false);
+  };
+
+  const openSite = () => {
+    setSiteModal(true);
+  };
+  const closeSite = () => {
+    setSiteModal(false);
   };
 
   const typePrejudices = {
@@ -78,16 +135,55 @@ const NouveauDossier = () => {
   };
   return (
     <>
-      <Formik initialValues={{ ...INITIAL_FORM_STATE }} onSubmit={handleSubmit}>
+      <Formik
+        initialValues={{ ...INITIAL_FORM_STATE }}
+        onSubmit={handleSubmit}
+        validationSchema={FORM_VALIDATION}
+      >
         {(formikProps) => {
           const { values, submitForm } = formikProps;
+
           return (
             <Form>
               <Grid>
-                <InfosDossierForm />
+                <InfosDossierForm values={values} />
               </Grid>
               <Grid container spacing={2} mt={3}>
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}>
+                  <MiniTableWrapper
+                    disable={values.id ? false : true}
+                    title={
+                      <Box
+                        display="flex"
+                        alignContent="center"
+                        alignItems="center"
+                      >
+                        <AttachMoneyIcon />
+                        <Typography ml={1} variant="h5">
+                          Sites
+                        </Typography>
+                      </Box>
+                    }
+                    btnClick={openSite}
+                  >
+                    <SiteConcerneMiniTable data={values.sites} />
+                  </MiniTableWrapper>
+                  <Modal
+                    open={siteModal}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Fade in={siteModal}>
+                      <Box sx={style}>
+                        <SiteModalForm
+                          globalValues={values}
+                          closeModal={closeSite}
+                        />
+                      </Box>
+                    </Fade>
+                  </Modal>
+                </Grid>
+                <Grid item xs={12} md={6}>
                   <MiniTableWrapper
                     title={
                       <Box
@@ -101,23 +197,32 @@ const NouveauDossier = () => {
                         </Typography>
                       </Box>
                     }
-                    disable={values.id ? false : true}
+                    disable={values.sites.length === 0 ? true : false}
                     btnClick={openFacture}
                   >
                     <FacturesMiniTables data={values.factures} />
                   </MiniTableWrapper>
                   <Modal
                     open={factureModal}
-                    onClose={closeFacture}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                   >
-                    <Box sx={style}>
-                      <FactureModalForm globalValues={values} />
-                    </Box>
+                    <Fade in={factureModal}>
+                      <Box sx={style}>
+                        <FactureModalForm
+                          globalValues={values}
+                          prejudices={typePrejudices}
+                          closeModal={closeFacture}
+                          date={date}
+                        />
+                      </Box>
+                    </Fade>
                   </Modal>
                 </Grid>
-                <Grid item xs={6}>
+              </Grid>
+
+              <Grid container spacing={2} mt={1}>
+                <Grid item xs={12} md={6}>
                   <MiniTableWrapper
                     disable={values.id ? false : true}
                     title={
@@ -132,15 +237,28 @@ const NouveauDossier = () => {
                         </Typography>
                       </Box>
                     }
-                    btnClick={() => console.log("Clicked")}
+                    btnClick={openSalaire}
                   >
-                    <SalairesMiniTable />
+                    <SalairesMiniTable data={values.salaires} />
                   </MiniTableWrapper>
+                  <Modal
+                    open={salaireModal}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Fade in={salaireModal}>
+                      <Box sx={style}>
+                        <SalaireModalForm
+                          globalValues={values}
+                          prejudices={typePrejudices}
+                          closeModal={closeSalaire}
+                          date={date}
+                        />
+                      </Box>
+                    </Fade>
+                  </Modal>
                 </Grid>
-              </Grid>
-
-              <Grid container spacing={2} mt={1}>
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}>
                   <MiniTableWrapper
                     title={
                       <Box
@@ -155,10 +273,25 @@ const NouveauDossier = () => {
                       </Box>
                     }
                     disable={values.id ? false : true}
-                    btnClick={() => console.log("Clicked")}
+                    btnClick={openMachinerie}
                   >
-                    <MachineriesMiniTable />
+                    <MachineriesMiniTable data={values.machineries} />
                   </MiniTableWrapper>
+                  <Modal
+                    open={machinerieModal}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Fade in={machinerieModal}>
+                      <Box sx={style}>
+                        <MachinerieModalForm
+                          globalValues={values}
+                          prejudices={typePrejudices}
+                          closeModal={closeMachinerie}
+                        />
+                      </Box>
+                    </Fade>
+                  </Modal>
                 </Grid>
               </Grid>
 

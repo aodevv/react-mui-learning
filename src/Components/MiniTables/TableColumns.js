@@ -94,6 +94,17 @@ export const filesTableColumns = [
     },
   },
 ];
+const typePrejudices = {
+  dab: "Dommage au biens",
+  mpt: "Mesures preventives temporaires",
+  mi: "Mesures d'interventions",
+  bcg: "Bris du couvert de glace",
+};
+
+const status = {
+  occ: "Occasionnel",
+  reg: "Régulier",
+};
 
 export const facturesColumns = [
   {
@@ -105,6 +116,9 @@ export const facturesColumns = [
     field: "type",
     headerName: "Préjudice",
     width: 100,
+    valueFormatter: (params) => {
+      return typePrejudices[params.value];
+    },
   },
   {
     field: "desc_fact",
@@ -130,6 +144,10 @@ export const facturesColumns = [
     headerName: "Montant réclamé",
     flex: 1,
     minWidth: 140,
+    valueFormatter: (params) => {
+      const valueFormatted = currencyFormatter.format(Number(params.value));
+      return `${valueFormatted}`;
+    },
   },
   {
     field: "tax",
@@ -142,11 +160,7 @@ export const facturesColumns = [
     width: 80,
     getActions: (params) => [
       <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem
-        icon={<PictureAsPdfIcon />}
-        label="Télécharger"
-        showInMenu
-      />,
+      <GridActionsCellItem icon={<EditIcon />} label="Modifier" />,
     ],
   },
 ];
@@ -158,13 +172,22 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
 
 export const machineriesColumns = [
   {
+    field: "id",
+    headerName: "",
+    hide: true,
+  },
+  {
     field: "type",
     headerName: "Préjudice",
     width: 100,
+    valueFormatter: (params) => {
+      return typePrejudices[params.value];
+    },
   },
   {
-    field: "id",
+    field: "code",
     headerName: "Code et appelation",
+    minWidth: 150,
   },
   {
     field: "desc",
@@ -189,11 +212,7 @@ export const machineriesColumns = [
     width: 80,
     getActions: (params) => [
       <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem
-        icon={<PictureAsPdfIcon />}
-        label="Télécharger"
-        showInMenu
-      />,
+      <GridActionsCellItem icon={<EditIcon />} label="Modifier" />,
     ],
   },
 ];
@@ -207,7 +226,11 @@ export const salairesColumns = [
   {
     field: "type",
     headerName: "Préjudice",
-    width: 100,
+    minWidth: 150,
+    flex: 1,
+    valueFormatter: (params) => {
+      return typePrejudices[params.value];
+    },
   },
   {
     field: "name",
@@ -219,6 +242,9 @@ export const salairesColumns = [
     headerName: "Status",
     flex: 1,
     minWidth: 100,
+    valueFormatter: (params) => {
+      return status[params.value];
+    },
   },
   {
     field: "date_per",
@@ -233,30 +259,16 @@ export const salairesColumns = [
     minWidth: 100,
   },
   {
-    field: "Treg",
-    headerName: "Treg",
-    flex: 1,
-    minWidth: 100,
-    valueFormatter: (params) => {
-      const valueFormatted = ins1000Sep(formatNum(params.value));
-      return `$ ${valueFormatted}`;
-    },
-  },
-  {
     field: "Hsup",
-    headerName: "Hsup",
+    headerName: "Hsup 1",
     flex: 1,
     minWidth: 100,
   },
   {
-    field: "Tsup",
-    headerName: "Tsup",
+    field: "Hsup2",
+    headerName: "Hsup 2",
     flex: 1,
     minWidth: 100,
-    valueFormatter: (params) => {
-      const valueFormatted = ins1000Sep(formatNum(params.value));
-      return `$ ${valueFormatted}`;
-    },
   },
   {
     field: "taux_vac",
@@ -264,8 +276,7 @@ export const salairesColumns = [
     flex: 1,
     minWidth: 120,
     valueFormatter: (params) => {
-      const valueFormatted = params.value * 100;
-      return `${valueFormatted} %`;
+      return `${params.value} %`;
     },
   },
   {
@@ -277,5 +288,88 @@ export const salairesColumns = [
       const valueFormatted = ins1000Sep(formatNum(params.value));
       return `$ ${valueFormatted}`;
     },
+  },
+  {
+    field: "actions",
+    type: "actions",
+    width: 80,
+    getActions: (params) => [
+      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
+      <GridActionsCellItem icon={<EditIcon />} label="Modifier" />,
+    ],
+  },
+];
+
+export const siteColumns = [
+  {
+    field: "id",
+    headerName: "",
+    hide: true,
+  },
+  {
+    field: "site",
+    headerName: "Site",
+    minWidth: 140,
+  },
+  {
+    field: "nature",
+    headerName: "Nature",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "part_end",
+    headerName: "Partie endommagée",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "pourc_end",
+    headerName: "Pourcentage endommagé",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      return `${params.value} %`;
+    },
+  },
+  {
+    field: "type_ret",
+    headerName: "Type rétabli",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "montant_rec",
+    headerName: "Montant réclamé",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "adm",
+    headerName: "Admissible ?",
+    type: "boolean",
+  },
+  {
+    field: "pourc_adm",
+    headerName: "Pourcentage admissible",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      return `${params.value} %`;
+    },
+  },
+
+  {
+    field: "actions",
+    type: "actions",
+    width: 80,
+    getActions: (params) => [
+      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
+      <GridActionsCellItem icon={<EditIcon />} label="Modifier" />,
+    ],
   },
 ];

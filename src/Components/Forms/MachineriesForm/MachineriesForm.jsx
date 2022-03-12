@@ -26,8 +26,8 @@ import CardWrapper from "../../Components/CardWrapper/CardWrapper";
 
 import Textfield from "../../Components/FormUI/Textfield";
 import Select from "../../Components/FormUI/Select";
-import DatePicker from "../../Components/FormUI/DateTime";
-import Checkbox from "../../Components/FormUI/Checkbox";
+//import DatePicker from "../../Components/FormUI/DateTime";
+//import Checkbox from "../../Components/FormUI/Checkbox";
 import Submit from "../../Components/FormUI/Submit";
 
 import Cout from "./Cout";

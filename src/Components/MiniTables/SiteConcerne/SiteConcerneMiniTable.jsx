@@ -1,16 +1,16 @@
 import React from "react";
 
-import { salairesColumns } from "../TableColumns";
+import { siteColumns } from "../TableColumns";
 import { DataGrid } from "@mui/x-data-grid";
 
-const SalairesMiniTable = ({ data }) => {
+const SiteConcerneMiniTable = ({ data }) => {
   return (
     <div style={{ width: "100%", display: "flex" }}>
       <div style={{ flexGrow: 1 }}>
         <DataGrid
           autoHeight
           rows={data}
-          columns={salairesColumns}
+          columns={siteColumns}
           pageSize={5}
           rowsPerPageOptions={[5]}
           checkboxSelection={false}
@@ -20,4 +20,4 @@ const SalairesMiniTable = ({ data }) => {
   );
 };
 
-export default SalairesMiniTable;
+export default SiteConcerneMiniTable;

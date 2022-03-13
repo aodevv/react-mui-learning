@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 // REDUX
 import { createStructuredSelector } from "reselect";
@@ -21,20 +21,16 @@ import AddIcon from "@mui/icons-material/Add";
 
 import SalairesTable from "../../Components/Tables/Salaires/SalairesTable";
 
-const SalairesPage = ({ salaires, type }) => {
-  const params = useParams();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const { dossierId } = params;
-
-  let salairePluk;
-  if (dossierId) {
-    salairePluk = salaires[type.toUpperCase()][dossierId];
-  }
-
-  const toggleForm = () => {
-    navigate(`${pathname}/new`);
-  };
+const SalairesPage = ({ salaires }) => {
+  let flatSalaires = [];
+  let salairesCopy = JSON.parse(JSON.stringify(salaires));
+  Object.keys(salairesCopy).forEach((item) =>
+    salairesCopy[item].forEach((sal) => {
+      sal.dos = parseInt(item);
+      sal.id = `${item};${sal.id}`;
+      flatSalaires.push(sal);
+    })
+  );
 
   return (
     <Grid>
@@ -46,12 +42,7 @@ const SalairesPage = ({ salaires, type }) => {
         />
         <CardContent>
           <Stack direction="row" spacing={2}>
-            <Button
-              variant="contained"
-              size="small"
-              onClick={toggleForm}
-              startIcon={<AddIcon />}
-            >
+            <Button variant="contained" size="small" startIcon={<AddIcon />}>
               Ajouter
             </Button>
             <Button
@@ -64,7 +55,7 @@ const SalairesPage = ({ salaires, type }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <SalairesTable data={salairePluk} />
+            <SalairesTable data={flatSalaires} />
           </Box>
         </CardContent>
       </Card>

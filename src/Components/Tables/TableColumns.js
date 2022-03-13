@@ -12,10 +12,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
-const capitalizeFirstLetter = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
-
 export const filesTableColumns = [
   {
     field: "actions",
@@ -106,10 +102,36 @@ export const filesTableColumns = [
   },
 ];
 
+const typePrejudices = {
+  dab: "Dommage au biens",
+  mpt: "Mesures preventives temporaires",
+  mi: "Mesures d'interventions",
+  bcg: "Bris du couvert de glace",
+};
+
+const status = {
+  occ: "Occasionnel",
+  reg: "Régulier",
+};
+
 export const facturesColumns = [
   {
     field: "id",
     headerName: "ID",
+    hide: true,
+  },
+  {
+    field: "dos",
+    headerName: "Dossier",
+    width: 80,
+  },
+  {
+    field: "type",
+    headerName: "Préjudice",
+    width: 220,
+    valueFormatter: (params) => {
+      return typePrejudices[params.value];
+    },
   },
   {
     field: "desc_fact",
@@ -135,6 +157,10 @@ export const facturesColumns = [
     headerName: "Montant réclamé",
     flex: 1,
     minWidth: 140,
+    valueFormatter: (params) => {
+      const valueFormatted = currencyFormatter.format(Number(params.value));
+      return `${valueFormatted}`;
+    },
   },
   {
     field: "tax",
@@ -163,8 +189,16 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
 
 export const machineriesColumns = [
   {
+    field: "dos",
+    headerName: "Dossier",
+    width: 80,
+  },
+  {
     field: "id",
     headerName: "Code et appelation",
+    valueFormatter: (params) => {
+      return params.value.split(";")[1];
+    },
   },
   {
     field: "desc",
@@ -228,6 +262,11 @@ export const salairesColumns = [
     hide: true,
   },
   {
+    field: "dos",
+    headerName: "Dossier",
+    width: 80,
+  },
+  {
     field: "name",
     headerName: "name",
     minWidth: 150,
@@ -237,6 +276,13 @@ export const salairesColumns = [
     headerName: "Status",
     flex: 1,
     minWidth: 100,
+    valueFormatter: (params) => {
+      return status[params.value];
+    },
+    cellClassName: (params) =>
+      clsx("super-app", {
+        occ: params.value === "occ",
+      }),
   },
   {
     field: "date_per",
@@ -255,6 +301,7 @@ export const salairesColumns = [
     headerName: "Treg",
     flex: 1,
     minWidth: 100,
+    cellClassName: "super-app actif",
     valueFormatter: (params) => {
       const valueFormatted = ins1000Sep(formatNum(params.value));
       return `$ ${valueFormatted}`;
@@ -266,11 +313,30 @@ export const salairesColumns = [
     flex: 1,
     minWidth: 100,
   },
+
   {
     field: "Tsup",
     headerName: "Tsup",
     flex: 1,
     minWidth: 100,
+    cellClassName: "super-app actif",
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "Hsup2",
+    headerName: "Hsup 2",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "Tsup2",
+    headerName: "Tsup 2",
+    flex: 1,
+    minWidth: 100,
+    cellClassName: "super-app actif",
     valueFormatter: (params) => {
       const valueFormatted = ins1000Sep(formatNum(params.value));
       return `$ ${valueFormatted}`;

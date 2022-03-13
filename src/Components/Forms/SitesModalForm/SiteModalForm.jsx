@@ -31,6 +31,21 @@ const SiteModalForm = ({ closeModal, globalValues }) => {
     montant_rec: 0,
   };
 
+  const FORM_VALIDATION = Yup.object().shape({
+    site: Yup.string().required("Champ obligatoire"),
+    nature: Yup.string().required("Champ obligatoire"),
+    part_end: Yup.string().required("Champ obligatoire"),
+    pourc_end: Yup.number()
+      .min(1, "!!!!!!!!")
+      .max(100, "Ne peut pas dépasser 100%"),
+    pourc_adm: Yup.number()
+      .min(0, "Valeur négatif !")
+      .max(100, "Ne peut pas dépasser 100%"),
+    montant_rec: Yup.number()
+      .min(0, "Valeur négatif !")
+      .required("Champ obligatoire"),
+  });
+
   const handleSubmit = (values) => {
     let id;
 
@@ -54,6 +69,7 @@ const SiteModalForm = ({ closeModal, globalValues }) => {
           <Container maxWidth="l">
             <Formik
               initialValues={{ ...INITIAL_FORM_STATE }}
+              validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
             >
               {(formikProps) => {

@@ -4,7 +4,7 @@ export const salairesAll = {
     {
       id: 1,
       name: "Aimarah Oussama",
-      status: "Occasionnel",
+      status: "occ",
       date_per: "2021-01-11",
       montant_rec: 2460,
       Hreg: 12,
@@ -24,7 +24,7 @@ export const salairesAll = {
     {
       id: 2,
       name: "Karim",
-      status: "Régulier",
+      status: "reg",
       date_per: "2021-01-11",
       montant_rec: 9830,
       Hreg: 86,
@@ -46,7 +46,7 @@ export const salairesAll = {
     {
       id: 1,
       name: "Said 2",
-      status: "Régulier",
+      status: "reg",
       date_per: "2021-01-11",
       montant_rec: 2460,
       Hreg: 12,
@@ -66,7 +66,7 @@ export const salairesAll = {
     {
       id: 2,
       name: "Karim 2",
-      status: "Occasionnel",
+      status: "occ",
       date_per: "2021-01-11",
       montant_rec: 9830,
       Hreg: 86,

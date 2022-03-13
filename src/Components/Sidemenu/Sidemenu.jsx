@@ -5,9 +5,14 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+
+//ICONS
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import ConstructionIcon from "@mui/icons-material/Construction";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import PrecisionManufacturingOutlinedIcon from "@mui/icons-material/PrecisionManufacturingOutlined";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 
 const Sidemenu = ({ pathname }) => {
   const navigate = useNavigate();
@@ -21,6 +26,9 @@ const Sidemenu = ({ pathname }) => {
     const mapPathToNav = {
       dossier: 1,
       testing: 2,
+      factures: 3,
+      salaires: 4,
+      machineries: 5,
     };
     pathname === ""
       ? setSelectedIndex(0)
@@ -60,6 +68,45 @@ const Sidemenu = ({ pathname }) => {
           <FolderOpenIcon />
         </ListItemIcon>
         <ListItemText primary="Gestion dossier" />
+      </ListItemButton>
+
+      <ListItemButton
+        selected={selectedIndex === 3 && pathname === "factures"}
+        onClick={(event) => {
+          handleListItemClick(event, 3);
+          navigate("/factures");
+        }}
+      >
+        <ListItemIcon>
+          <ReceiptOutlinedIcon />
+        </ListItemIcon>
+        <ListItemText primary="Factures" />
+      </ListItemButton>
+
+      <ListItemButton
+        selected={selectedIndex === 4 && pathname === "salaires"}
+        onClick={(event) => {
+          handleListItemClick(event, 4);
+          navigate("/salaires");
+        }}
+      >
+        <ListItemIcon>
+          <AttachMoneyIcon />
+        </ListItemIcon>
+        <ListItemText primary="Salaires" />
+      </ListItemButton>
+
+      <ListItemButton
+        selected={selectedIndex === 5 && pathname === "machineries"}
+        onClick={(event) => {
+          handleListItemClick(event, 5);
+          navigate("/machineries");
+        }}
+      >
+        <ListItemIcon>
+          <PrecisionManufacturingOutlinedIcon />
+        </ListItemIcon>
+        <ListItemText primary="Machineries" />
       </ListItemButton>
 
       <ListItemButton

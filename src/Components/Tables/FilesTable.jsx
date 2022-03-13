@@ -1,7 +1,6 @@
 import React from "react";
 
 import { filesTableColumns } from "./TableColumns";
-import { filesTableData } from "./tempdata";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 

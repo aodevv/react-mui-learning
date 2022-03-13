@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -33,7 +33,7 @@ const FileManager = ({ dossiers }) => {
           title={"Liste des dossiers"}
         />
         <CardContent>
-          <Grid item xs={8} mb={2}>
+          <Grid item xs={12} md={8} mb={2}>
             <DossierFilters
               dossiers={dossiers}
               setFilteredDossiers={setFilteredDossiers}

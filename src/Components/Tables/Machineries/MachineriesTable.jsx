@@ -1,7 +1,6 @@
 import React from "react";
 
 import { machineriesColumns } from "../TableColumns";
-import { machineriesTempData } from "../tempdata";
 import { DataGrid } from "@mui/x-data-grid";
 
 const MachineriesTable = ({ data }) => {
@@ -10,7 +9,7 @@ const MachineriesTable = ({ data }) => {
       <div style={{ flexGrow: 1 }}>
         <DataGrid
           autoHeight
-          rows={data ? data : machineriesTempData[1]}
+          rows={data}
           columns={machineriesColumns}
           pageSize={10}
           rowsPerPageOptions={[10]}

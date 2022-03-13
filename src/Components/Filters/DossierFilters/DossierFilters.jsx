@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Grid, TextField } from "@mui/material";
 
@@ -10,11 +10,25 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
   const [mrFilter, setMrFilter] = useState(0);
+  const [descFilter, setDescFilter] = useState("");
+
   const filterMR = (e) => {
     setMrFilter(e.target.value);
-    const fil = dossiers.filter((dos) => dos.MR > e.target.value);
-    setFilteredDossiers(fil);
   };
+
+  const filterDesc = (e) => {
+    setDescFilter(e.target.value);
+  };
+
+  useEffect(() => {
+    const fil = dossiers
+      .filter((dos) => dos.MR > mrFilter)
+      .filter((dos) =>
+        dos.Evenement.toLowerCase().includes(descFilter.toLowerCase())
+      );
+    setFilteredDossiers(fil);
+  }, [descFilter, dossiers, mrFilter, setFilteredDossiers]);
+
   return (
     <>
       <Accordion>
@@ -29,6 +43,15 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
           <Grid container>
             <Grid item xs={6}>
               <TextField
+                label="Description"
+                variant="outlined"
+                size="small"
+                value={descFilter}
+                onChange={filterDesc}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
                 label="Montant"
                 variant="outlined"
                 size="small"
@@ -37,7 +60,6 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
                 onChange={filterMR}
               />
             </Grid>
-            <Grid item xs={6}></Grid>
           </Grid>
         </AccordionDetails>
       </Accordion>

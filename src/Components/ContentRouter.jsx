@@ -1,9 +1,11 @@
 import React from "react";
-import { Routes, Route, Redirect } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import FileManager from "../pages/FileManager/FileManager";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import FacturePage from "../pages/FacturesPage/FacturePage";
+import SalairesPage from "../pages/SalairesPage/SalairesPage";
+import MachineriePage from "../pages/MachineriePage/MachineriePage";
 import FactureTypes from "../pages/TypeHandlers/FactureTypes";
 import MachinerieTypes from "../pages/TypeHandlers/MachineriesTypes";
 import DossierDetails from "../pages/Dossier/DossierDetails";
@@ -23,6 +25,8 @@ const ContentRouter = () => {
         <Route path="salaires" element={<SalairesTypes />} />
       </Route>
       <Route path="/factures" element={<FacturePage />} />
+      <Route path="/salaires" element={<SalairesPage />} />
+      <Route path="/machineries" element={<MachineriePage />} />
       <Route path="/testing" element={<NouveauDossier />} />
     </Routes>
   );

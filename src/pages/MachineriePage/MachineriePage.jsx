@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
+import React, { useMemo } from "react";
+import { Outlet } from "react-router-dom";
 
 // REDUX
 import { createStructuredSelector } from "reselect";
@@ -21,36 +21,27 @@ import AddIcon from "@mui/icons-material/Add";
 
 import MachineriesTable from "../../Components/Tables/Machineries/MachineriesTable";
 
-const MachineriePage = ({ machinerie, type }) => {
-  const params = useParams();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const { dossierId } = params;
-
-  let machineriePluk;
-  if (dossierId) {
-    machineriePluk = machinerie[type.toUpperCase()][dossierId];
-  }
-  const toggleForm = () => {
-    navigate(`${pathname}/new`);
-  };
-
+const MachineriePage = ({ machinerie }) => {
+  let flatMachines = [];
+  let machinerieCopy = JSON.parse(JSON.stringify(machinerie));
+  Object.keys(machinerieCopy).forEach((item) =>
+    machinerieCopy[item].forEach((mach) => {
+      mach.dos = parseInt(item);
+      mach.id = `${item};${mach.id}`;
+      flatMachines.push(mach);
+    })
+  );
   return (
     <Grid>
       <Card>
         <CardHeader
           disableTypography={false}
           titleTypographyProps={{ fontWeight: "bold" }}
-          title={"Liste des factures"}
+          title={"Liste machineries"}
         />
         <CardContent>
           <Stack direction="row" spacing={2}>
-            <Button
-              variant="contained"
-              size="small"
-              onClick={toggleForm}
-              startIcon={<AddIcon />}
-            >
+            <Button variant="contained" size="small" startIcon={<AddIcon />}>
               Ajouter
             </Button>
             <Button
@@ -63,7 +54,7 @@ const MachineriePage = ({ machinerie, type }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <MachineriesTable data={machineriePluk} />
+            <MachineriesTable data={flatMachines} />
           </Box>
         </CardContent>
       </Card>

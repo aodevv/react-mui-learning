@@ -115,7 +115,6 @@ const NouveauDossier = ({
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
   const FORM_VALIDATION = Yup.object().shape({
-    id: Yup.string().required("Champ obligatoire"),
     prgm: Yup.string().required("Champ obligatoire"),
     act_of: Yup.string().required("Champ obligatoire"),
     date_ev: Yup.date()
@@ -149,11 +148,16 @@ const NouveauDossier = ({
 
     const infoDos = {
       id: values.id,
-      date_ev: values.date_ev,
-      date_ouv: values.date_ouv,
-      desc_ev: values.desc_ev,
+      datEv: values.date_ev,
+      datOuv: values.date_ouv,
+      Evenement: values.desc_ev,
       act_of: values.act_of,
       prgm: values.prgm,
+      MR: values.MR,
+      status: "actif",
+      MA: 0,
+      MV: 0,
+      Participation: 0,
       adm: true,
       dab: values.dab,
       mpt: values.mpt,
@@ -161,7 +165,7 @@ const NouveauDossier = ({
       bcg: values.bcg,
     };
 
-    //addInfosDossier([...dossiers, infoDos]);
+    addInfosDossier([...dossiers, infoDos]);
     let newFacts = factures;
     newFacts[id] = values.factures;
     addFactures(newFacts);
@@ -214,6 +218,11 @@ const NouveauDossier = ({
     setSubmitModal(false);
   };
 
+  const resetAndExit = (values) => {
+    values = INITIAL_FORM_STATE;
+    closeSubmit();
+  };
+
   const typePrejudices = {
     dab: "Dommage au biens",
     mpt: "Mesures preventives temporaires",
@@ -222,7 +231,11 @@ const NouveauDossier = ({
   };
   return (
     <>
-      <Formik initialValues={{ ...INITIAL_FORM_STATE }} onSubmit={handleSubmit}>
+      <Formik
+        initialValues={{ ...INITIAL_FORM_STATE }}
+        validationSchema={FORM_VALIDATION}
+        onSubmit={handleSubmit}
+      >
         {(formikProps) => {
           const { values, submitForm } = formikProps;
 
@@ -240,7 +253,14 @@ const NouveauDossier = ({
                   <Box sx={style2}>
                     <Typography variant="h5">Confimer ?</Typography>
                     <Stack direction="row-reverse" spacing={1} mt={2}>
-                      <Button size="small" variant="contained">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        onClick={() => {
+                          submitForm();
+                          resetAndExit();
+                        }}
+                      >
                         Oui
                       </Button>
                       <Button
@@ -256,9 +276,9 @@ const NouveauDossier = ({
                 </Fade>
               </Modal>
               <Grid container spacing={2} mt={3}>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={7}>
                   <MiniTableWrapper
-                    disable={values.id ? false : true}
+                    disable={values.dab ? false : true}
                     title={
                       <Box
                         display="flex"
@@ -290,7 +310,7 @@ const NouveauDossier = ({
                     </Fade>
                   </Modal>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={5}>
                   <MiniTableWrapper
                     title={
                       <Box
@@ -304,10 +324,7 @@ const NouveauDossier = ({
                         </Typography>
                       </Box>
                     }
-                    disable={
-                      (values.id ? false : true) ||
-                      (values.date_ev !== "" ? false : true)
-                    }
+                    disable={values.date_ev !== "" ? false : true}
                     btnClick={openFacture}
                   >
                     <FacturesMiniTables data={values.factures} />
@@ -332,9 +349,9 @@ const NouveauDossier = ({
               </Grid>
 
               <Grid container spacing={2} mt={1}>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={8}>
                   <MiniTableWrapper
-                    disable={values.id ? false : true}
+                    disable={values.date_ev !== "" ? false : true}
                     title={
                       <Box
                         display="flex"
@@ -368,7 +385,7 @@ const NouveauDossier = ({
                     </Fade>
                   </Modal>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} lg={4}>
                   <MiniTableWrapper
                     title={
                       <Box
@@ -382,7 +399,7 @@ const NouveauDossier = ({
                         </Typography>
                       </Box>
                     }
-                    disable={values.id ? false : true}
+                    disable={values.date_ev !== "" ? false : true}
                     btnClick={openMachinerie}
                   >
                     <MachineriesMiniTable data={values.machineries} />

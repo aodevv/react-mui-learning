@@ -75,7 +75,10 @@ const SalaireModalForm = ({ closeModal, globalValues, prejudices, date }) => {
       .required("Champ obligatoire"),
     date_per: Yup.date()
       .typeError("INVALID_DATE")
-      .min("2012-01-01", `La date doit être après 2012-01-01`)
+      .min(
+        globalValues.date_ev,
+        `La date ne peut pas précéder la date de l'événement`
+      )
       .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
       .required("Champ obligatoire"),
     Hsup: Yup.number().min(0, "Valeur négative !"),

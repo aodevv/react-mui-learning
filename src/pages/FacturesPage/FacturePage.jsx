@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 // REDUX
 import { createStructuredSelector } from "reselect";
@@ -22,26 +22,17 @@ import AddIcon from "@mui/icons-material/Add";
 // Custom components
 import FacturesTable from "../../Components/Tables/FacturesTable";
 
-const FacturePage = ({ type, factures }) => {
-  const params = useParams();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const { dossierId } = params;
+const FacturePage = ({ factures }) => {
+  let flatFactures = [];
+  let facturesCopy = JSON.parse(JSON.stringify(factures));
+  Object.keys(facturesCopy).forEach((item, index) =>
+    facturesCopy[item].forEach((fac) => {
+      fac.dos = parseInt(item);
+      fac.id = `${item};${fac.id}`;
+      flatFactures.push(fac);
+    })
+  );
 
-  let facturesPluk;
-  if (dossierId) {
-    facturesPluk = factures[type.toUpperCase()][dossierId];
-  }
-
-  const toggleForm = () => {
-    navigate(`${pathname}/new`);
-  };
-
-  const types = {
-    dab: "Dommages au biens",
-    mpt: "Mesures préventifs temporaires",
-    mi: "Mesures d'interventions",
-  };
   return (
     <Grid>
       <Card>
@@ -52,12 +43,7 @@ const FacturePage = ({ type, factures }) => {
         />
         <CardContent>
           <Stack direction="row" spacing={2}>
-            <Button
-              variant="contained"
-              size="small"
-              onClick={toggleForm}
-              startIcon={<AddIcon />}
-            >
+            <Button variant="contained" size="small" startIcon={<AddIcon />}>
               Ajouter
             </Button>
             <Button
@@ -70,7 +56,7 @@ const FacturePage = ({ type, factures }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <FacturesTable data={facturesPluk} />
+            <FacturesTable data={flatFactures} />
           </Box>
         </CardContent>
       </Card>

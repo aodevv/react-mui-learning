@@ -21,13 +21,13 @@ const InfosDossierForm = ({ values, openSubmit }) => {
           <Grid item xs={12}>
             <Grid item lg={10} xl={8}>
               <Grid container spacing={2} mb={1}>
-                <Grid item xs={4}>
+                {/* <Grid item xs={4}>
                   <Textfield name="id" label="Identification dossier" />
-                </Grid>
-                <Grid item xs={4}>
+                </Grid> */}
+                <Grid item xs={6}>
                   <Textfield name="prgm" label="Programme" />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                   <Textfield name="act_of" label="Acte officiel" />
                 </Grid>
               </Grid>
@@ -76,7 +76,7 @@ const InfosDossierForm = ({ values, openSubmit }) => {
                 alignItems="center"
               >
                 <TotalReclame />
-                <Grid xs={6}>
+                <Grid item xs={6}>
                   <Grid container display="flex" direction="row-reverse">
                     <Button
                       variant="contained"

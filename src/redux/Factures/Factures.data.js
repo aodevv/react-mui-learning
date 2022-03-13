@@ -7,7 +7,7 @@ export const facturesAll = {
       site_con: "Casablanca",
       montant_rec: 3655.54,
       tax: false,
-      prejudice: "dab",
+      type: "dab",
     },
 
     {
@@ -17,7 +17,7 @@ export const facturesAll = {
       site_con: "Rabat",
       montant_rec: 2978.3,
       tax: true,
-      prejudice: "MPT",
+      type: "mpt",
     },
   ],
   1: [
@@ -28,7 +28,7 @@ export const facturesAll = {
       site_con: "Casablanca",
       montant_rec: 3655.54,
       tax: false,
-      prejudice: "dab",
+      type: "dab",
     },
 
     {
@@ -38,7 +38,7 @@ export const facturesAll = {
       site_con: "Rabat",
       montant_rec: 2978.3,
       tax: true,
-      prejudice: "MPT",
+      type: "mpt",
     },
   ],
   2: [
@@ -49,7 +49,7 @@ export const facturesAll = {
       site_con: "Casablanca",
       montant_rec: 123456,
       tax: false,
-      prejudice: "dab",
+      type: "dab",
     },
     {
       id: 1,
@@ -58,7 +58,7 @@ export const facturesAll = {
       site_con: "Rabat",
       montant_rec: 99999,
       tax: true,
-      prejudice: "dab",
+      type: "dab",
     },
   ],
   3: [],

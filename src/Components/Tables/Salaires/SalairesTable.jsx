@@ -3,10 +3,27 @@ import React from "react";
 import { salairesColumns } from "../TableColumns";
 import { salairesTempData } from "../tempdata";
 import { DataGrid } from "@mui/x-data-grid";
+import { Box } from "@mui/material";
 
 const SalairesTable = ({ data }) => {
   return (
-    <div style={{ width: "100%", display: "flex" }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        "& .super-app.actif": {
+          backgroundColor: "rgba(157, 255, 118, 0.49)",
+          color: "#1a3e72",
+          fontWeight: "600",
+          textTransform: "uppercase",
+        },
+        "& .super-app.occ": {
+          backgroundColor: "rgba(224, 183, 60, 0.55)",
+          color: "#1a3e72",
+          fontWeight: "600",
+        },
+      }}
+    >
       <div style={{ flexGrow: 1 }}>
         <DataGrid
           autoHeight
@@ -17,7 +34,7 @@ const SalairesTable = ({ data }) => {
           checkboxSelection
         />
       </div>
-    </div>
+    </Box>
   );
 };
 

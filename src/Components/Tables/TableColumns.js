@@ -5,10 +5,16 @@ import { GridActionsCellItem } from "@mui/x-data-grid";
 
 import { renderCellExpand } from "./CellExpand";
 
+import clsx from "clsx";
+
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
 
 export const filesTableColumns = [
   {
@@ -33,7 +39,7 @@ export const filesTableColumns = [
   },
   {
     field: "id",
-    headerName: "ID",
+    headerName: "Identification",
   },
   {
     field: "Evenement",
@@ -52,6 +58,11 @@ export const filesTableColumns = [
     field: "status",
     headerName: "Status",
     width: 90,
+    cellClassName: (params) =>
+      clsx("super-app", {
+        actif: params.value === "actif",
+        ferme: params.value === "fermé",
+      }),
   },
   {
     field: "MR",

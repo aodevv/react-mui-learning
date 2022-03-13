@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
 
 // MUI components
 import Grid from "@mui/material/Grid";
@@ -15,8 +19,11 @@ import AddIcon from "@mui/icons-material/Add";
 
 // Local components
 import FilesTable from "../../Components/Tables/FilesTable";
+import DossierFilters from "../../Components/Filters/DossierFilters/DossierFilters";
 
-const FileManager = () => {
+const FileManager = ({ dossiers }) => {
+  const [filteredDossiers, setFilteredDossiers] = useState(dossiers);
+
   return (
     <Grid>
       <Card>
@@ -26,6 +33,12 @@ const FileManager = () => {
           title={"Liste des dossiers"}
         />
         <CardContent>
+          <Grid item xs={8} mb={2}>
+            <DossierFilters
+              dossiers={dossiers}
+              setFilteredDossiers={setFilteredDossiers}
+            />
+          </Grid>
           <Stack direction="row" spacing={2}>
             <Button variant="contained" size="small" startIcon={<AddIcon />}>
               Ajouter
@@ -40,7 +53,7 @@ const FileManager = () => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <FilesTable />
+            <FilesTable data={filteredDossiers} />
           </Box>
         </CardContent>
       </Card>
@@ -48,4 +61,8 @@ const FileManager = () => {
   );
 };
 
-export default FileManager;
+const mapStateToProps = createStructuredSelector({
+  dossiers: selectDossiers,
+});
+
+export default connect(mapStateToProps)(FileManager);

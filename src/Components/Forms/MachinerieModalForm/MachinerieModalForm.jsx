@@ -24,6 +24,7 @@ const MachinerieModalForm = ({ closeModal, globalValues, prejudices }) => {
   if (globalValues.dab) allowed.push("dab");
   if (globalValues.mpt) allowed.push("mpt");
   if (globalValues.mi) allowed.push("mi");
+  if (globalValues.bcg) allowed.push("bcg");
 
   const filteredPrejudices = Object.keys(prejudices)
     .filter((key) => allowed.includes(key))

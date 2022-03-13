@@ -1,5 +1,21 @@
 import React, { useState } from "react";
 
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+// selectors
+import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
+import { selectFacturesMemo } from "../../redux/Factures/Factures.selectors";
+import { selectSalairesMemo } from "../../redux/Salaires/salaires.selectors";
+import { selectMachineriesMemo } from "../../redux/Machineries/machineries.selectors";
+import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
+
+// actions
+import { addInfosDossier } from "../../redux/DossierInfos/infosDossier.actions";
+import { addSalaires } from "../../redux/Salaires/salaires.actions";
+import { addMachinerie } from "../../redux/Machineries/machineries.actions";
+import { addSites } from "../../redux/Sites/Sites.actions";
+import { addFactures } from "../../redux/Factures/Factures.actions";
+
 // FORMIK and YUP
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -8,7 +24,7 @@ import Grid from "@mui/material/Grid";
 // import Card from "@mui/material/Card";
 // import CardHeader from "@mui/material/CardHeader";
 // import CardContent from "@mui/material/CardContent";
-import { Box, Typography, Button, Modal, Backdrop, Fade } from "@mui/material";
+import { Box, Typography, Button, Modal, Fade, Stack } from "@mui/material";
 
 import FacturesMiniTables from "../../Components/MiniTables/Factures/FacturesMiniTable";
 
@@ -29,6 +45,7 @@ import SiteModalForm from "../../Components/Forms/SitesModalForm/SiteModalForm";
 import PrecisionManufacturingOutlinedIcon from "@mui/icons-material/PrecisionManufacturingOutlined";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+import SignpostOutlinedIcon from "@mui/icons-material/SignpostOutlined";
 
 const style = {
   position: "absolute",
@@ -43,11 +60,36 @@ const style = {
   p: "30px 10px",
 };
 
-const NouveauDossier = () => {
+const style2 = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 300,
+  bgcolor: "background.paper",
+  border: "0px solid #000",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: "30px 30px",
+};
+
+const NouveauDossier = ({
+  dossiers,
+  sites,
+  factures,
+  salaires,
+  machineries,
+  addFactures,
+  addSalaires,
+  addMachinerie,
+  addSites,
+  addInfosDossier,
+}) => {
   const [factureModal, setFactureModal] = useState(false);
   const [salaireModal, setSalaireModal] = useState(false);
   const [machinerieModal, setMachinerieModal] = useState(false);
   const [siteModal, setSiteModal] = useState(false);
+  const [submitModal, setSubmitModal] = useState(false);
   const INITIAL_FORM_STATE = {
     id: "",
     date_ev: "",
@@ -59,6 +101,7 @@ const NouveauDossier = () => {
     mpt: false,
     mi: false,
     bcg: false,
+    MR: 0,
 
     factures: [],
     salaires: [],
@@ -96,7 +139,44 @@ const NouveauDossier = () => {
   });
 
   const handleSubmit = (values) => {
-    console.log(values);
+    const ids = dossiers
+      .map((dos) => dos.id)
+      .sort(function (a, b) {
+        return a - b;
+      });
+    const id = ids[ids.length - 1] + 1;
+    values.id = id;
+
+    const infoDos = {
+      id: values.id,
+      date_ev: values.date_ev,
+      date_ouv: values.date_ouv,
+      desc_ev: values.desc_ev,
+      act_of: values.act_of,
+      prgm: values.prgm,
+      adm: true,
+      dab: values.dab,
+      mpt: values.mpt,
+      mi: values.mi,
+      bcg: values.bcg,
+    };
+
+    //addInfosDossier([...dossiers, infoDos]);
+    let newFacts = factures;
+    newFacts[id] = values.factures;
+    addFactures(newFacts);
+
+    let newSites = sites;
+    newSites[id] = values.sites;
+    addSites(newSites);
+
+    let newSals = salaires;
+    newSals[id] = values.salaires;
+    addSalaires(newSals);
+
+    let newMach = machineries;
+    newMach[id] = values.machineries;
+    addMachinerie(newMach);
   };
 
   const openFacture = () => {
@@ -127,6 +207,13 @@ const NouveauDossier = () => {
     setSiteModal(false);
   };
 
+  const openSubmit = () => {
+    setSubmitModal(true);
+  };
+  const closeSubmit = () => {
+    setSubmitModal(false);
+  };
+
   const typePrejudices = {
     dab: "Dommage au biens",
     mpt: "Mesures preventives temporaires",
@@ -135,19 +222,39 @@ const NouveauDossier = () => {
   };
   return (
     <>
-      <Formik
-        initialValues={{ ...INITIAL_FORM_STATE }}
-        onSubmit={handleSubmit}
-        validationSchema={FORM_VALIDATION}
-      >
+      <Formik initialValues={{ ...INITIAL_FORM_STATE }} onSubmit={handleSubmit}>
         {(formikProps) => {
           const { values, submitForm } = formikProps;
 
           return (
             <Form>
               <Grid>
-                <InfosDossierForm values={values} />
+                <InfosDossierForm values={values} openSubmit={openSubmit} />
               </Grid>
+              <Modal
+                open={submitModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Fade in={submitModal}>
+                  <Box sx={style2}>
+                    <Typography variant="h5">Confimer ?</Typography>
+                    <Stack direction="row-reverse" spacing={1} mt={2}>
+                      <Button size="small" variant="contained">
+                        Oui
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        onClick={closeSubmit}
+                      >
+                        Non
+                      </Button>
+                    </Stack>
+                  </Box>
+                </Fade>
+              </Modal>
               <Grid container spacing={2} mt={3}>
                 <Grid item xs={12} md={6}>
                   <MiniTableWrapper
@@ -158,7 +265,7 @@ const NouveauDossier = () => {
                         alignContent="center"
                         alignItems="center"
                       >
-                        <AttachMoneyIcon />
+                        <SignpostOutlinedIcon />
                         <Typography ml={1} variant="h5">
                           Sites
                         </Typography>
@@ -197,7 +304,10 @@ const NouveauDossier = () => {
                         </Typography>
                       </Box>
                     }
-                    disable={values.sites.length === 0 ? true : false}
+                    disable={
+                      (values.id ? false : true) ||
+                      (values.date_ev !== "" ? false : true)
+                    }
                     btnClick={openFacture}
                   >
                     <FacturesMiniTables data={values.factures} />
@@ -304,4 +414,20 @@ const NouveauDossier = () => {
   );
 };
 
-export default NouveauDossier;
+const mapStateToProps = createStructuredSelector({
+  dossiers: selectDossiers,
+  sites: selectSitesMemo,
+  factures: selectFacturesMemo,
+  salaires: selectSalairesMemo,
+  machineries: selectMachineriesMemo,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  addInfosDossier: (newDos) => dispatch(addInfosDossier(newDos)),
+  addFactures: (newFacts) => dispatch(addFactures(newFacts)),
+  addSalaires: (newSals) => dispatch(addSalaires(newSals)),
+  addMachinerie: (newMach) => dispatch(addMachinerie(newMach)),
+  addSites: (newSites) => dispatch(addSites(newSites)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NouveauDossier);

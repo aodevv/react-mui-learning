@@ -1,4 +1,4 @@
-export const machineriesDABData = {
+export const machineriesAll = {
   1: [
     {
       id: "Caterpillar",
@@ -9,6 +9,7 @@ export const machineriesDABData = {
       hrs_stat: 20,
       cout: 0,
       taux_fonc: 12,
+      type: "dab",
     },
     {
       id: "Caterpillar 2",
@@ -19,6 +20,7 @@ export const machineriesDABData = {
       hrs_stat: 20,
       cout: 0,
       taux_fonc: 12,
+      type: "mpt",
     },
   ],
   2: [
@@ -31,6 +33,7 @@ export const machineriesDABData = {
       hrs_stat: 20,
       cout: 0,
       taux_fonc: 12,
+      type: "mi",
     },
     {
       id: "Hitachi 2",
@@ -41,6 +44,7 @@ export const machineriesDABData = {
       hrs_stat: 20,
       cout: 0,
       taux_fonc: 12,
+      type: "dab",
     },
   ],
   3: [],
@@ -50,125 +54,4 @@ export const machineriesDABData = {
   7: [],
   8: [],
   9: [],
-  10: [],
-};
-
-export const machineriesMPTData = {
-  1: [
-    {
-      id: "Honda",
-      desc: "Big machine",
-      maintenance: 11,
-      site_conc: "Madrid",
-      hrs_fonc: 12,
-      hrs_stat: 20,
-      cout: 0,
-      taux_fonc: 12,
-    },
-    {
-      id: "Honda 2",
-      desc: "Big machine 2",
-      maintenance: 24,
-      site_conc: "Madrid",
-      hrs_fonc: 12,
-      hrs_stat: 20,
-      cout: 0,
-      taux_fonc: 12,
-    },
-    {
-      id: "Mercedes 3",
-      desc: "Big machine",
-      maintenance: 3,
-      site_conc: "Madrid",
-      hrs_fonc: 12,
-      hrs_stat: 20,
-      cout: 0,
-      taux_fonc: 12,
-    },
-  ],
-  2: [
-    {
-      id: "BobCat",
-      desc: "Big machine",
-      maintenance: 12,
-      site_conc: "Madrid",
-      hrs_fonc: 12,
-      hrs_stat: 20,
-      cout: 0,
-      taux_fonc: 12,
-    },
-    {
-      id: "Actros",
-      desc: "Big machine 2",
-      maintenance: 5,
-      site_conc: "Madrid",
-      hrs_fonc: 12,
-      hrs_stat: 20,
-      cout: 0,
-      taux_fonc: 12,
-    },
-  ],
-  3: [],
-  4: [],
-  5: [],
-  6: [],
-  7: [],
-  8: [],
-  9: [],
-  10: [],
-};
-
-export const machineriesMIData = {
-  1: [
-    {
-      id: "Hyandai",
-      desc: "Big machine",
-      maintenance: 10,
-      site_conc: "Madrid",
-      hrs_fonc: 12,
-      hrs_stat: 20,
-      cout: 0,
-      taux_fonc: 12,
-    },
-    {
-      id: "Lamborghini",
-      desc: "Big machine 2",
-      maintenance: 0,
-      site_conc: "Madrid",
-      hrs_fonc: 12,
-      hrs_stat: 20,
-      cout: 0,
-      taux_fonc: 12,
-    },
-  ],
-  2: [
-    {
-      id: "Bulldozer",
-      desc: "Big machine",
-      maintenance: 1,
-      site_conc: "Madrid",
-      hrs_fonc: 12,
-      hrs_stat: 20,
-      cout: 0,
-      taux_fonc: 12,
-    },
-    {
-      id: "Front Loader",
-      desc: "Big machine 2",
-      maintenance: 0,
-      site_conc: "Madrid",
-      hrs_fonc: 12,
-      hrs_stat: 20,
-      cout: 0,
-      taux_fonc: 12,
-    },
-  ],
-  3: [],
-  4: [],
-  5: [],
-  6: [],
-  7: [],
-  8: [],
-  9: [],
-  10: [],
 };

@@ -34,6 +34,10 @@ const FactureModalForm = ({ globalValues, prejudices, closeModal, date }) => {
     site_con: Yup.string().required("Champ obligatoire"),
     date_fact: Yup.date()
       .typeError("INVALID_DATE")
+      .min(
+        globalValues.date_ev,
+        `La date ne peut pas précéder la date de l'événement`
+      )
       .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
       .required("Champ obligatoire"),
     desc_fact: Yup.string().required("Champ obligatoire"),
@@ -45,6 +49,7 @@ const FactureModalForm = ({ globalValues, prejudices, closeModal, date }) => {
   if (globalValues.dab) allowed.push("dab");
   if (globalValues.mpt) allowed.push("mpt");
   if (globalValues.mi) allowed.push("mi");
+  if (globalValues.bcg) allowed.push("bcg");
 
   const filteredPrejudices = Object.keys(prejudices)
     .filter((key) => allowed.includes(key))
@@ -81,70 +86,88 @@ const FactureModalForm = ({ globalValues, prejudices, closeModal, date }) => {
               validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
             >
-              <Form>
-                <Grid item>
-                  <Typography variant="h5" mb={1}>
-                    Ajout facture
-                  </Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <Select
-                        name="type"
-                        label="Préjudice"
-                        options={filteredPrejudices}
-                        disabled={!Object.keys(filteredPrejudices).length > 0}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Select
-                        name="site_con"
-                        label="Site concerné"
-                        options={sites}
-                      />
-                    </Grid>
-                  </Grid>
+              {(formikProps) => {
+                const { values } = formikProps;
 
-                  <Grid item xs={12}>
-                    <Textfield
-                      name="desc_fact"
-                      multiline
-                      rows={4}
-                      label="Description"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <DatePicker name="date_fact" label="Date" />
-                  </Grid>
+                return (
+                  <Form>
+                    <Grid item>
+                      <Typography variant="h5" mb={1}>
+                        Ajout facture
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <Select
+                            name="type"
+                            label="Préjudice"
+                            options={filteredPrejudices}
+                            disabled={
+                              !Object.keys(filteredPrejudices).length > 0
+                            }
+                          />
+                        </Grid>
+                        {values.type === "dab" ? (
+                          <Grid item xs={6}>
+                            <Select
+                              name="site_con"
+                              label="Site concerné"
+                              options={sites}
+                            />
+                          </Grid>
+                        ) : (
+                          <Grid item xs={6}>
+                            <Textfield name="site_con" label="Site concerné" />
+                          </Grid>
+                        )}
+                      </Grid>
 
-                  <Grid item xs={12}>
-                    <Textfield
-                      name="montant_rec"
-                      label="Montant réclamé"
-                      type="number"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Box mt={1}>
-                      <Checkbox name="tax" legend="Taxable ?" label="oui" />
-                    </Box>
-                  </Grid>
-                  <Stack direction="row" spacing={1} mt={2}>
-                    <Submit variant="contained" size="small">
-                      Ajouter
-                    </Submit>
-                    <Button type="reset" size="small" startIcon={<UndoIcon />}>
-                      Réinitialiser
-                    </Button>
-                    <Button
-                      onClick={closeModal}
-                      size="small"
-                      startIcon={<CloseIcon />}
-                    >
-                      Annuler
-                    </Button>
-                  </Stack>
-                </Grid>
-              </Form>
+                      <Grid item xs={12}>
+                        <Textfield
+                          name="desc_fact"
+                          multiline
+                          rows={4}
+                          label="Description"
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <DatePicker name="date_fact" label="Date" />
+                      </Grid>
+
+                      <Grid item xs={12}>
+                        <Textfield
+                          name="montant_rec"
+                          label="Montant réclamé"
+                          type="number"
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Box mt={1}>
+                          <Checkbox name="tax" legend="Taxable ?" label="oui" />
+                        </Box>
+                      </Grid>
+                      <Stack direction="row" spacing={1} mt={2}>
+                        <Submit variant="contained" size="small">
+                          Ajouter
+                        </Submit>
+                        <Button
+                          type="reset"
+                          size="small"
+                          startIcon={<UndoIcon />}
+                        >
+                          Réinitialiser
+                        </Button>
+                        <Button
+                          onClick={closeModal}
+                          size="small"
+                          startIcon={<CloseIcon />}
+                        >
+                          Annuler
+                        </Button>
+                      </Stack>
+                    </Grid>
+                  </Form>
+                );
+              }}
             </Formik>
           </Container>
         </Grid>

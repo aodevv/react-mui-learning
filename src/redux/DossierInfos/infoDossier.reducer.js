@@ -1,7 +1,7 @@
-import { dossierData } from "./infosDossier.data";
+import { dossierAll } from "./infosDossier.data";
 
 const INITIAL_STATE = {
-  dossiers: dossierData,
+  dossiers: dossierAll,
 };
 
 const infosDossierReducer = (state = INITIAL_STATE, action) => {

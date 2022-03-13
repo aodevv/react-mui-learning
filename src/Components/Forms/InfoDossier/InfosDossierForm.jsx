@@ -1,20 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 // MUI ICONS
-import { Container, Grid, Typography, Button } from "@mui/material";
+import { Grid, Button, Typography } from "@mui/material";
 
 // FORMIK and YUP
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
 
 import CardWrapper from "../../../Components/CardWrapper/CardWrapper";
 
 import Textfield from "../../../Components/FormUI/Textfield";
 import DatePicker from "../../../Components/FormUI/DateTime";
 import Checkbox from "../../FormUI/Checkbox";
-import Submit from "../../../Components/FormUI/Submit";
 
-const InfosDossierForm = ({ values }) => {
+import TotalReclame from "../../../pages/NouveauDossier/TotalReclame";
+
+const InfosDossierForm = ({ values, openSubmit }) => {
   return (
     <>
       <CardWrapper title="Infos dossier">
@@ -54,7 +53,8 @@ const InfosDossierForm = ({ values }) => {
                   label="Description"
                 />
               </Grid>
-              <Grid container mt={1} pl={2} spacing={2}>
+              <Typography mt={1}>Préjudices: </Typography>
+              <Grid container pl={2} spacing={2}>
                 <Grid item xs={2} l={1}>
                   <Checkbox name="dab" label="DAB" />
                 </Grid>
@@ -66,6 +66,26 @@ const InfosDossierForm = ({ values }) => {
                 </Grid>
                 <Grid item xs={2} l={1}>
                   <Checkbox name="bcg" label="BCG" />
+                </Grid>
+              </Grid>
+              <Grid
+                container
+                mt={1}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <TotalReclame />
+                <Grid xs={6}>
+                  <Grid container display="flex" direction="row-reverse">
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={openSubmit}
+                    >
+                      Finish
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>

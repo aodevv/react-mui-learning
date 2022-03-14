@@ -35,14 +35,30 @@ const FacturePage = ({ factures, sites }) => {
       flatFactures.push(fac);
     })
   );
+  const [filteredFactures, setFilteredFactures] = useState(flatFactures);
 
   let sitesOnly = [];
+  let dosOnly = [];
 
   Object.keys(sites).forEach((item, index) => {
     sites[item].map((site) => sitesOnly.push(site.site));
   });
 
-  const [filteredFactures, setFilteredFactures] = useState(flatFactures);
+  Object.keys(factures).forEach((item) => {
+    if (factures[item].length > 0) dosOnly.push(item);
+  });
+
+  const remove_duplicates = (arr) => {
+    var obj = {};
+    var ret_arr = [];
+    for (var i = 0; i < arr.length; i++) {
+      obj[arr[i]] = true;
+    }
+    for (var key in obj) {
+      ret_arr.push(key);
+    }
+    return ret_arr;
+  };
 
   return (
     <Grid>
@@ -57,7 +73,8 @@ const FacturePage = ({ factures, sites }) => {
             <FacturesFilters
               factures={flatFactures}
               setFilteredFactures={setFilteredFactures}
-              sites={sitesOnly}
+              sites={remove_duplicates(sitesOnly)}
+              numDos={dosOnly}
             />
           </Grid>
           <Stack direction="row" spacing={2}>
@@ -74,7 +91,7 @@ const FacturePage = ({ factures, sites }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <FacturesTable data={flatFactures} />
+            <FacturesTable data={filteredFactures} />
           </Box>
         </CardContent>
       </Card>

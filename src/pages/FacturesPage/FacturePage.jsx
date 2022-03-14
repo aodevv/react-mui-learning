@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 // REDUX
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { selectFacturesMemo } from "../../redux/Factures/Factures.selectors";
+import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
 
 // MUI components
 import Grid from "@mui/material/Grid";
@@ -22,7 +23,9 @@ import AddIcon from "@mui/icons-material/Add";
 // Custom components
 import FacturesTable from "../../Components/Tables/FacturesTable";
 
-const FacturePage = ({ factures }) => {
+import FacturesFilters from "../../Components/Filters/FacturesFilters/FacturesFilters";
+
+const FacturePage = ({ factures, sites }) => {
   let flatFactures = [];
   let facturesCopy = JSON.parse(JSON.stringify(factures));
   Object.keys(facturesCopy).forEach((item, index) =>
@@ -33,6 +36,14 @@ const FacturePage = ({ factures }) => {
     })
   );
 
+  let sitesOnly = [];
+
+  Object.keys(sites).forEach((item, index) => {
+    sites[item].map((site) => sitesOnly.push(site.site));
+  });
+
+  const [filteredFactures, setFilteredFactures] = useState(flatFactures);
+
   return (
     <Grid>
       <Card>
@@ -42,6 +53,13 @@ const FacturePage = ({ factures }) => {
           title={"Liste des factures"}
         />
         <CardContent>
+          <Grid item xs={12} md={8} mb={2}>
+            <FacturesFilters
+              factures={flatFactures}
+              setFilteredFactures={setFilteredFactures}
+              sites={sitesOnly}
+            />
+          </Grid>
           <Stack direction="row" spacing={2}>
             <Button variant="contained" size="small" startIcon={<AddIcon />}>
               Ajouter
@@ -67,6 +85,7 @@ const FacturePage = ({ factures }) => {
 
 const mapStateToProps = createStructuredSelector({
   factures: selectFacturesMemo,
+  sites: selectSitesMemo,
 });
 
 export default connect(mapStateToProps)(FacturePage);

@@ -8,20 +8,15 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
+const FacturesFilters = ({ factures, setFilteredFactures, sites }) => {
   const [mrFilter, setMrFilter] = useState(0);
-  const [mvFilter, setMvFilter] = useState(0);
   const [descFilter, setDescFilter] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [status, setStatus] = useState("all");
+  const [site, setSite] = useState("");
 
   const filterMR = (e) => {
     setMrFilter(e.target.value);
-  };
-
-  const filterMV = (e) => {
-    setMvFilter(e.target.value);
   };
 
   const filterDesc = (e) => {
@@ -35,38 +30,9 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
     setEndDate(e.target.value);
   };
 
-  const filterStatus = (e) => {
-    setStatus(e.target.value);
+  const filterSite = (e) => {
+    setSite(e.target.value);
   };
-
-  useEffect(() => {
-    const fil = dossiers
-      .filter((dos) => dos.MR > mrFilter)
-      .filter((dos) => dos.MV > mvFilter)
-      .filter((dos) =>
-        status === "" || status === "all" ? true : dos.status === status
-      )
-      .filter((dos) =>
-        dos.Evenement.toLowerCase().includes(descFilter.toLowerCase())
-      )
-      .filter((dos) => {
-        const dDos = new Date(dos.datEv);
-        const debut = startDate ? new Date(startDate) : new Date("01/01/2010");
-        const fin = endDate ? new Date(endDate) : new Date("01/01/2040");
-
-        return dDos >= debut && dDos <= fin;
-      });
-    setFilteredDossiers(fil);
-  }, [
-    descFilter,
-    dossiers,
-    mrFilter,
-    mvFilter,
-    setFilteredDossiers,
-    startDate,
-    status,
-    endDate,
-  ]);
 
   return (
     <>
@@ -103,16 +69,6 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
                 onChange={filterMR}
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField
-                fullWidth
-                label="Montant versé"
-                variant="outlined"
-                size="small"
-                value={mvFilter}
-                onChange={filterMV}
-              />
-            </Grid>
           </Grid>
           <Grid container mt={2} spacing={2}>
             <Grid item xs={6}>
@@ -145,12 +101,16 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
                 fullWidth
                 label="Status"
                 size="small"
-                onChange={filterStatus}
+                onChange={filterSite}
                 defaultValue=""
               >
-                <MenuItem value="actif">Actif</MenuItem>
-                <MenuItem value="fermé">Fermé</MenuItem>
-                <MenuItem value="all">Les 2</MenuItem>
+                {sites.map((item, pos) => {
+                  return (
+                    <MenuItem key={pos} value={item}>
+                      {item}
+                    </MenuItem>
+                  );
+                })}
               </TextField>
             </Grid>
           </Grid>
@@ -160,4 +120,4 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
   );
 };
 
-export default DossierFilters;
+export default FacturesFilters;

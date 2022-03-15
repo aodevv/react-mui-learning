@@ -194,6 +194,14 @@ export const machineriesColumns = [
     width: 80,
   },
   {
+    field: "type",
+    headerName: "Préjudice",
+    width: 220,
+    valueFormatter: (params) => {
+      return typePrejudices[params.value];
+    },
+  },
+  {
     field: "id",
     headerName: "Code et appelation",
     valueFormatter: (params) => {
@@ -226,7 +234,7 @@ export const machineriesColumns = [
     minWidth: 100,
   },
   {
-    field: "maiontenance",
+    field: "maintenance",
     headerName: "Taux de maintenance",
     flex: 1,
   },
@@ -267,10 +275,19 @@ export const salairesColumns = [
     width: 80,
   },
   {
+    field: "type",
+    headerName: "Préjudice",
+    width: 220,
+    valueFormatter: (params) => {
+      return typePrejudices[params.value];
+    },
+  },
+  {
     field: "name",
     headerName: "name",
     minWidth: 150,
   },
+
   {
     field: "status",
     headerName: "Status",

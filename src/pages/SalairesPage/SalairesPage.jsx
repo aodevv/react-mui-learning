@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 // REDUX
@@ -20,6 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 
 import SalairesTable from "../../Components/Tables/Salaires/SalairesTable";
+import SalairesFilters from "../../Components/Filters/SalairesFilters/SalairesFilters";
 
 const SalairesPage = ({ salaires }) => {
   let flatSalaires = [];
@@ -32,6 +33,14 @@ const SalairesPage = ({ salaires }) => {
     })
   );
 
+  const [filteredSalaires, setFilteredSalaires] = useState(flatSalaires);
+
+  let dosOnly = [];
+
+  Object.keys(salaires).forEach((item) => {
+    if (salaires[item].length > 0) dosOnly.push(item);
+  });
+
   return (
     <Grid>
       <Card>
@@ -41,6 +50,13 @@ const SalairesPage = ({ salaires }) => {
           title={"Liste des salariés"}
         />
         <CardContent>
+          <Grid item xs={12} md={8} mb={2}>
+            <SalairesFilters
+              salaires={flatSalaires}
+              setFilteredSalaires={setFilteredSalaires}
+              numDos={dosOnly}
+            />
+          </Grid>
           <Stack direction="row" spacing={2}>
             <Button variant="contained" size="small" startIcon={<AddIcon />}>
               Ajouter
@@ -55,7 +71,7 @@ const SalairesPage = ({ salaires }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <SalairesTable data={flatSalaires} />
+            <SalairesTable data={filteredSalaires} />
           </Box>
         </CardContent>
       </Card>

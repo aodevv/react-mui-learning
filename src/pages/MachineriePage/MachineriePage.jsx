@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 // REDUX
@@ -20,6 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 
 import MachineriesTable from "../../Components/Tables/Machineries/MachineriesTable";
+import MachineriesFilters from "../../Components/Filters/MachineriesFilters/MachineriesFilters";
 
 const MachineriePage = ({ machinerie }) => {
   let flatMachines = [];
@@ -31,6 +32,14 @@ const MachineriePage = ({ machinerie }) => {
       flatMachines.push(mach);
     })
   );
+
+  const [filteredMachineries, setFilteredMachineries] = useState(flatMachines);
+
+  let dosOnly = [];
+
+  Object.keys(machinerie).forEach((item) => {
+    if (machinerie[item].length > 0) dosOnly.push(item);
+  });
   return (
     <Grid>
       <Card>
@@ -40,6 +49,13 @@ const MachineriePage = ({ machinerie }) => {
           title={"Liste machineries"}
         />
         <CardContent>
+          <Grid item xs={12} md={8} mb={2}>
+            <MachineriesFilters
+              machineries={flatMachines}
+              setFilteredMachineries={setFilteredMachineries}
+              numDos={dosOnly}
+            />
+          </Grid>
           <Stack direction="row" spacing={2}>
             <Button variant="contained" size="small" startIcon={<AddIcon />}>
               Ajouter
@@ -54,7 +70,7 @@ const MachineriePage = ({ machinerie }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <MachineriesTable data={flatMachines} />
+            <MachineriesTable data={filteredMachineries} />
           </Box>
         </CardContent>
       </Card>

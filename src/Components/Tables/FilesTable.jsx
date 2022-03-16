@@ -34,8 +34,8 @@ const FilesTable = ({ data }) => {
           autoHeight
           rows={data}
           columns={filesTableColumns}
-          pageSize={10}
-          rowsPerPageOptions={[10]}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
           checkboxSelection={false}
         />
       </div>

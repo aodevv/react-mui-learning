@@ -17,31 +17,36 @@ const BreadCrumb = () => {
     const lower = str.toLowerCase();
     return str.charAt(0).toUpperCase() + lower.slice(1);
   };
+  console.log(pathArray);
 
   return (
-    <Box mb={2}>
-      <Breadcrumbs aria-label="breadcrumb">
-        {pathArray.slice(0, pathArray.length - 1).map((path, index) => {
-          const currPath = pathArray.slice(0, index).join("/");
-          const currLink = pathArray[index];
-          return (
-            <span style={{ cursor: "pointer" }} key={index}>
-              <Link
-                underline="hover"
-                color="inherit"
-                onClick={() => {
-                  navigate(`${currPath}/${currLink}`);
-                }}
-              >
-                {capitalize(currLink)}
-              </Link>
-            </span>
-          );
-        })}
+    <>
+      {pathArray.length > 2 ? (
+        <Box mb={2}>
+          <Breadcrumbs aria-label="breadcrumb">
+            {pathArray.slice(0, pathArray.length - 1).map((path, index) => {
+              const currPath = pathArray.slice(0, index).join("/");
+              const currLink = pathArray[index];
+              return (
+                <span style={{ cursor: "pointer" }} key={index}>
+                  <Link
+                    underline="hover"
+                    color="inherit"
+                    onClick={() => {
+                      navigate(`${currPath}/${currLink}`);
+                    }}
+                  >
+                    {capitalize(currLink)}
+                  </Link>
+                </span>
+              );
+            })}
 
-        <Typography color="text.primary">{capitalize(lastPath)}</Typography>
-      </Breadcrumbs>
-    </Box>
+            <Typography color="text.primary">{capitalize(lastPath)}</Typography>
+          </Breadcrumbs>
+        </Box>
+      ) : null}
+    </>
   );
 };
 

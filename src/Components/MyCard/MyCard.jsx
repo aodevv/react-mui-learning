@@ -1,17 +1,20 @@
 import React from "react";
 import { Grid, Card, Typography } from "@mui/material";
 
-const MyCard = ({ title, xs }) => {
+const MyCard = ({ title, children, bgColor, textColor, onClick }) => {
   return (
-    <Grid item xs={xs}>
+    <>
       <Card
+        onClick={onClick}
         sx={{
-          width: 100,
+          width: "100%",
           height: 100,
           display: "flex",
+          color: `${textColor}`,
+          backgroundColor: `${bgColor}`,
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: "10%",
+          textAlign: "center",
           transition: "all linear 100ms",
           cursor: "pointer",
           "&:hover": {
@@ -20,9 +23,12 @@ const MyCard = ({ title, xs }) => {
           },
         }}
       >
-        <Typography>{title}</Typography>
+        {children}
+        <Typography variant="h5" color="success" ml={1}>
+          {title}
+        </Typography>
       </Card>
-    </Grid>
+    </>
   );
 };
 

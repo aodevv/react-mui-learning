@@ -76,7 +76,7 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography>Filtres</Typography>
+          <Typography variant="h5">Filtres</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Grid container>

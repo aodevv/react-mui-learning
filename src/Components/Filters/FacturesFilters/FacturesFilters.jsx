@@ -115,7 +115,7 @@ const FacturesFilters = ({ factures, setFilteredFactures, sites, numDos }) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography>Filtres</Typography>
+          <Typography variant="h5">Filtres</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Grid container>

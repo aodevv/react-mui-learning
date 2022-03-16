@@ -47,7 +47,7 @@ const SalairesPage = ({ salaires }) => {
         <CardHeader
           disableTypography={false}
           titleTypographyProps={{ fontWeight: "bold" }}
-          title={"Liste des salariés"}
+          title={"Liste des salaires"}
         />
         <CardContent>
           <Grid item xs={12} md={8} mb={2}>

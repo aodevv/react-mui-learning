@@ -1,7 +1,7 @@
 import React from "react";
 
 // MUI ICONS
-import { Grid, Button, Typography } from "@mui/material";
+import { Grid, Button, Typography, Box } from "@mui/material";
 
 // FORMIK and YUP
 
@@ -55,17 +55,45 @@ const InfosDossierForm = ({ values, openSubmit }) => {
               </Grid>
               <Typography mt={1}>Préjudices: </Typography>
               <Grid container pl={2} spacing={2}>
-                <Grid item xs={2} l={1}>
-                  <Checkbox name="dab" label="DAB" />
+                <Grid item xs={6}>
+                  <Box display="flex" alignItems="center">
+                    <Box sx={{ width: 80 }}>
+                      <Checkbox name="dab" label="DAB" />
+                    </Box>
+                    <Typography>
+                      Total <b>$ 0.00</b>
+                    </Typography>
+                  </Box>
                 </Grid>
-                <Grid item xs={2} l={1}>
-                  <Checkbox name="mpt" label="MPT" />
+                <Grid item xs={6}>
+                  <Box display="flex" alignItems="center">
+                    <Box sx={{ width: 80 }}>
+                      <Checkbox name="mpt" label="MPT" />
+                    </Box>
+                    <Typography>
+                      Total <b>$ 0.00</b>
+                    </Typography>
+                  </Box>
                 </Grid>
-                <Grid item xs={2} l={1}>
-                  <Checkbox name="mi" label="MI" />
+                <Grid item xs={6}>
+                  <Box display="flex" alignItems="center">
+                    <Box sx={{ width: 80 }}>
+                      <Checkbox name="mi" label="MI" />
+                    </Box>
+                    <Typography>
+                      Total <b>$ 0.00</b>
+                    </Typography>
+                  </Box>
                 </Grid>
-                <Grid item xs={2} l={1}>
-                  <Checkbox name="bcg" label="BCG" />
+                <Grid item xs={6}>
+                  <Box display="flex" alignItems="center">
+                    <Box sx={{ width: 80 }}>
+                      <Checkbox name="bcg" label="BCG" />
+                    </Box>
+                    <Typography>
+                      Total <b>$ 0.00</b>
+                    </Typography>
+                  </Box>
                 </Grid>
               </Grid>
               <Grid

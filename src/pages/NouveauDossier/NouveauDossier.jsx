@@ -92,6 +92,7 @@ const NouveauDossier = ({
   const [submitModal, setSubmitModal] = useState(false);
   const INITIAL_FORM_STATE = {
     id: "",
+    numero: "",
     date_ev: "",
     date_ouv: "",
     desc_ev: "",
@@ -148,6 +149,7 @@ const NouveauDossier = ({
 
     const infoDos = {
       id: values.id,
+      numero: values.numero,
       datEv: values.date_ev,
       datOuv: values.date_ouv,
       Evenement: values.desc_ev,

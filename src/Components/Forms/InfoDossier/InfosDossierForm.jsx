@@ -24,10 +24,13 @@ const InfosDossierForm = ({ values, openSubmit }) => {
                 {/* <Grid item xs={4}>
                   <Textfield name="id" label="Identification dossier" />
                 </Grid> */}
-                <Grid item xs={6}>
+                <Grid item xs={4}>
+                  <Textfield name="numero" label="Numéro dossier" />
+                </Grid>
+                <Grid item xs={4}>
                   <Textfield name="prgm" label="Programme" />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                   <Textfield name="act_of" label="Acte officiel" />
                 </Grid>
               </Grid>
@@ -60,9 +63,11 @@ const InfosDossierForm = ({ values, openSubmit }) => {
                     <Box sx={{ width: 80 }}>
                       <Checkbox name="dab" label="DAB" />
                     </Box>
-                    <Typography>
-                      Total <b>$ 0.00</b>
-                    </Typography>
+                    {values.dab ? (
+                      <Typography>
+                        Total <b>$ 0.00</b>
+                      </Typography>
+                    ) : null}
                   </Box>
                 </Grid>
                 <Grid item xs={6}>
@@ -70,9 +75,11 @@ const InfosDossierForm = ({ values, openSubmit }) => {
                     <Box sx={{ width: 80 }}>
                       <Checkbox name="mpt" label="MPT" />
                     </Box>
-                    <Typography>
-                      Total <b>$ 0.00</b>
-                    </Typography>
+                    {values.mpt ? (
+                      <Typography>
+                        Total <b>$ 0.00</b>
+                      </Typography>
+                    ) : null}
                   </Box>
                 </Grid>
                 <Grid item xs={6}>
@@ -80,9 +87,11 @@ const InfosDossierForm = ({ values, openSubmit }) => {
                     <Box sx={{ width: 80 }}>
                       <Checkbox name="mi" label="MI" />
                     </Box>
-                    <Typography>
-                      Total <b>$ 0.00</b>
-                    </Typography>
+                    {values.mi ? (
+                      <Typography>
+                        Total <b>$ 0.00</b>
+                      </Typography>
+                    ) : null}
                   </Box>
                 </Grid>
                 <Grid item xs={6}>
@@ -90,9 +99,11 @@ const InfosDossierForm = ({ values, openSubmit }) => {
                     <Box sx={{ width: 80 }}>
                       <Checkbox name="bcg" label="BCG" />
                     </Box>
-                    <Typography>
-                      Total <b>$ 0.00</b>
-                    </Typography>
+                    {values.bcg ? (
+                      <Typography>
+                        Total <b>$ 0.00</b>
+                      </Typography>
+                    ) : null}
                   </Box>
                 </Grid>
               </Grid>

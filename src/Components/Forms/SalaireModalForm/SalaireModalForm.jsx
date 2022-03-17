@@ -37,6 +37,8 @@ const SalaireModalForm = ({ closeModal, globalValues, prejudices, date }) => {
       return obj;
     }, {});
 
+  const sites = globalValues.sites.map((site) => site.site);
+
   const INITIAL_FORM_STATE = {
     id: null,
     type: "",
@@ -44,6 +46,7 @@ const SalaireModalForm = ({ closeModal, globalValues, prejudices, date }) => {
     status: "",
     date_per: "",
     montant_rec: 0,
+    site_con: "",
     Hreg: 0,
     Hsup: 0,
     Hsup2: 0,
@@ -60,6 +63,10 @@ const SalaireModalForm = ({ closeModal, globalValues, prejudices, date }) => {
 
   const FORM_VALIDATION = Yup.object().shape({
     type: Yup.string().required("Champ obligatoire"),
+    site_con: Yup.string().when("type", {
+      is: "dab", // alternatively: (val) => val == true
+      then: (schema) => schema.required("Champ obligatoire"),
+    }),
     name: Yup.string().required("Champ obligatoire"),
     status: Yup.string().required("Champ obligatoire"),
     Hreg: Yup.number().when("status", {
@@ -103,8 +110,13 @@ const SalaireModalForm = ({ closeModal, globalValues, prejudices, date }) => {
       .sort(function (a, b) {
         return a - b;
       });
+    if (values.type === "dab") {
+      globalValues.sites[values.site_con].montant_rec =
+        globalValues.sites[values.site_con].montant_rec + values.montant_rec;
+    }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     values.id = id;
+    values.site_con = sites[values.site_con];
     newSalaires = Object.assign([], newSalaires);
     newSalaires.push(values);
     globalValues.salaires = newSalaires;
@@ -136,14 +148,28 @@ const SalaireModalForm = ({ closeModal, globalValues, prejudices, date }) => {
                           <Select name="status" label="Status" options={data} />
                         </Grid>
                       </Grid>
-                      <Grid item xs={12}>
-                        <Select
-                          name="type"
-                          label="Préjudice"
-                          options={filteredPrejudices}
-                          disabled={!Object.keys(filteredPrejudices).length > 0}
-                        />
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <Select
+                            name="type"
+                            label="Préjudice"
+                            options={filteredPrejudices}
+                            disabled={
+                              !Object.keys(filteredPrejudices).length > 0
+                            }
+                          />
+                        </Grid>
+                        {values.type === "dab" ? (
+                          <Grid item xs={6}>
+                            <Select
+                              name="site_con"
+                              label="Site concerné"
+                              options={sites}
+                            />
+                          </Grid>
+                        ) : null}
                       </Grid>
+
                       <Grid item xs={12}>
                         <DatePicker name="date_per" label="Date" />
                       </Grid>

@@ -17,6 +17,17 @@ import Textfield from "../../../Components/FormUI/Textfield";
 //import DatePicker from "../../../Components/FormUI/DateTime";
 import Checkbox from "../../../Components/FormUI/Checkbox";
 import Submit from "../../../Components/FormUI/Submit";
+import Select from "../../FormUI/Select";
+
+const SiteTempData = {
+  "Site 1": "Site 1",
+  "Site 2": "Site 2",
+  "Site 3": "Site 3",
+  "Site 4": "Site 4",
+  "Site 5": "Site 5",
+  "Site 6": "Site 6",
+  "Site 7": "Site 7",
+};
 
 const SiteModalForm = ({ closeModal, globalValues }) => {
   const INITIAL_FORM_STATE = {
@@ -41,21 +52,27 @@ const SiteModalForm = ({ closeModal, globalValues }) => {
     pourc_adm: Yup.number()
       .min(0, "Valeur négatif !")
       .max(100, "Ne peut pas dépasser 100%"),
-    montant_rec: Yup.number()
-      .min(0, "Valeur négatif !")
-      .required("Champ obligatoire"),
   });
+
+  const sites = globalValues.sites.map((site) => site.site);
+
+  const filteredSites = Object.keys(SiteTempData)
+    .filter((key) => !sites.includes(key))
+    .reduce((obj, key) => {
+      obj[key] = SiteTempData[key];
+      return obj;
+    }, {});
 
   const handleSubmit = (values) => {
     let id;
 
     let newSite = globalValues.sites;
-    const ids = newSite
-      .map((site) => site.id)
-      .sort(function (a, b) {
-        return a - b;
-      });
-    id = ids.length ? ids[ids.length - 1] + 1 : 0;
+    // const ids = newSite
+    //   .map((site) => site.id)
+    //   .sort(function (a, b) {
+    //     return a - b;
+    //   });
+    id = values.site;
     values.id = id;
     newSite = Object.assign([], newSite);
     newSite.push(values);
@@ -83,7 +100,11 @@ const SiteModalForm = ({ closeModal, globalValues }) => {
 
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
-                        <Textfield name="site" label="Site" />
+                        <Select
+                          name="site"
+                          label="Site"
+                          options={filteredSites}
+                        />
                       </Grid>
 
                       <Grid item xs={6}>
@@ -137,7 +158,7 @@ const SiteModalForm = ({ closeModal, globalValues }) => {
                       </Grid>
                       <Grid item xs={6}>
                         <Textfield
-                          disabled={!values.adm}
+                          disabled
                           name="montant_rec"
                           label="Montant réclamé"
                           type="number"

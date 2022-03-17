@@ -47,6 +47,8 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import SignpostOutlinedIcon from "@mui/icons-material/SignpostOutlined";
 
+import FacturesTotal from "./FacturesTotal";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -103,6 +105,10 @@ const NouveauDossier = ({
     mi: false,
     bcg: false,
     MR: 0,
+    siteTT: 0,
+    facTT: 0,
+    salTT: 0,
+    machTT: 0,
 
     factures: [],
     salaires: [],
@@ -288,9 +294,14 @@ const NouveauDossier = ({
                         alignItems="center"
                       >
                         <SignpostOutlinedIcon />
-                        <Typography ml={1} variant="h5">
-                          Sites
-                        </Typography>
+                        <Box display="flex" alignItems="center">
+                          <Typography ml={1} mr={4} variant="h5">
+                            Sites
+                          </Typography>
+                          <Typography>
+                            <b>$ 0.00</b>
+                          </Typography>
+                        </Box>
                       </Box>
                     }
                     btnClick={openSite}
@@ -319,11 +330,15 @@ const NouveauDossier = ({
                         display="flex"
                         alignContent="center"
                         alignItems="center"
+                        sx={{ width: "100%" }}
                       >
                         <ReceiptOutlinedIcon />
-                        <Typography ml={1} variant="h5">
-                          Factures
-                        </Typography>
+                        <Box display="flex" alignItems="center">
+                          <Typography ml={1} mr={4} variant="h5">
+                            Factures
+                          </Typography>
+                          <FacturesTotal />
+                        </Box>
                       </Box>
                     }
                     disable={values.date_ev !== "" ? false : true}
@@ -361,9 +376,14 @@ const NouveauDossier = ({
                         alignItems="center"
                       >
                         <AttachMoneyIcon />
-                        <Typography ml={1} variant="h5">
-                          Salaires
-                        </Typography>
+                        <Box display="flex" alignItems="center">
+                          <Typography ml={1} mr={4} variant="h5">
+                            Salaires
+                          </Typography>
+                          <Typography>
+                            <b>$ 0.00</b>
+                          </Typography>
+                        </Box>
                       </Box>
                     }
                     btnClick={openSalaire}
@@ -396,9 +416,14 @@ const NouveauDossier = ({
                         alignItems="center"
                       >
                         <PrecisionManufacturingOutlinedIcon />
-                        <Typography ml={1} variant="h5">
-                          Machineries
-                        </Typography>
+                        <Box display="flex" alignItems="center">
+                          <Typography ml={1} mr={4} variant="h5">
+                            Machineries
+                          </Typography>
+                          <Typography>
+                            <b>$ 0.00</b>
+                          </Typography>
+                        </Box>
                       </Box>
                     }
                     disable={values.date_ev !== "" ? false : true}

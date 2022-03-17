@@ -17,7 +17,6 @@ const TotalReclame = () => {
   } = useFormikContext();
 
   useEffect(() => {
-    console.log("effect");
     let total = 0;
     if (factures) {
       const facturesTotal = factures.reduce(
@@ -26,10 +25,7 @@ const TotalReclame = () => {
       );
       total = total + facturesTotal;
     }
-    if (sites) {
-      const sitesTotal = sites.reduce((acc, site) => acc + site.montant_rec, 0);
-      total = total + sitesTotal;
-    }
+
     if (salaires) {
       const salairesTotal = salaires.reduce(
         (acc, salaire) => acc + salaire.montant_rec,

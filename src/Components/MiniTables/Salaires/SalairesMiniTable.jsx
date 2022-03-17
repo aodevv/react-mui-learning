@@ -11,8 +11,8 @@ const SalairesMiniTable = ({ data }) => {
           autoHeight
           rows={data}
           columns={salairesColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          pageSize={2}
+          rowsPerPageOptions={[2]}
           checkboxSelection={false}
         />
       </div>

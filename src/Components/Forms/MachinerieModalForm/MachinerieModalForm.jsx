@@ -32,11 +32,13 @@ const MachinerieModalForm = ({ closeModal, globalValues, prejudices }) => {
       obj[key] = prejudices[key];
       return obj;
     }, {});
+
   const INITIAL_FORM_STATE = {
     id: "",
     code: "",
     desc: "",
     type: "",
+    site_con: "",
     maintenance: 0,
     hrs_fonc: 0,
     hrs_stat: 0,
@@ -46,6 +48,10 @@ const MachinerieModalForm = ({ closeModal, globalValues, prejudices }) => {
 
   const FORM_VALIDATION = Yup.object().shape({
     type: Yup.string().required("Champ obligatoire"),
+    site_con: Yup.string().when("type", {
+      is: "dab", // alternatively: (val) => val == true
+      then: (schema) => schema.required("Champ obligatoire"),
+    }),
     code: Yup.string().required("Champ obligatoire"),
     desc: Yup.string().required("Champ obligatoire"),
     maintenance: Yup.number().min(0, "Valeur négative !"),
@@ -53,6 +59,9 @@ const MachinerieModalForm = ({ closeModal, globalValues, prejudices }) => {
     hrs_stat: Yup.number().min(0, "Valeur négative !"),
     taux_fonc: Yup.number().min(0, "Valeur négative !"),
   });
+
+  const sites = globalValues.sites.map((site) => site.site);
+  console.log(sites);
 
   const handleSubmit = (values) => {
     let id;
@@ -63,8 +72,13 @@ const MachinerieModalForm = ({ closeModal, globalValues, prejudices }) => {
       .sort(function (a, b) {
         return a - b;
       });
+    if (values.type === "dab") {
+      globalValues.sites[values.site_con].montant_rec =
+        globalValues.sites[values.site_con].montant_rec + values.cout;
+    }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     values.id = id;
+    values.site_con = sites[values.site_con];
     newMachine = Object.assign([], newMachine);
     newMachine.push(values);
     globalValues.machineries = newMachine;
@@ -98,12 +112,19 @@ const MachinerieModalForm = ({ closeModal, globalValues, prejudices }) => {
                           disabled={!Object.keys(filteredPrejudices).length > 0}
                         />
                       </Grid>
-
-                      <Grid item xs={6}>
-                        <Textfield name="code" label="Code et appelation" />
-                      </Grid>
+                      {values.type === "dab" ? (
+                        <Grid item xs={6}>
+                          <Select
+                            name="site_con"
+                            label="Site concerné"
+                            options={sites}
+                          />
+                        </Grid>
+                      ) : null}
                     </Grid>
-
+                    <Grid item xs={6}>
+                      <Textfield name="code" label="Code et appelation" />
+                    </Grid>
                     <Grid item xs={12}>
                       <Textfield
                         name="desc"

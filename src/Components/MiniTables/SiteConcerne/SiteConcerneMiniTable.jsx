@@ -11,8 +11,8 @@ const SiteConcerneMiniTable = ({ data }) => {
           autoHeight
           rows={data}
           columns={siteColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          pageSize={2}
+          rowsPerPageOptions={[2]}
           checkboxSelection={false}
         />
       </div>

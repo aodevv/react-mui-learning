@@ -31,7 +31,10 @@ const FactureModalForm = ({ globalValues, prejudices, closeModal, date }) => {
   };
   const FORM_VALIDATION = Yup.object().shape({
     type: Yup.string().required("Champ obligatoire"),
-    site_con: Yup.string().required("Champ obligatoire"),
+    site_con: Yup.string().when("type", {
+      is: "dab", // alternatively: (val) => val == true
+      then: (schema) => schema.required("Champ obligatoire"),
+    }),
     date_fact: Yup.date()
       .typeError("INVALID_DATE")
       .min(
@@ -68,10 +71,14 @@ const FactureModalForm = ({ globalValues, prejudices, closeModal, date }) => {
       .sort(function (a, b) {
         return a - b;
       });
+    if (values.type === "dab") {
+      globalValues.sites[values.site_con].montant_rec =
+        globalValues.sites[values.site_con].montant_rec + values.montant_rec;
+    }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     values.id = id;
+    values.site_con = sites[values.site_con];
     newFactures = Object.assign([], newFactures);
-    console.log(newFactures, values);
     newFactures.push(values);
     globalValues.factures = newFactures;
     closeModal();
@@ -114,11 +121,7 @@ const FactureModalForm = ({ globalValues, prejudices, closeModal, date }) => {
                               options={sites}
                             />
                           </Grid>
-                        ) : (
-                          <Grid item xs={6}>
-                            <Textfield name="site_con" label="Site concerné" />
-                          </Grid>
-                        )}
+                        ) : null}
                       </Grid>
 
                       <Grid item xs={12}>

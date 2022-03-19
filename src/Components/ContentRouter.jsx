@@ -11,6 +11,7 @@ import MachinerieTypes from "../pages/TypeHandlers/MachineriesTypes";
 import DossierDetails from "../pages/Dossier/DossierDetails";
 import SalairesTypes from "../pages/TypeHandlers/SalairesTypes";
 import NouveauDossier from "../pages/NouveauDossier/NouveauDossier";
+import ExistingDossier from "../pages/ExistingDossier/ExistingDossier";
 
 // testing
 const ContentRouter = () => {
@@ -28,6 +29,7 @@ const ContentRouter = () => {
       <Route path="/salaires" element={<SalairesPage />} />
       <Route path="/machineries" element={<MachineriePage />} />
       <Route path="/testing" element={<NouveauDossier />} />
+      <Route path="/testing2" element={<ExistingDossier />} />
     </Routes>
   );
 };

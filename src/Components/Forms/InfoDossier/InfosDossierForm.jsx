@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // MUI ICONS
 import { Grid, Button, Typography, Box } from "@mui/material";
@@ -6,6 +6,7 @@ import { Grid, Button, Typography, Box } from "@mui/material";
 // FORMIK and YUP
 
 import CardWrapper from "../../../Components/CardWrapper/CardWrapper";
+import Popover from "@mui/material/Popover";
 
 import Textfield from "../../../Components/FormUI/Textfield";
 import DatePicker from "../../../Components/FormUI/DateTime";
@@ -13,10 +14,27 @@ import Checkbox from "../../FormUI/Checkbox";
 
 import TotalReclame from "../../../pages/NouveauDossier/TotalReclame";
 
-const InfosDossierForm = ({ values, openSubmit }) => {
+const InfosDossierForm = ({ values, openSubmit, existing }) => {
+  const [editing, setEditing] = useState(existing);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
   return (
     <>
-      <CardWrapper title="Infos dossier">
+      <CardWrapper
+        existing={existing}
+        setEditing={setEditing}
+        editing={editing}
+        title="Infos dossier"
+      >
         <Grid container>
           <Grid item xs={12}>
             <Grid item lg={10} xl={8}>
@@ -25,23 +43,35 @@ const InfosDossierForm = ({ values, openSubmit }) => {
                   <Textfield name="id" label="Identification dossier" />
                 </Grid> */}
                 <Grid item xs={4}>
-                  <Textfield name="numero" label="Numéro dossier" />
+                  <Textfield
+                    disabled={editing}
+                    name="numero"
+                    label="Numéro dossier"
+                  />
                 </Grid>
                 <Grid item xs={4}>
-                  <Textfield name="prgm" label="Programme" />
+                  <Textfield disabled={editing} name="prgm" label="Programme" />
                 </Grid>
                 <Grid item xs={4}>
-                  <Textfield name="act_of" label="Acte officiel" />
+                  <Textfield
+                    disabled={editing}
+                    name="act_of"
+                    label="Acte officiel"
+                  />
                 </Grid>
               </Grid>
 
               <Grid container spacing={2} mb={1}>
                 <Grid item xs={6}>
-                  <DatePicker name="date_ev" label="Date événement" />
+                  <DatePicker
+                    disabled={editing}
+                    name="date_ev"
+                    label="Date événement"
+                  />
                 </Grid>
                 <Grid item xs={6}>
                   <DatePicker
-                    disabled={values.date_ev ? false : true}
+                    disabled={(values.date_ev ? false : true) || editing}
                     name="date_ouv"
                     label="Date d'ouverture"
                   />
@@ -50,6 +80,7 @@ const InfosDossierForm = ({ values, openSubmit }) => {
 
               <Grid item xs={12}>
                 <Textfield
+                  disabled={editing}
                   name="desc_ev"
                   multiline
                   rows={4}
@@ -117,13 +148,47 @@ const InfosDossierForm = ({ values, openSubmit }) => {
                 <TotalReclame />
                 <Grid item xs={6}>
                   <Grid container display="flex" direction="row-reverse">
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={openSubmit}
-                    >
-                      Finish
-                    </Button>
+                    {existing ? (
+                      <Box>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          disabled={editing}
+                          onMouseEnter={handlePopoverOpen}
+                          onMouseLeave={handlePopoverClose}
+                        >
+                          Terminer
+                        </Button>
+                        <Popover
+                          id="mouse-over-popover"
+                          sx={{
+                            pointerEvents: "none",
+                          }}
+                          open={open}
+                          anchorEl={anchorEl}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "left",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "left",
+                          }}
+                          onClose={handlePopoverClose}
+                          disableRestoreFocus
+                        >
+                          <Typography sx={{ p: 1 }}>Comming soon 😁</Typography>
+                        </Popover>
+                      </Box>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={openSubmit}
+                      >
+                        Terminer
+                      </Button>
+                    )}
                   </Grid>
                 </Grid>
               </Grid>

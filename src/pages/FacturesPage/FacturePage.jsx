@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 // REDUX
@@ -6,6 +6,7 @@ import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { selectFacturesMemo } from "../../redux/Factures/Factures.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
+import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
 
 // MUI components
 import Grid from "@mui/material/Grid";
@@ -15,6 +16,7 @@ import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
+import { Modal, Fade } from "@mui/material";
 
 // MUI icons
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -25,14 +27,39 @@ import FacturesTable from "../../Components/Tables/FacturesTable";
 
 import FacturesFilters from "../../Components/Filters/FacturesFilters/FacturesFilters";
 
-const FacturePage = ({ factures, sites }) => {
+import FactureModalFormDos from "../../Components/Forms/FactureModalForm/FactureModalFormDos";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  border: "0px solid #000",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: "30px 10px",
+};
+
+const FacturePage = ({ factures, sites, dossiers }) => {
+  const [factureModal, setFactureModal] = useState(false);
+  const openFacture = () => {
+    setFactureModal(true);
+  };
+  const closeFacture = () => {
+    setFactureModal(false);
+  };
+
   let flatFactures = [];
-  let facturesCopy = JSON.parse(JSON.stringify(factures));
-  Object.keys(facturesCopy).forEach((item, index) =>
-    facturesCopy[item].forEach((fac) => {
-      fac.dos = parseInt(item);
-      fac.id = `${item};${fac.id}`;
-      flatFactures.push(fac);
+  //let facturesCopy = JSON.parse(JSON.stringify(factures));
+  Object.keys(factures).forEach((item, index) =>
+    factures[item].forEach((fac) => {
+      flatFactures.push({
+        ...fac,
+        id: `${item};${fac.id}`,
+        dos: parseInt(item),
+      });
     })
   );
   const [filteredFactures, setFilteredFactures] = useState(flatFactures);
@@ -45,8 +72,9 @@ const FacturePage = ({ factures, sites }) => {
   });
 
   Object.keys(factures).forEach((item) => {
-    if (factures[item].length > 0) dosOnly.push(item);
+    dosOnly.push(item);
   });
+  console.log(flatFactures);
 
   const remove_duplicates = (arr) => {
     var obj = {};
@@ -59,6 +87,27 @@ const FacturePage = ({ factures, sites }) => {
     }
     return ret_arr;
   };
+
+  const typePrejudices = {
+    dab: "Dommage au biens",
+    mpt: "Mesures preventives temporaires",
+    mi: "Mesures d'interventions",
+    bcg: "Bris du couvert de glace",
+  };
+
+  useEffect(() => {
+    flatFactures = [];
+    Object.keys(factures).forEach((item, index) =>
+      factures[item].forEach((fac) => {
+        flatFactures.push({
+          ...fac,
+          id: `${item};${fac.id}`,
+          dos: parseInt(item),
+        });
+      })
+    );
+    setFilteredFactures(flatFactures);
+  }, [factures]);
 
   return (
     <Grid>
@@ -78,7 +127,12 @@ const FacturePage = ({ factures, sites }) => {
             />
           </Grid>
           <Stack direction="row" spacing={2}>
-            <Button variant="contained" size="small" startIcon={<AddIcon />}>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<AddIcon />}
+              onClick={openFacture}
+            >
               Ajouter
             </Button>
             <Button
@@ -95,6 +149,25 @@ const FacturePage = ({ factures, sites }) => {
           </Box>
         </CardContent>
       </Card>
+      <Modal
+        open={factureModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Fade in={factureModal}>
+          <Box sx={style}>
+            <FactureModalFormDos
+              dossier={dossiers}
+              prejudices={typePrejudices}
+              closeModal={closeFacture}
+              sites={sites}
+              numDos={dosOnly}
+              dossiers={dossiers}
+              factures={factures}
+            />
+          </Box>
+        </Fade>
+      </Modal>
       <Outlet />
     </Grid>
   );
@@ -103,6 +176,7 @@ const FacturePage = ({ factures, sites }) => {
 const mapStateToProps = createStructuredSelector({
   factures: selectFacturesMemo,
   sites: selectSitesMemo,
+  dossiers: selectDossiers,
 });
 
 export default connect(mapStateToProps)(FacturePage);

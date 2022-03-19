@@ -1,24 +1,23 @@
 import React from "react";
 
+// FORMIK and YUP
+import { Formik, Form } from "formik";
+//import * as Yup from "yup";
+
 import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
-import { selectSalairesMemo } from "../../../redux/Salaires/salaires.selectors";
 import { addSalaires } from "../../../redux/Salaires/salaires.actions";
 
-// ICONS
+// MUI ICONS
 import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
 import InputAdornment from "@mui/material/InputAdornment";
 
-// FORMIK and YUP
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-
-// Custom componenets
-
 import Textfield from "../../../Components/FormUI/Textfield";
 import Select from "../../../Components/FormUI/Select";
+import SelectDossier from "../../../Components/FormUI/SelectDossier";
+import SelectPrejudice from "../../../Components/FormUI/SelectPrejudice";
+import SelectSites from "../../../Components/FormUI/SelectSites";
 import DatePicker from "../../../Components/FormUI/DateTime";
 import Checkbox from "../../../Components/FormUI/Checkbox";
 import Submit from "../../../Components/FormUI/Submit";
@@ -28,32 +27,18 @@ import SalaireTotal from "./SalaireTotal";
 import Tsup from "./Tsup";
 import Tsup2 from "./Tsup2";
 
-const SalaireModalForm = ({
-  closeModal,
-  globalValues,
+const SalaireModalFormDos = ({
   prejudices,
+  closeModal,
   date,
-  salaires,
+  sites,
+  numDos,
+  dossiers,
   addSalaires,
-  existing,
+  salaires,
 }) => {
-  const allowed = [];
-  if (globalValues.dab) allowed.push("dab");
-  if (globalValues.mpt) allowed.push("mpt");
-  if (globalValues.mi) allowed.push("mi");
-  if (globalValues.bcg) allowed.push("bcg");
-
-  const filteredPrejudices = Object.keys(prejudices)
-    .filter((key) => allowed.includes(key))
-    .reduce((obj, key) => {
-      obj[key] = prejudices[key];
-      return obj;
-    }, {});
-
-  const sites = globalValues.sites.map((site) => site.site);
-
   const INITIAL_FORM_STATE = {
-    id: null,
+    numDos: "",
     type: "",
     name: "",
     status: "",
@@ -74,78 +59,56 @@ const SalaireModalForm = ({
     csst: false,
   };
 
-  const FORM_VALIDATION = Yup.object().shape({
-    type: Yup.string().required("Champ obligatoire"),
-    site_con: Yup.string().when("type", {
-      is: "dab", // alternatively: (val) => val == true
-      then: (schema) => schema.required("Champ obligatoire"),
-    }),
-    name: Yup.string().required("Champ obligatoire"),
-    status: Yup.string().required("Champ obligatoire"),
-    Hreg: Yup.number().when("status", {
-      is: "occ",
-      then: Yup.number().min(1, "Champ obligatoire"),
-    }),
-    Treg: Yup.number().when("status", {
-      is: "occ",
-      then: Yup.number().min(1, "Champ obligatoire"),
-    }),
-    taux_vac: Yup.number()
-      .max(100, "Ne doit pas dépasser 100%")
-      .required("Champ obligatoire"),
-    date_per: Yup.date()
-      .typeError("INVALID_DATE")
-      .min(
-        globalValues.date_ev,
-        `La date ne peut pas précéder la date de l'événement`
-      )
-      .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
-      .required("Champ obligatoire"),
-    Hsup: Yup.number().min(0, "Valeur négative !"),
-    Hsup2: Yup.number().min(0, "Valeur négative !"),
-    Tsup: Yup.number().min(0, "Valeur négative !"),
-    Tsup2: Yup.number().min(0, "Valeur négative !"),
-    montant_rec: Yup.number()
-      .min(1, "Aucun montant n'est réclamé")
-      .required("Champ obligatoire"),
-  });
-
   const data = {
     occ: "Occasionel",
     reg: "Régulier",
   };
-  const handleSubmit = (values) => {
-    let id;
 
-    let newSalaires = globalValues.salaires;
-    const ids = newSalaires
-      .map((sal) => sal.id)
+  const handleSubmit = (values, { resetForm }) => {
+    const dosInt = parseInt(values.numDos);
+    let newSals = JSON.parse(JSON.stringify(salaires));
+    const salaireDos = newSals[dosInt];
+    let id;
+    const ids = salaireDos
+      .map((fac) => fac.id)
       .sort(function (a, b) {
         return a - b;
       });
-    if (values.type === "dab") {
-      globalValues.sites[values.site_con].montant_rec =
-        globalValues.sites[values.site_con].montant_rec + values.montant_rec;
-    }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
-    values.id = id;
-    //values.site_con = sites[values.site_con];
-    newSalaires = Object.assign([], newSalaires);
-    newSalaires.push({ ...values, site_con: sites[values.site_con] });
-    if (existing) {
-      console.log("floo");
-      let newSals = JSON.parse(JSON.stringify(salaires));
-      const dosInt = globalValues.numero;
-      Object.keys(newSals).forEach(function (key, index) {
-        if (parseInt(key) === dosInt) {
-          newSals[key] = newSalaires;
-        }
-      });
-      addSalaires(newSals);
-    }
-    globalValues.salaires = newSalaires;
+
+    const siteToAdd = sites[dosInt].map((site) => site.site)[values.site_con];
+    const newSal = {
+      id: id,
+      type: values.type,
+      name: values.name,
+      status: values.status,
+      date_per: values.date_per,
+      montant_rec: values.montant_rec,
+      site_con: siteToAdd,
+      Hreg: values.Hreg,
+      Hsup: values.Hsup,
+      Hsup2: values.Hsup2,
+      Treg: values.Treg,
+      Tsup: values.Tsup,
+      Tsup2: values.Tsup2,
+      taux_vac: values.taux_vac,
+      ae: values.ae,
+      rrq: values.rrq,
+      rqap: values.rqap,
+      fss: values.fss,
+      csst: values.csst,
+    };
+    salaireDos.push(newSal);
+    Object.keys(newSals).forEach(function (key, index) {
+      if (parseInt(key) === dosInt) {
+        newSals[key] = salaireDos;
+      }
+    });
+    addSalaires(newSals);
+    resetForm();
     closeModal();
   };
+
   return (
     <>
       <Grid container>
@@ -153,17 +116,45 @@ const SalaireModalForm = ({
           <Container maxWidth="l">
             <Formik
               initialValues={{ ...INITIAL_FORM_STATE }}
-              validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
             >
               {(formikProps) => {
-                const { values, handleReset } = formikProps;
+                const { values } = formikProps;
+
                 return (
                   <Form>
                     <Grid item>
                       <Typography variant="h5" mb={1}>
                         Ajout salaire
                       </Typography>
+                      <Grid item xs={12}>
+                        <SelectDossier
+                          name="numDos"
+                          label="Numéro dossier"
+                          options={numDos}
+                        />
+                      </Grid>
+                      <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                          <SelectPrejudice
+                            name="type"
+                            label="Préjudice"
+                            defaultValue=""
+                            options={prejudices}
+                            dossiers={dossiers}
+                            disabled={values.numDos === ""}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <SelectSites
+                            defaultValue=""
+                            name="site_con"
+                            label="Site concerné"
+                            sites={sites}
+                            disabled={values.type !== "dab"}
+                          />
+                        </Grid>
+                      </Grid>
                       <Grid container spacing={1}>
                         <Grid item xs={6}>
                           <Textfield name="name" label="Nom et prénom" />
@@ -171,27 +162,6 @@ const SalaireModalForm = ({
                         <Grid item xs={6}>
                           <Select name="status" label="Status" options={data} />
                         </Grid>
-                      </Grid>
-                      <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                          <Select
-                            name="type"
-                            label="Préjudice"
-                            options={filteredPrejudices}
-                            disabled={
-                              !Object.keys(filteredPrejudices).length > 0
-                            }
-                          />
-                        </Grid>
-                        {values.type === "dab" ? (
-                          <Grid item xs={6}>
-                            <Select
-                              name="site_con"
-                              label="Site concerné"
-                              options={sites}
-                            />
-                          </Grid>
-                        ) : null}
                       </Grid>
 
                       <Grid item xs={12}>
@@ -288,7 +258,7 @@ const SalaireModalForm = ({
                           Ajouter
                         </Submit>
                         <Button
-                          onClick={handleReset}
+                          type="reset"
                           size="small"
                           startIcon={<UndoIcon />}
                         >
@@ -314,12 +284,8 @@ const SalaireModalForm = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  salaires: selectSalairesMemo,
-});
-
 const mapDispatchToProps = (dispatch) => ({
   addSalaires: (newSals) => dispatch(addSalaires(newSals)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SalaireModalForm);
+export default connect(null, mapDispatchToProps)(SalaireModalFormDos);

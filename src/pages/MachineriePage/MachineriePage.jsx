@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 // REDUX
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { selectMachineriesMemo } from "../../redux/Machineries/machineries.selectors";
+import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
+import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
 
 // MUI components
 import Grid from "@mui/material/Grid";
@@ -14,6 +16,7 @@ import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
+import { Modal, Fade } from "@mui/material";
 
 // MUI icons
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -22,14 +25,39 @@ import AddIcon from "@mui/icons-material/Add";
 import MachineriesTable from "../../Components/Tables/Machineries/MachineriesTable";
 import MachineriesFilters from "../../Components/Filters/MachineriesFilters/MachineriesFilters";
 
-const MachineriePage = ({ machinerie }) => {
+import MachinerieModalFormDos from "../../Components/Forms/MachinerieModalForm/MachinerieModalFormDos";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  border: "0px solid #000",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: "30px 10px",
+};
+
+const MachineriePage = ({ machinerie, dossiers, sites }) => {
+  const [machineriesModal, setMachineriesModal] = useState(false);
+
+  const openMachines = () => {
+    setMachineriesModal(true);
+  };
+  const closeMachines = () => {
+    setMachineriesModal(false);
+  };
+
   let flatMachines = [];
-  let machinerieCopy = JSON.parse(JSON.stringify(machinerie));
-  Object.keys(machinerieCopy).forEach((item) =>
-    machinerieCopy[item].forEach((mach) => {
-      mach.dos = parseInt(item);
-      mach.id = `${item};${mach.id}`;
-      flatMachines.push(mach);
+  Object.keys(machinerie).forEach((item) =>
+    machinerie[item].forEach((mach) => {
+      flatMachines.push({
+        ...mach,
+        dos: parseInt(item),
+        id: `${item};${mach.id}`,
+      });
     })
   );
 
@@ -38,8 +66,30 @@ const MachineriePage = ({ machinerie }) => {
   let dosOnly = [];
 
   Object.keys(machinerie).forEach((item) => {
-    if (machinerie[item].length > 0) dosOnly.push(item);
+    dosOnly.push(item);
   });
+
+  const typePrejudices = {
+    dab: "Dommage au biens",
+    mpt: "Mesures preventives temporaires",
+    mi: "Mesures d'interventions",
+    bcg: "Bris du couvert de glace",
+  };
+
+  useEffect(() => {
+    flatMachines = [];
+    Object.keys(machinerie).forEach((item, index) =>
+      machinerie[item].forEach((mach) => {
+        flatMachines.push({
+          ...mach,
+          dos: parseInt(item),
+          id: `${item};${mach.id}`,
+        });
+      })
+    );
+    setFilteredMachineries(flatMachines);
+  }, [machinerie]);
+
   return (
     <Grid>
       <Card>
@@ -57,7 +107,12 @@ const MachineriePage = ({ machinerie }) => {
             />
           </Grid>
           <Stack direction="row" spacing={2}>
-            <Button variant="contained" size="small" startIcon={<AddIcon />}>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<AddIcon />}
+              onClick={openMachines}
+            >
               Ajouter
             </Button>
             <Button
@@ -74,6 +129,24 @@ const MachineriePage = ({ machinerie }) => {
           </Box>
         </CardContent>
       </Card>
+      <Modal
+        open={machineriesModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Fade in={machineriesModal}>
+          <Box sx={style}>
+            <MachinerieModalFormDos
+              prejudices={typePrejudices}
+              closeModal={closeMachines}
+              sites={sites}
+              numDos={dosOnly}
+              dossiers={dossiers}
+              machineries={machinerie}
+            />
+          </Box>
+        </Fade>
+      </Modal>
       <Outlet />
     </Grid>
   );
@@ -81,6 +154,8 @@ const MachineriePage = ({ machinerie }) => {
 
 const mapStateToProps = createStructuredSelector({
   machinerie: selectMachineriesMemo,
+  dossiers: selectDossiers,
+  sites: selectSitesMemo,
 });
 
 export default connect(mapStateToProps)(MachineriePage);

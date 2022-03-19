@@ -12,7 +12,7 @@ export const sitesAll = {
       montant_rec: 1230,
     },
     {
-      id: 0,
+      id: 1,
       site: "Site 2",
       nature: "sinistre",
       part_end: "ABC",
@@ -36,7 +36,7 @@ export const sitesAll = {
       montant_rec: 1230,
     },
     {
-      id: 0,
+      id: 1,
       site: "Site 16",
       nature: "sinistre",
       part_end: "ABCD",

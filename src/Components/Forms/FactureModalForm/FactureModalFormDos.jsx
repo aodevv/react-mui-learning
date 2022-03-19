@@ -1,13 +1,11 @@
 import React from "react";
 
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
-import { selectFacturesMemo } from "../../../redux/Factures/Factures.selectors";
-import { addFactures } from "../../../redux/Factures/Factures.actions";
-
 // FORMIK and YUP
 import { Formik, Form } from "formik";
-import * as Yup from "yup";
+//import * as Yup from "yup";
+
+import { connect } from "react-redux";
+import { addFactures } from "../../../redux/Factures/Factures.actions";
 
 // MUI ICONS
 import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
@@ -15,21 +13,25 @@ import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
 
 import Textfield from "../../../Components/FormUI/Textfield";
-import Select from "../../../Components/FormUI/Select";
+import Select from "../../../Components/FormUI/SelectDossier";
+import SelectPrejudice from "../../../Components/FormUI/SelectPrejudice";
+import SelectSites from "../../../Components/FormUI/SelectSites";
 import DatePicker from "../../../Components/FormUI/DateTime";
 import Checkbox from "../../../Components/FormUI/Checkbox";
 import Submit from "../../../Components/FormUI/Submit";
 
-const FactureModalForm = ({
-  globalValues,
+const FactureModalFormDos = ({
   prejudices,
   closeModal,
   date,
-  existing,
-  factures,
+  sites,
+  numDos,
+  dossiers,
   addFactures,
+  factures,
 }) => {
   const INITIAL_FORM_STATE = {
+    numDos: "",
     id: "",
     desc_fact: "",
     date_fact: "",
@@ -38,72 +40,42 @@ const FactureModalForm = ({
     site_con: "",
     tax: false,
   };
-  const FORM_VALIDATION = Yup.object().shape({
-    type: Yup.string().required("Champ obligatoire"),
-    site_con: Yup.string().when("type", {
-      is: "dab", // alternatively: (val) => val == true
-      then: (schema) => schema.required("Champ obligatoire"),
-    }),
-    date_fact: Yup.date()
-      .typeError("INVALID_DATE")
-      .min(
-        globalValues.date_ev,
-        `La date ne peut pas précéder la date de l'événement`
-      )
-      .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
-      .required("Champ obligatoire"),
-    desc_fact: Yup.string().required("Champ obligatoire"),
-    montant_rec: Yup.number()
-      .min(0, "Valeur négatif !")
-      .required("Champ obligatoire"),
-  });
-  const allowed = [];
-  if (globalValues.dab) allowed.push("dab");
-  if (globalValues.mpt) allowed.push("mpt");
-  if (globalValues.mi) allowed.push("mi");
-  if (globalValues.bcg) allowed.push("bcg");
 
-  const filteredPrejudices = Object.keys(prejudices)
-    .filter((key) => allowed.includes(key))
-    .reduce((obj, key) => {
-      obj[key] = prejudices[key];
-      return obj;
-    }, {});
-
-  const sites = globalValues.sites.map((site) => site.site);
-
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, { resetForm }) => {
+    const dosInt = parseInt(values.numDos);
+    let newFacts = JSON.parse(JSON.stringify(factures));
+    const factureDos = newFacts[dosInt];
     let id;
-    let newFactures = globalValues.factures;
-    const ids = newFactures
+    const ids = factureDos
       .map((fac) => fac.id)
       .sort(function (a, b) {
         return a - b;
       });
-    if (values.type === "dab") {
-      globalValues.sites[values.site_con].montant_rec =
-        globalValues.sites[values.site_con].montant_rec + values.montant_rec;
-    }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     values.id = id;
-    //values.site_con = sites[values.site_con];
-    newFactures = Object.assign([], newFactures);
-    newFactures.push({ ...values, site_con: sites[values.site_con] });
-    if (existing) {
-      console.log("floo");
-      let newFacts = JSON.parse(JSON.stringify(factures));
-      const dosInt = globalValues.numero;
-      Object.keys(newFacts).forEach(function (key, index) {
-        if (parseInt(key) === dosInt) {
-          newFacts[key] = newFactures;
-        }
-      });
-      addFactures(newFacts);
-    }
-    globalValues.factures = newFactures;
 
+    const siteToAdd = sites[dosInt].map((site) => site.site)[values.site_con];
+    const newFact = {
+      id: values.id,
+      desc_fact: values.desc_fact,
+      date_fact: values.date_fact,
+      type: values.type,
+      montant_rec: values.montant_rec,
+      site_con: siteToAdd,
+      tax: values.tax,
+    };
+    factureDos.push(newFact);
+    Object.keys(newFacts).forEach(function (key, index) {
+      if (key === dosInt) {
+        newFacts[key] = factureDos;
+      }
+    });
+    console.log(newFacts);
+    addFactures(newFacts);
+    resetForm();
     closeModal();
   };
+
   return (
     <>
       <Grid container>
@@ -111,7 +83,6 @@ const FactureModalForm = ({
           <Container maxWidth="l">
             <Formik
               initialValues={{ ...INITIAL_FORM_STATE }}
-              validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
             >
               {(formikProps) => {
@@ -123,26 +94,34 @@ const FactureModalForm = ({
                       <Typography variant="h5" mb={1}>
                         Ajout facture
                       </Typography>
+                      <Grid item xs={12}>
+                        <Select
+                          name="numDos"
+                          label="Numéro dossier"
+                          options={numDos}
+                        />
+                      </Grid>
                       <Grid container spacing={2}>
                         <Grid item xs={6}>
-                          <Select
+                          <SelectPrejudice
                             name="type"
                             label="Préjudice"
-                            options={filteredPrejudices}
-                            disabled={
-                              !Object.keys(filteredPrejudices).length > 0
-                            }
+                            defaultValue=""
+                            options={prejudices}
+                            dossiers={dossiers}
+                            disabled={values.numDos === ""}
                           />
                         </Grid>
-                        {values.type === "dab" ? (
-                          <Grid item xs={6}>
-                            <Select
-                              name="site_con"
-                              label="Site concerné"
-                              options={sites}
-                            />
-                          </Grid>
-                        ) : null}
+
+                        <Grid item xs={6}>
+                          <SelectSites
+                            defaultValue=""
+                            name="site_con"
+                            label="Site concerné"
+                            sites={sites}
+                            disabled={values.type !== "dab"}
+                          />
+                        </Grid>
                       </Grid>
 
                       <Grid item xs={12}>
@@ -154,7 +133,11 @@ const FactureModalForm = ({
                         />
                       </Grid>
                       <Grid item xs={12}>
-                        <DatePicker name="date_fact" label="Date" />
+                        <DatePicker
+                          name="date_fact"
+                          label="Date"
+                          disabled={values.numDos === ""}
+                        />
                       </Grid>
 
                       <Grid item xs={12}>
@@ -200,12 +183,8 @@ const FactureModalForm = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  factures: selectFacturesMemo,
-});
-
 const mapDispatchToProps = (dispatch) => ({
   addFactures: (newFacts) => dispatch(addFactures(newFacts)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FactureModalForm);
+export default connect(null, mapDispatchToProps)(FactureModalFormDos);

@@ -1,52 +1,40 @@
 import React from "react";
 
+// FORMIK and YUP
+import { Formik, Form } from "formik";
+//import * as Yup from "yup";
+
 import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
-import { selectMachineriesMemo } from "../../../redux/Machineries/machineries.selectors";
 import { addMachinerie } from "../../../redux/Machineries/machineries.actions";
 
-// ICONS
+// MUI ICONS
 import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
-
-// FORMIK and YUP
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-
-// Custom componenets
+import InputAdornment from "@mui/material/InputAdornment";
 
 import Textfield from "../../../Components/FormUI/Textfield";
 import Select from "../../../Components/FormUI/Select";
-//import DatePicker from "../../../Components/FormUI/DateTime";
-//import Checkbox from "../../../Components/FormUI/Checkbox";
+import SelectDossier from "../../../Components/FormUI/SelectDossier";
+import SelectPrejudice from "../../../Components/FormUI/SelectPrejudice";
+import SelectSites from "../../../Components/FormUI/SelectSites";
+import DatePicker from "../../../Components/FormUI/DateTime";
+import Checkbox from "../../../Components/FormUI/Checkbox";
 import Submit from "../../../Components/FormUI/Submit";
 
 import Cout from "./Cout";
 
-const MachinerieModalForm = ({
-  closeModal,
-  globalValues,
-  prejudices,
-  machineries,
+const MachinerieModalFormDos = ({
+  sites,
+  numDos,
   addMachinerie,
-  existing,
+  machineries,
+  prejudices,
+  dossiers,
+  closeModal,
 }) => {
-  const allowed = [];
-  if (globalValues.dab) allowed.push("dab");
-  if (globalValues.mpt) allowed.push("mpt");
-  if (globalValues.mi) allowed.push("mi");
-  if (globalValues.bcg) allowed.push("bcg");
-
-  const filteredPrejudices = Object.keys(prejudices)
-    .filter((key) => allowed.includes(key))
-    .reduce((obj, key) => {
-      obj[key] = prejudices[key];
-      return obj;
-    }, {});
-
   const INITIAL_FORM_STATE = {
-    id: "",
+    numDos: "",
     code: "",
     desc: "",
     type: "",
@@ -58,53 +46,40 @@ const MachinerieModalForm = ({
     cout: 0,
   };
 
-  const FORM_VALIDATION = Yup.object().shape({
-    type: Yup.string().required("Champ obligatoire"),
-    site_con: Yup.string().when("type", {
-      is: "dab", // alternatively: (val) => val == true
-      then: (schema) => schema.required("Champ obligatoire"),
-    }),
-    code: Yup.string().required("Champ obligatoire"),
-    desc: Yup.string().required("Champ obligatoire"),
-    maintenance: Yup.number().min(0, "Valeur négative !"),
-    hrs_fonc: Yup.number().min(0, "Valeur négative !"),
-    hrs_stat: Yup.number().min(0, "Valeur négative !"),
-    taux_fonc: Yup.number().min(0, "Valeur négative !"),
-  });
-
-  const sites = globalValues.sites.map((site) => site.site);
-  console.log(sites);
-
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, { resetForm }) => {
+    const dosInt = parseInt(values.numDos);
+    let newMachs = JSON.parse(JSON.stringify(machineries));
+    const machDos = newMachs[dosInt];
     let id;
-
-    let newMachine = globalValues.machineries;
-    const ids = newMachine
-      .map((mach) => mach.id)
+    const ids = machDos
+      .map((fac) => fac.id)
       .sort(function (a, b) {
         return a - b;
       });
-    if (values.type === "dab") {
-      globalValues.sites[values.site_con].montant_rec =
-        globalValues.sites[values.site_con].montant_rec + values.cout;
-    }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
-    values.id = id;
-    //values.site_con = sites[values.site_con];
-    newMachine = Object.assign([], newMachine);
-    newMachine.push({ ...values, site_con: sites[values.site_con] });
-    if (existing) {
-      console.log("floo");
-      let newMachs = JSON.parse(JSON.stringify(machineries));
-      const dosInt = globalValues.numero;
-      Object.keys(newMachs).forEach(function (key, index) {
-        if (parseInt(key) === dosInt) {
-          newMachs[key] = newMachine;
-        }
-      });
-      addMachinerie(newMachs);
-    }
-    globalValues.machineries = newMachine;
+
+    const siteToAdd = sites[dosInt].map((site) => site.site)[values.site_con];
+
+    const newMach = {
+      id: id,
+      code: values.code,
+      desc: values.desc,
+      type: values.type,
+      site_con: siteToAdd,
+      maintenance: values.maintenance,
+      hrs_fonc: values.hrs_fonc,
+      hrs_stat: values.hrs_stat,
+      taux_fonc: values.taux_fonc,
+      cout: values.cout,
+    };
+    machDos.push(newMach);
+    Object.keys(newMachs).forEach(function (key, index) {
+      if (parseInt(key) === dosInt) {
+        newMachs[key] = machDos;
+      }
+    });
+    addMachinerie(newMachs);
+    resetForm();
     closeModal();
   };
   return (
@@ -114,7 +89,6 @@ const MachinerieModalForm = ({
           <Container maxWidth="l">
             <Formik
               initialValues={{ ...INITIAL_FORM_STATE }}
-              validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
             >
               {(formikProps) => {
@@ -126,24 +100,34 @@ const MachinerieModalForm = ({
                       Ajout machinerie
                     </Typography>
 
+                    <Grid item xs={12}>
+                      <SelectDossier
+                        name="numDos"
+                        label="Numéro dossier"
+                        options={numDos}
+                      />
+                    </Grid>
+
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
-                        <Select
+                        <SelectPrejudice
                           name="type"
                           label="Préjudice"
-                          options={filteredPrejudices}
-                          disabled={!Object.keys(filteredPrejudices).length > 0}
+                          defaultValue=""
+                          options={prejudices}
+                          dossiers={dossiers}
+                          disabled={values.numDos === ""}
                         />
                       </Grid>
-                      {values.type === "dab" ? (
-                        <Grid item xs={6}>
-                          <Select
-                            name="site_con"
-                            label="Site concerné"
-                            options={sites}
-                          />
-                        </Grid>
-                      ) : null}
+                      <Grid item xs={6}>
+                        <SelectSites
+                          defaultValue=""
+                          name="site_con"
+                          label="Site concerné"
+                          sites={sites}
+                          disabled={values.type !== "dab"}
+                        />
+                      </Grid>
                     </Grid>
                     <Grid item xs={6}>
                       <Textfield name="code" label="Code et appelation" />
@@ -233,15 +217,8 @@ const MachinerieModalForm = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  machineries: selectMachineriesMemo,
-});
-
 const mapDispatchToProps = (dispatch) => ({
-  addMachinerie: (newMachs) => dispatch(addMachinerie(newMachs)),
+  addMachinerie: (newMach) => dispatch(addMachinerie(newMach)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MachinerieModalForm);
+export default connect(null, mapDispatchToProps)(MachinerieModalFormDos);

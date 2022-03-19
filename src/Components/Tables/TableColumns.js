@@ -202,11 +202,13 @@ export const machineriesColumns = [
     },
   },
   {
+    field: "code",
+    headerName: "Appelation",
+    width: 150,
+  },
+  {
     field: "id",
-    headerName: "Code et appelation",
-    valueFormatter: (params) => {
-      return params.value.split(";")[1];
-    },
+    hide: true,
   },
   {
     field: "desc",

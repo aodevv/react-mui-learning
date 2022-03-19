@@ -1,5 +1,10 @@
 import React from "react";
 
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { selectSitesMemo } from "../../../redux/Sites/Sites.selectors";
+import { addSites } from "../../../redux/Sites/Sites.actions";
+
 // ICONS
 import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
@@ -29,7 +34,13 @@ const SiteTempData = {
   "Site 7": "Site 7",
 };
 
-const SiteModalForm = ({ closeModal, globalValues }) => {
+const SiteModalForm = ({
+  closeModal,
+  globalValues,
+  existing,
+  allSites,
+  addSites,
+}) => {
   const INITIAL_FORM_STATE = {
     id: "",
     site: "",
@@ -76,6 +87,17 @@ const SiteModalForm = ({ closeModal, globalValues }) => {
     values.id = id;
     newSite = Object.assign([], newSite);
     newSite.push(values);
+    if (existing) {
+      console.log("floo");
+      let newSites = JSON.parse(JSON.stringify(allSites));
+      const dosInt = globalValues.numero;
+      Object.keys(newSites).forEach(function (key, index) {
+        if (parseInt(key) === dosInt) {
+          newSites[key] = newSite;
+        }
+      });
+      addSites(newSites);
+    }
     globalValues.sites = newSite;
     closeModal();
   };
@@ -196,4 +218,12 @@ const SiteModalForm = ({ closeModal, globalValues }) => {
   );
 };
 
-export default SiteModalForm;
+const mapStateToProps = createStructuredSelector({
+  allSites: selectSitesMemo,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  addSites: (newSites) => dispatch(addSites(newSites)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SiteModalForm);

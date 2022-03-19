@@ -247,6 +247,7 @@ const MachineriesFilters = ({
                 >
                   <Typography>Fonc</Typography>
                   <Slider
+                    size="small"
                     getAriaLabel={() => "Temperature range"}
                     value={hFonc}
                     onChange={filterHFonc}
@@ -267,6 +268,7 @@ const MachineriesFilters = ({
                 >
                   <Typography>Stat</Typography>
                   <Slider
+                    size="small"
                     getAriaLabel={() => "Temperature range"}
                     value={hStat}
                     onChange={filterHStat}
@@ -299,6 +301,7 @@ const MachineriesFilters = ({
                 >
                   <Typography>Fonc</Typography>
                   <Slider
+                    size="small"
                     getAriaLabel={() => "Temperature range"}
                     value={tFonc}
                     onChange={filterTFonc}
@@ -320,6 +323,7 @@ const MachineriesFilters = ({
                 >
                   <Typography>Maintenance</Typography>
                   <Slider
+                    size="small"
                     getAriaLabel={() => "Temperature range"}
                     value={main}
                     onChange={filterMain}

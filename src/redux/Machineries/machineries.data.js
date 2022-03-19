@@ -1,7 +1,8 @@
 export const machineriesAll = {
   1: [
     {
-      id: "Caterpillar",
+      id: 0,
+      code: "Caterpillar",
       desc: "Big machine",
       maintenance: 10,
       site_conc: "Madrid",
@@ -12,7 +13,8 @@ export const machineriesAll = {
       type: "dab",
     },
     {
-      id: "Caterpillar 2",
+      id: 1,
+      code: "Caterpillar 2",
       desc: "Big machine 2",
       maintenance: 15,
       site_conc: "Madrid",
@@ -25,7 +27,8 @@ export const machineriesAll = {
   ],
   2: [
     {
-      id: "Hitachi",
+      id: 0,
+      code: "Hitachi",
       desc: "Big machine",
       maintenance: 2,
       site_conc: "Madrid",
@@ -36,7 +39,8 @@ export const machineriesAll = {
       type: "mi",
     },
     {
-      id: "Hitachi 2",
+      id: 1,
+      code: "Hitachi 2",
       desc: "Big machine 2",
       maintenance: 0,
       site_conc: "Madrid",

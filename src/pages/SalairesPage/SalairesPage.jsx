@@ -67,6 +67,24 @@ const SalairesPage = ({ salaires, dossiers, sites }) => {
     dosOnly.push(item);
   });
 
+  let sitesOnly = [];
+
+  Object.keys(sites).forEach((item, index) => {
+    sites[item].map((site) => sitesOnly.push(site.site));
+  });
+
+  const remove_duplicates = (arr) => {
+    var obj = {};
+    var ret_arr = [];
+    for (var i = 0; i < arr.length; i++) {
+      obj[arr[i]] = true;
+    }
+    for (var key in obj) {
+      ret_arr.push(key);
+    }
+    return ret_arr;
+  };
+
   const typePrejudices = {
     dab: "Dommage au biens",
     mpt: "Mesures preventives temporaires",
@@ -97,11 +115,12 @@ const SalairesPage = ({ salaires, dossiers, sites }) => {
           title={"Liste des salaires"}
         />
         <CardContent>
-          <Grid item xs={12} md={8} mb={2}>
+          <Grid item xs={12} mb={2}>
             <SalairesFilters
               salaires={flatSalaires}
               setFilteredSalaires={setFilteredSalaires}
               numDos={dosOnly}
+              sites={remove_duplicates(sitesOnly)}
             />
           </Grid>
           <Stack direction="row" spacing={2}>

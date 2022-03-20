@@ -20,6 +20,7 @@ export const salairesAll = {
       fss: true,
       csst: false,
       type: "dab",
+      site_con: "Site 16",
     },
     {
       id: 2,
@@ -40,6 +41,7 @@ export const salairesAll = {
       fss: true,
       csst: false,
       type: "bcg",
+      site_con: "Site 1",
     },
   ],
   2: [

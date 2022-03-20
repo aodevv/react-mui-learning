@@ -74,7 +74,6 @@ const FacturePage = ({ factures, sites, dossiers }) => {
   Object.keys(factures).forEach((item) => {
     dosOnly.push(item);
   });
-  console.log(flatFactures);
 
   const remove_duplicates = (arr) => {
     var obj = {};
@@ -118,7 +117,7 @@ const FacturePage = ({ factures, sites, dossiers }) => {
           title={"Liste des factures"}
         />
         <CardContent>
-          <Grid item xs={12} md={8} mb={2}>
+          <Grid item xs={12} mb={2}>
             <FacturesFilters
               factures={flatFactures}
               setFilteredFactures={setFilteredFactures}

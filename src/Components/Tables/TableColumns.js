@@ -202,6 +202,12 @@ export const machineriesColumns = [
     },
   },
   {
+    field: "site_con",
+    headerName: "Site concerné",
+    flex: 1,
+    minWidth: 140,
+  },
+  {
     field: "code",
     headerName: "Appelation",
     width: 150,
@@ -277,6 +283,11 @@ export const salairesColumns = [
     width: 80,
   },
   {
+    field: "name",
+    headerName: "name",
+    minWidth: 150,
+  },
+  {
     field: "type",
     headerName: "Préjudice",
     width: 220,
@@ -285,9 +296,10 @@ export const salairesColumns = [
     },
   },
   {
-    field: "name",
-    headerName: "name",
-    minWidth: 150,
+    field: "site_con",
+    headerName: "Site concerné",
+    flex: 1,
+    minWidth: 140,
   },
 
   {
@@ -375,26 +387,31 @@ export const salairesColumns = [
     field: "ae",
     headerName: "AE",
     type: "boolean",
+    width: 80,
   },
   {
     field: "rrq",
     headerName: "RRQ",
     type: "boolean",
+    width: 80,
   },
   {
     field: "rqap",
     headerName: "RQAP",
     type: "boolean",
+    width: 80,
   },
   {
     field: "fss",
     headerName: "FSS",
     type: "boolean",
+    width: 80,
   },
   {
     field: "csst",
     headerName: "CSST",
     type: "boolean",
+    width: 80,
   },
   {
     field: "montant_rec",

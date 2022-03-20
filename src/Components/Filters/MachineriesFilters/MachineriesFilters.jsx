@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import {
   Grid,
@@ -6,7 +6,7 @@ import {
   MenuItem,
   Autocomplete,
   Box,
-  Slider,
+  Button,
   Stack,
 } from "@mui/material";
 
@@ -16,60 +16,35 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const marks = [
-  {
-    value: 0,
-    label: "0",
-  },
-  {
-    value: 20,
-    label: "20",
-  },
-  {
-    value: 50,
-    label: "50",
-  },
-  {
-    value: 100,
-    label: "100",
-  },
-];
+import UndoIcon from "@mui/icons-material/Undo";
+import SearchIcon from "@mui/icons-material/Search";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
-const marksT = [
-  {
-    value: 0,
-    label: "0$",
-  },
-  {
-    value: 20,
-    label: "20$",
-  },
-  {
-    value: 50,
-    label: "50$",
-  },
-  {
-    value: 100,
-    label: "100$",
-  },
-];
+import InputAdornment from "@mui/material/InputAdornment";
 
 const MachineriesFilters = ({
   machineries,
   setFilteredMachineries,
   numDos,
+  sites,
 }) => {
   const [cout, setCout] = useState(0);
   const [desc, setDesc] = useState("");
-  const [hFonc, setHFonc] = useState([0, 100]);
-  const [hStat, setHStat] = useState([0, 100]);
-  const [tFonc, setTFonc] = useState([0, 100]);
-  const [main, setMain] = useState([0, 100]);
+  const [hFonc, setHFonc] = useState({ min: 0, max: 100 });
+  const [hStat, setHStat] = useState({ min: 0, max: 100 });
+  const [tFonc, setTFonc] = useState({ min: 0, max: 100 });
+  const [main, setMain] = useState({ min: 0, max: 100 });
   const [prejudice, setPrejudice] = useState("");
   const [numDoses, setNumDoses] = useState([]);
+  const [siteses, setSiteses] = useState([]);
 
   const filterDos = (e, val) => {
     setNumDoses(val);
+  };
+  const filterSite = (e, val) => {
+    setSiteses(val);
   };
 
   const filterPrejudice = (e) => {
@@ -85,65 +60,56 @@ const MachineriesFilters = ({
     setDesc(e.target.value);
   };
 
-  const filterHFonc = (e, val) => {
-    setHFonc(val);
-  };
-
-  const filterHStat = (e, val) => {
-    setHStat(val);
-  };
-  const filterTFonc = (e, val) => {
-    setTFonc(val);
-  };
-  const filterMain = (e, val) => {
-    setMain(val);
-  };
-
-  useEffect(() => {
+  const filterTable = () => {
     const fil = machineries
       .filter((mach) =>
         numDoses.length > 0 ? numDoses.includes(mach.id.split(";")[0]) : true
       )
       .filter((mach) => (cout > 0 ? mach.cout > cout : true))
       .filter((mach) => (prejudice ? mach.type === prejudice : true))
+      .filter((fac) =>
+        siteses.length > 0 ? siteses.includes(fac.site_con) : true
+      )
       .filter((mach) =>
         desc !== ""
           ? mach.desc.toLowerCase().includes(desc.toLowerCase())
           : true
       )
       .filter((mach) =>
-        hFonc[1] - hFonc[0] < 100
-          ? mach.hrs_fonc >= hFonc[0] && mach.hrs_fonc <= hFonc[1]
+        hFonc.max - hFonc.min < 100
+          ? mach.hrs_fonc >= hFonc.min && mach.hrs_fonc <= hFonc.max
           : true
       )
       .filter((mach) =>
-        hStat[1] - hStat[0] < 100
-          ? mach.hrs_stat >= hStat[0] && mach.hrs_stat <= hStat[1]
+        hStat.max - hStat.min < 100
+          ? mach.hrs_stat >= hStat.min && mach.hrs_stat <= hStat.max
           : true
       )
       .filter((mach) =>
-        tFonc[1] - tFonc[0] < 100
-          ? mach.taux_fonc >= tFonc[0] && mach.taux_fonc <= tFonc[1]
+        tFonc.max - tFonc.min < 100
+          ? mach.taux_fonc >= tFonc.min && mach.taux_fonc <= tFonc.max
           : true
       )
       .filter((mach) =>
-        main[1] - main[0] < 100
-          ? mach.maintenance >= main[0] && mach.maintenance <= main[1]
+        main.max - main.min < 100
+          ? mach.maintenance >= main.min && mach.maintenance <= main.max
           : true
       );
 
     setFilteredMachineries(fil);
-  }, [
-    setFilteredMachineries,
-    numDoses,
-    cout,
-    desc,
-    hFonc,
-    hStat,
-    tFonc,
-    main,
-    prejudice,
-  ]);
+  };
+  const resetForm = () => {
+    setCout(0);
+    setDesc("");
+    setHFonc({ min: 0, max: 100 });
+    setHStat({ min: 0, max: 100 });
+    setTFonc({ min: 0, max: 100 });
+    setMain({ min: 0, max: 100 });
+    setPrejudice("");
+    setNumDoses([]);
+    setSiteses([]);
+    setFilteredMachineries(machineries);
+  };
 
   const prejudices = {
     dab: "Dommage au biens",
@@ -154,17 +120,23 @@ const MachineriesFilters = ({
 
   return (
     <>
-      <Accordion>
+      <Accordion sx={{ border: "1px solid #eee" }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
+          sx={{ backgroundColor: "#eeeb" }}
         >
-          <Typography variant="h5">Filtres</Typography>
+          <Box display="flex" alignItems="center">
+            <FilterAltIcon />
+            <Typography ml={1} variant="h5" textAlign="center">
+              Filtres
+            </Typography>
+          </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
+          <Grid container columnSpacing={2}>
+            <Grid item xs={12} lg={4}>
               <Autocomplete
                 multiple
                 id="tags-outlined"
@@ -180,13 +152,35 @@ const MachineriesFilters = ({
                     {...params}
                     size="small"
                     label="Numéro dossier"
+                    margin="dense"
                     placeholder="Rechercher dossier"
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={6} lg={4}>
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={sites}
+                value={siteses}
+                onChange={filterSite}
+                getOptionLabel={(site) => site}
+                defaultValue={[]}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    fullWidth
+                    {...params}
+                    size="small"
+                    label="Sites"
+                    placeholder="Rechercher site"
                     margin="dense"
                   />
                 )}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={6} lg={4}>
               <TextField
                 select
                 fullWidth
@@ -236,50 +230,112 @@ const MachineriesFilters = ({
           <Typography variant="h6" mt={2}>
             Heures
           </Typography>
-          <Grid container spacing={3}>
+          <Grid container columnSpacing={3} rowSpacing={1}>
             <Grid item xs={6}>
-              <Box sx={{ width: "100%", pr: 2 }}>
-                <Stack
-                  spacing={2}
-                  direction="row"
-                  sx={{ mb: 1 }}
-                  alignItems="center"
-                >
-                  <Typography>Fonc</Typography>
-                  <Slider
-                    size="small"
-                    getAriaLabel={() => "Temperature range"}
-                    value={hFonc}
-                    onChange={filterHFonc}
-                    valueLabelDisplay="auto"
-                    marks={marks}
-                    step={10}
-                  />
-                </Stack>
-              </Box>
+              <Grid container spacing={1}>
+                <Box display="flex" alignItems="center">
+                  <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
+                    En fonction
+                  </Typography>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="min"
+                      value={hFonc.min}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setHFonc({ ...hFonc, min: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AccessTimeIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="max"
+                      value={hFonc.max}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setHFonc({ ...hFonc, max: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AccessTimeIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Box>
+              </Grid>
             </Grid>
             <Grid item xs={6}>
-              <Box sx={{ width: "100%", pr: 2 }}>
-                <Stack
-                  spacing={2}
-                  direction="row"
-                  sx={{ mb: 1 }}
-                  alignItems="center"
-                >
-                  <Typography>Stat</Typography>
-                  <Slider
-                    size="small"
-                    getAriaLabel={() => "Temperature range"}
-                    value={hStat}
-                    onChange={filterHStat}
-                    valueLabelDisplay="auto"
-                    marks={marks}
-                    step={10}
-                  />
-                </Stack>
-              </Box>
+              <Grid container spacing={1}>
+                <Box display="flex" alignItems="center">
+                  <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
+                    Stationnaire
+                  </Typography>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="min"
+                      value={hStat.min}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setHStat({ ...hStat, min: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AccessTimeIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="max"
+                      value={hStat.max}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setHStat({ ...hStat, max: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AccessTimeIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Box>
+              </Grid>
             </Grid>
           </Grid>
+
           {/* TAUXXXXXXXX */}
           {/* TAUXXXXXXXX */}
           {/* TAUXXXXXXXX */}
@@ -290,50 +346,132 @@ const MachineriesFilters = ({
           <Typography variant="h6" mt={2}>
             Taux
           </Typography>
-          <Grid container spacing={3}>
+          <Grid container columnSpacing={3} rowSpacing={1}>
             <Grid item xs={6}>
-              <Box sx={{ width: "100%", pr: 2 }}>
-                <Stack
-                  spacing={2}
-                  direction="row"
-                  sx={{ mb: 1 }}
-                  alignItems="center"
-                >
-                  <Typography>Fonc</Typography>
-                  <Slider
-                    size="small"
-                    getAriaLabel={() => "Temperature range"}
-                    value={tFonc}
-                    onChange={filterTFonc}
-                    valueLabelDisplay="auto"
-                    marks={marksT}
-                    color="success"
-                    step={10}
-                  />
-                </Stack>
-              </Box>
+              <Grid container spacing={1}>
+                <Box display="flex" alignItems="center">
+                  <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
+                    En fonction
+                  </Typography>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="min"
+                      value={tFonc.min}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setTFonc({ ...tFonc, min: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AttachMoneyIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="max"
+                      value={tFonc.max}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setTFonc({ ...tFonc, max: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AttachMoneyIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Box>
+              </Grid>
             </Grid>
             <Grid item xs={6}>
-              <Box sx={{ width: "100%", pr: 2 }}>
-                <Stack
-                  spacing={2}
-                  direction="row"
-                  sx={{ mb: 1 }}
-                  alignItems="center"
-                >
-                  <Typography>Maintenance</Typography>
-                  <Slider
+              <Grid container spacing={1}>
+                <Box display="flex" alignItems="center">
+                  <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
+                    Maintenance
+                  </Typography>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="min"
+                      value={main.min}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setMain({ ...main, min: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AttachMoneyIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="max"
+                      value={main.max}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setMain({ ...main, max: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AttachMoneyIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid container mt={2}>
+            <Grid item xs={12}>
+              <Grid container display="flex" justifyContent="flex-end">
+                <Stack direction="row" spacing={1}>
+                  <Button
+                    variant="contained"
                     size="small"
-                    getAriaLabel={() => "Temperature range"}
-                    value={main}
-                    onChange={filterMain}
-                    valueLabelDisplay="auto"
-                    marks={marksT}
-                    color="success"
-                    step={10}
-                  />
+                    startIcon={<SearchIcon />}
+                    onClick={filterTable}
+                  >
+                    Chercher
+                  </Button>
+                  <Button
+                    onClick={resetForm}
+                    size="small"
+                    startIcon={<UndoIcon />}
+                  >
+                    Réinitialiser
+                  </Button>
                 </Stack>
-              </Box>
+              </Grid>
             </Grid>
           </Grid>
         </AccordionDetails>

@@ -8,6 +8,7 @@ import {
   Box,
   Slider,
   Stack,
+  Button,
 } from "@mui/material";
 
 import Accordion from "@mui/material/Accordion";
@@ -16,60 +17,32 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const marks = [
-  {
-    value: 0,
-    label: "0",
-  },
-  {
-    value: 20,
-    label: "20",
-  },
-  {
-    value: 50,
-    label: "50",
-  },
-  {
-    value: 100,
-    label: "100",
-  },
-];
+import UndoIcon from "@mui/icons-material/Undo";
+import SearchIcon from "@mui/icons-material/Search";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
-const marksT = [
-  {
-    value: 10,
-    label: "10$",
-  },
-  {
-    value: 30,
-    label: "30$",
-  },
-  {
-    value: 60,
-    label: "60$",
-  },
-  {
-    value: 100,
-    label: "100$",
-  },
-];
+import InputAdornment from "@mui/material/InputAdornment";
 
-const SalairesFilters = ({ salaires, setFilteredSalaires, numDos }) => {
+const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
   const [mrFilter, setMrFilter] = useState(0);
   const [name, setName] = useState("");
   const [status, setStatus] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [hreg, setHreg] = useState([0, 100]);
-  const [hsup, setHsup] = useState([0, 100]);
-  const [hsup2, setHsup2] = useState([0, 100]);
-  const [treg, setTreg] = useState([10, 100]);
-  const [tsup, setTsup] = useState([10, 100]);
-  const [tsup2, setTsup2] = useState([10, 100]);
+  const [hreg, setHreg] = useState({ min: 0, max: 100 });
+  const [hsup, setHsup] = useState({ min: 0, max: 100 });
+  const [hsup2, setHsup2] = useState({ min: 0, max: 100 });
+  const [treg, setTreg] = useState({ min: 10, max: 100 });
+  const [tsup, setTsup] = useState({ min: 10, max: 100 });
+  const [tsup2, setTsup2] = useState({ min: 10, max: 100 });
   const [prejudice, setPrejudice] = useState("");
   const [numDoses, setNumDoses] = useState([]);
   const [tax, setTax] = useState(true);
   const [taxSw, setTaxSw] = useState(false);
+  const [siteses, setSiteses] = useState([]);
+
   const filterMR = (e) => {
     setMrFilter(e.target.value);
   };
@@ -88,36 +61,12 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos }) => {
   const filterStatus = (e) => {
     setStatus(e.target.value);
   };
+  const filterSite = (e, val) => {
+    setSiteses(val);
+  };
 
   const filterDos = (e, val) => {
     setNumDoses(val);
-  };
-  const filterHreg = (e, val) => {
-    setHreg(val);
-  };
-  const filterHsup = (e, val) => {
-    setHsup(val);
-  };
-  const filterHsup2 = (e, val) => {
-    setHsup2(val);
-  };
-
-  const filterTreg = (e, val) => {
-    setTreg(val);
-  };
-  const filterTsup = (e, val) => {
-    setTsup(val);
-  };
-  const filterTsup2 = (e, val) => {
-    setTsup2(val);
-  };
-
-  const filterTax = (e) => {
-    setTax(e.target.checked);
-  };
-
-  const toggleTax = () => {
-    setTaxSw(!taxSw);
   };
 
   const filterPrejudice = (e) => {
@@ -126,24 +75,53 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos }) => {
     );
   };
 
-  useEffect(() => {
+  const prejudices = {
+    dab: "Dommage au biens",
+    mpt: "Mesures preventives temporarires",
+    mi: "Mesures d'interventions",
+    bcg: "Bris du couvert de glace",
+  };
+
+  const resetForm = () => {
+    setFilteredSalaires(salaires);
+    setMrFilter(0);
+    setName("");
+    setStatus("");
+    setStartDate("");
+    setEndDate("");
+    setHreg({ min: 0, max: 100 });
+    setHsup({ min: 0, max: 100 });
+    setHsup2({ min: 0, max: 100 });
+    setTreg({ min: 10, max: 100 });
+    setTsup({ min: 10, max: 100 });
+    setTsup2({ min: 10, max: 100 });
+    setPrejudice("");
+    setNumDoses([]);
+    setTax(true);
+    setTaxSw(false);
+    setSiteses([]);
+  };
+  const filterTable = () => {
     const fil = salaires
       .filter((sal) => sal.montant_rec > mrFilter)
       .filter((sal) => (prejudice ? sal.type === prejudice : true))
       .filter((sal) => (status ? sal.status === status : true))
+      .filter((fac) =>
+        siteses.length > 0 ? siteses.includes(fac.site_con) : true
+      )
       .filter((sal) =>
-        hreg[1] - hreg[0] < 100
-          ? sal.Hreg >= hreg[0] && sal.Hreg <= hreg[1]
+        hreg.max - hreg.min < 100
+          ? sal.Hreg >= hreg.min && sal.Hreg <= hreg.max
           : true
       )
       .filter((sal) =>
-        hsup[1] - hsup[0] < 100
-          ? sal.Hsup >= hsup[0] && sal.Hsup <= hsup[1]
+        hsup.max - hsup.min < 100
+          ? sal.Hsup >= hsup.min && sal.Hsup <= hsup.max
           : true
       )
       .filter((sal) =>
-        hsup2[1] - hsup2[0] < 100
-          ? sal.Hsup2 >= hsup2[0] && sal.Hsup2 <= hsup2[1]
+        hsup2.max - hsup2.min < 100
+          ? sal.Hsup2 >= hsup2.min && sal.Hsup2 <= hsup2.max
           : true
       )
       .filter((sal) =>
@@ -173,43 +151,27 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos }) => {
         return dSal >= debut && dSal <= fin;
       });
     setFilteredSalaires(fil);
-  }, [
-    setFilteredSalaires,
-    prejudice,
-    numDoses,
-    name,
-    mrFilter,
-    startDate,
-    endDate,
-    status,
-    hreg,
-    hsup,
-    hsup2,
-    treg,
-    tsup,
-    tsup2,
-  ]);
-
-  const prejudices = {
-    dab: "Dommage au biens",
-    mpt: "Mesures preventives temporarires",
-    mi: "Mesures d'interventions",
-    bcg: "Bris du couvert de glace",
   };
 
   return (
     <>
-      <Accordion>
+      <Accordion sx={{ border: "1px solid #eee" }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
+          sx={{ backgroundColor: "#eeeb" }}
         >
-          <Typography variant="h5">Filtres</Typography>
+          <Box display="flex" alignItems="center">
+            <FilterAltIcon />
+            <Typography ml={1} variant="h5" textAlign="center">
+              Filtres
+            </Typography>
+          </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container>
-            <Grid item xs={12}>
+          <Grid container columnSpacing={2}>
+            <Grid item xs={12} lg={4}>
               <Autocomplete
                 multiple
                 id="tags-outlined"
@@ -225,45 +187,35 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos }) => {
                     {...params}
                     size="small"
                     label="Numéro dossier"
+                    margin="dense"
                     placeholder="Rechercher dossier"
                   />
                 )}
               />
             </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                fullWidth
-                label="Nom et prénom"
-                variant="outlined"
-                size="small"
-                margin="dense"
-                value={name}
-                onChange={filterName}
+            <Grid item xs={6} lg={4}>
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={sites}
+                value={siteses}
+                onChange={filterSite}
+                getOptionLabel={(site) => site}
+                defaultValue={[]}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    fullWidth
+                    {...params}
+                    size="small"
+                    label="Sites"
+                    placeholder="Rechercher site"
+                    margin="dense"
+                  />
+                )}
               />
             </Grid>
-            <Grid item xs={6}>
-              <TextField
-                select
-                fullWidth
-                label="Status"
-                size="small"
-                margin="dense"
-                onChange={filterStatus}
-                defaultValue=""
-              >
-                <MenuItem value="">
-                  <em>Tout</em>
-                </MenuItem>
-
-                <MenuItem value="occ">Occasionnel</MenuItem>
-                <MenuItem value="reg">Régulier</MenuItem>
-              </TextField>
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item xs={8}>
+            <Grid item xs={6} lg={4}>
               <TextField
                 select
                 fullWidth
@@ -283,6 +235,37 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos }) => {
                     </MenuItem>
                   );
                 })}
+              </TextField>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <TextField
+                fullWidth
+                label="Nom et prénom"
+                variant="outlined"
+                size="small"
+                margin="dense"
+                value={name}
+                onChange={filterName}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                select
+                fullWidth
+                label="Status"
+                size="small"
+                margin="dense"
+                onChange={filterStatus}
+                defaultValue=""
+              >
+                <MenuItem value="">
+                  <em>Tout</em>
+                </MenuItem>
+
+                <MenuItem value="occ">Occasionnel</MenuItem>
+                <MenuItem value="reg">Régulier</MenuItem>
               </TextField>
             </Grid>
             <Grid item xs={4}>
@@ -325,65 +308,164 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos }) => {
             </Grid>
           </Grid>
           <Typography variant="h6">Heures</Typography>
-          <Grid container>
-            <Grid item xs={12}>
-              <Box sx={{ width: "100%", pr: 2 }}>
-                <Stack spacing={2} direction="row" alignItems="center">
-                  <Typography>Régulier</Typography>
-                  <Slider
-                    getAriaLabel={() => "Temperature range"}
-                    value={hreg}
-                    onChange={filterHreg}
-                    valueLabelDisplay="auto"
-                    marks={marks}
-                    step={10}
-                  />
-                </Stack>
-              </Box>
+          <Grid container columnSpacing={3} rowSpacing={1}>
+            <Grid item xs={6} lg={4}>
+              <Grid container spacing={1}>
+                <Box display="flex" alignItems="center">
+                  <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
+                    Regulier
+                  </Typography>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="min"
+                      value={hreg.min}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setHreg({ ...hreg, min: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AccessTimeIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="max"
+                      value={hreg.max}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setHreg({ ...hreg, max: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AccessTimeIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid item xs={6} lg={4}>
+              <Grid container spacing={1}>
+                <Box display="flex" alignItems="center">
+                  <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
+                    Suplémentaire 1
+                  </Typography>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="min"
+                      value={hsup.min}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setHsup({ ...hsup, min: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AccessTimeIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="max"
+                      value={hsup.max}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setHsup({ ...hsup, max: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AccessTimeIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid item xs={6} lg={4}>
+              <Grid container spacing={1}>
+                <Box display="flex" alignItems="center">
+                  <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
+                    Suplémentaire 2
+                  </Typography>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="min"
+                      value={hsup2.min}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setHsup2({ ...hsup2, min: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AccessTimeIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="max"
+                      value={hsup2.max}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setHsup2({ ...hsup2, max: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AccessTimeIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Box>
+              </Grid>
             </Grid>
           </Grid>
-          <Grid container spacing={3} mt={1}>
-            <Grid item xs={6}>
-              <Box sx={{ width: "100%", pr: 2 }}>
-                <Stack
-                  spacing={2}
-                  direction="row"
-                  sx={{ mb: 1 }}
-                  alignItems="center"
-                >
-                  <Typography>Sup1</Typography>
-                  <Slider
-                    getAriaLabel={() => "Temperature range"}
-                    value={hsup}
-                    onChange={filterHsup}
-                    valueLabelDisplay="auto"
-                    marks={marks}
-                    step={10}
-                  />
-                </Stack>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box sx={{ width: "100%", pr: 2 }}>
-                <Stack
-                  spacing={2}
-                  direction="row"
-                  sx={{ mb: 1 }}
-                  alignItems="center"
-                >
-                  <Typography>Sup2</Typography>
-                  <Slider
-                    getAriaLabel={() => "Temperature range"}
-                    value={hsup2}
-                    onChange={filterHsup2}
-                    valueLabelDisplay="auto"
-                    marks={marks}
-                    step={10}
-                  />
-                </Stack>
-              </Box>
-            </Grid>
-          </Grid>
+
           {/* TAUXXXXXXXXXXXXX */}
           {/* TAUXXXXXXXXXXXXX */}
           {/* TAUXXXXXXXXXXXXX */}
@@ -393,69 +475,184 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos }) => {
           <Typography variant="h6" mt={2}>
             Taux
           </Typography>
-          <Grid container>
-            <Grid item xs={12}>
-              <Box sx={{ width: "100%", pr: 2 }}>
-                <Stack spacing={2} direction="row" alignItems="center">
-                  <Typography>Régulier</Typography>
-                  <Slider
-                    getAriaLabel={() => "Temperature range"}
-                    value={treg}
-                    onChange={filterTreg}
-                    valueLabelDisplay="auto"
-                    marks={marksT}
-                    color="success"
-                    step={10}
-                    min={10}
-                  />
-                </Stack>
-              </Box>
+          <Grid container columnSpacing={3} rowSpacing={1}>
+            <Grid item xs={6} lg={4}>
+              <Grid container spacing={1}>
+                <Box display="flex" alignItems="center">
+                  <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
+                    Regulier
+                  </Typography>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="min"
+                      value={treg.min}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setTreg({ ...treg, min: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AttachMoneyIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="max"
+                      value={treg.max}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setTreg({ ...treg, max: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AttachMoneyIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid item xs={6} lg={4}>
+              <Grid container spacing={1}>
+                <Box display="flex" alignItems="center">
+                  <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
+                    Suplémentaire 1
+                  </Typography>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="min"
+                      value={tsup.min}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setTsup({ ...tsup, min: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AttachMoneyIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="max"
+                      value={tsup.max}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setTsup({ ...tsup, max: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AttachMoneyIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid item xs={6} lg={4}>
+              <Grid container spacing={1}>
+                <Box display="flex" alignItems="center">
+                  <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
+                    Suplémentaire 2
+                  </Typography>
+
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="min"
+                      value={tsup2.min}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setTsup2({ ...tsup2, min: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AttachMoneyIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      fullWidth
+                      label="max"
+                      value={tsup2.max}
+                      size="small"
+                      margin="dense"
+                      type="number"
+                      InputLabelProps={{ shrink: true }}
+                      onChange={(e) =>
+                        setTsup2({ ...tsup2, max: e.target.value })
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <AttachMoneyIcon fontSize="small" />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Box>
+              </Grid>
             </Grid>
           </Grid>
-          <Grid container spacing={3} mt={1}>
-            <Grid item xs={6}>
-              <Box sx={{ width: "100%", pr: 2 }}>
-                <Stack
-                  spacing={2}
-                  direction="row"
-                  sx={{ mb: 1 }}
-                  alignItems="center"
-                >
-                  <Typography>Sup1</Typography>
-                  <Slider
-                    getAriaLabel={() => "Temperature range"}
-                    value={tsup}
-                    onChange={filterTsup}
-                    valueLabelDisplay="auto"
-                    marks={marksT}
-                    color="success"
-                    step={10}
-                    min={10}
-                  />
+          <Grid container mt={2}>
+            <Grid item xs={12}>
+              <Grid container display="flex" justifyContent="flex-end">
+                <Stack direction="row" spacing={1}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    startIcon={<SearchIcon />}
+                    onClick={filterTable}
+                  >
+                    Chercher
+                  </Button>
+                  <Button
+                    onClick={resetForm}
+                    size="small"
+                    startIcon={<UndoIcon />}
+                  >
+                    Réinitialiser
+                  </Button>
                 </Stack>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box sx={{ width: "100%", pr: 2 }}>
-                <Stack
-                  spacing={2}
-                  direction="row"
-                  sx={{ mb: 1 }}
-                  alignItems="center"
-                >
-                  <Typography>Sup2</Typography>
-                  <Slider
-                    getAriaLabel={() => "Temperature range"}
-                    value={tsup2}
-                    onChange={filterTsup2}
-                    valueLabelDisplay="auto"
-                    marks={marksT}
-                    color="success"
-                    step={10}
-                    min={10}
-                  />
-                </Stack>
-              </Box>
+              </Grid>
             </Grid>
           </Grid>
         </AccordionDetails>

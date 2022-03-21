@@ -7,10 +7,11 @@ import { renderCellExpand } from "./CellExpand";
 
 import clsx from "clsx";
 
-import EditIcon from "@mui/icons-material/Edit";
+//import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import PaidIcon from "@mui/icons-material/Paid";
 
 export const filesTableColumns = [
   {
@@ -30,12 +31,27 @@ export const filesTableColumns = [
         showInMenu
       />,
 
-      <GridActionsCellItem icon={<EditIcon />} label="Modifier" showInMenu />,
+      <GridActionsCellItem
+        icon={<PaidIcon />}
+        label="Verser"
+        onClick={console.log(params)}
+        showInMenu
+      />,
     ],
   },
   {
     field: "id",
-    headerName: "Identification",
+    headerName: "Numéro",
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    width: 90,
+    cellClassName: (params) =>
+      clsx("super-app", {
+        actif: params.value === "actif",
+        ferme: params.value === "fermé",
+      }),
   },
   {
     field: "Evenement",
@@ -51,15 +67,12 @@ export const filesTableColumns = [
     width: 130,
   },
   {
-    field: "status",
-    headerName: "Status",
-    width: 90,
-    cellClassName: (params) =>
-      clsx("super-app", {
-        actif: params.value === "actif",
-        ferme: params.value === "fermé",
-      }),
+    field: "datOuv",
+    headerName: "Date d'ouverture",
+    type: "date",
+    width: 130,
   },
+
   {
     field: "MR",
     headerName: "Montant réclamé",

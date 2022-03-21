@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { Grid, TextField, MenuItem } from "@mui/material";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Autocomplete from "@mui/material/Autocomplete";
 
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -8,13 +11,22 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
+import UndoIcon from "@mui/icons-material/Undo";
+import SearchIcon from "@mui/icons-material/Search";
+
+const DossierFilters = ({ dossiers, setFilteredDossiers, numDos }) => {
   const [mrFilter, setMrFilter] = useState(0);
+  const [numDoses, setNumDoses] = useState([]);
+  const [maFilter, setMaFilter] = useState(0);
   const [mvFilter, setMvFilter] = useState(0);
   const [descFilter, setDescFilter] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [status, setStatus] = useState("all");
+  const [status, setStatus] = useState("");
+
+  const filterDos = (e, val) => {
+    setNumDoses(val);
+  };
 
   const filterMR = (e) => {
     setMrFilter(e.target.value);
@@ -39,10 +51,26 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
     setStatus(e.target.value);
   };
 
-  useEffect(() => {
+  const resetForm = () => {
+    setMrFilter(0);
+    setMaFilter(0);
+    setMvFilter(0);
+    setDescFilter("");
+    setStartDate("");
+    setEndDate("");
+    setStatus("");
+    setNumDoses([]);
+    setFilteredDossiers(dossiers);
+  };
+
+  const filterTable = () => {
     const fil = dossiers
       .filter((dos) => dos.MR > mrFilter)
       .filter((dos) => dos.MV > mvFilter)
+      .filter((dos) => dos.MA > maFilter)
+      .filter((dos) =>
+        numDoses.length > 0 ? numDoses.includes(dos.id.toString()) : true
+      )
       .filter((dos) =>
         status === "" || status === "all" ? true : dos.status === status
       )
@@ -57,43 +85,77 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
         return dDos >= debut && dDos <= fin;
       });
     setFilteredDossiers(fil);
-  }, [
-    descFilter,
-    dossiers,
-    mrFilter,
-    mvFilter,
-    setFilteredDossiers,
-    startDate,
-    status,
-    endDate,
-  ]);
+  };
 
   return (
     <>
-      <Accordion>
+      <Accordion sx={{ border: "1px solid #eee" }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
+          sx={{ backgroundColor: "#eeeb" }}
         >
           <Typography variant="h5">Filtres</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container>
-            <Grid item xs={12}>
+          <Grid container columnSpacing={2}>
+            <Grid item xs={12} lg={4}>
               <TextField
                 fullWidth
-                label="Description"
+                margin="dense"
+                label="Evénement"
                 variant="outlined"
                 size="small"
                 value={descFilter}
                 onChange={filterDesc}
               />
             </Grid>
-          </Grid>
-          <Grid container spacing={2} mt={2}>
-            <Grid item xs={6}>
+            <Grid item xs={6} lg={4}>
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={numDos}
+                value={numDoses}
+                getOptionLabel={(dos) => dos}
+                defaultValue={[]}
+                filterSelectedOptions
+                onChange={filterDos}
+                renderInput={(params) => (
+                  <TextField
+                    fullWidth
+                    {...params}
+                    size="small"
+                    label="Numéro dossier"
+                    margin="dense"
+                    placeholder="Rechercher dossier"
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={6} lg={4}>
               <TextField
+                margin="dense"
+                select
+                fullWidth
+                label="Status"
+                size="small"
+                onChange={filterStatus}
+                defaultValue=""
+              >
+                <MenuItem value="actif">Actif</MenuItem>
+                <MenuItem value="fermé">Fermé</MenuItem>
+                <MenuItem value="">--</MenuItem>
+              </TextField>
+            </Grid>
+          </Grid>
+          <Typography variant="h6" mt={1}>
+            Montants
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <TextField
+                margin="dense"
                 fullWidth
                 label="Montant réclamé"
                 variant="outlined"
@@ -103,8 +165,20 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
                 onChange={filterMR}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <TextField
+                margin="dense"
+                fullWidth
+                label="Montant admissible"
+                variant="outlined"
+                size="small"
+                value={maFilter}
+                onChange={(e) => setMaFilter(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                margin="dense"
                 fullWidth
                 label="Montant versé"
                 variant="outlined"
@@ -114,9 +188,10 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
               />
             </Grid>
           </Grid>
-          <Grid container mt={2} spacing={2}>
+          <Grid container spacing={2}>
             <Grid item xs={6}>
               <TextField
+                margin="dense"
                 fullWidth
                 label="Date debut"
                 value={startDate}
@@ -128,6 +203,7 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
             </Grid>
             <Grid item xs={6}>
               <TextField
+                margin="dense"
                 fullWidth
                 label="Date fin"
                 value={endDate}
@@ -138,20 +214,27 @@ const DossierFilters = ({ dossiers, setFilteredDossiers }) => {
               />
             </Grid>
           </Grid>
-          <Grid container spacing={2} mt={2}>
-            <Grid item xs={6}>
-              <TextField
-                select
-                fullWidth
-                label="Status"
-                size="small"
-                onChange={filterStatus}
-                defaultValue=""
-              >
-                <MenuItem value="actif">Actif</MenuItem>
-                <MenuItem value="fermé">Fermé</MenuItem>
-                <MenuItem value="all">Les 2</MenuItem>
-              </TextField>
+          <Grid container mt={2}>
+            <Grid item xs={12}>
+              <Grid container display="flex" justifyContent="flex-end">
+                <Stack direction="row" spacing={1}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    startIcon={<SearchIcon />}
+                    onClick={filterTable}
+                  >
+                    Chercher
+                  </Button>
+                  <Button
+                    onClick={resetForm}
+                    size="small"
+                    startIcon={<UndoIcon />}
+                  >
+                    Réinitialiser
+                  </Button>
+                </Stack>
+              </Grid>
             </Grid>
           </Grid>
         </AccordionDetails>

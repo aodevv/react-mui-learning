@@ -6,7 +6,6 @@ import {
   MenuItem,
   Autocomplete,
   Box,
-  Slider,
   Stack,
   Button,
 } from "@mui/material";

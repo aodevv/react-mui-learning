@@ -24,6 +24,12 @@ import DossierFilters from "../../Components/Filters/DossierFilters/DossierFilte
 const FileManager = ({ dossiers }) => {
   const [filteredDossiers, setFilteredDossiers] = useState(dossiers);
 
+  let dosOnly = [];
+
+  dossiers.forEach((item) => {
+    dosOnly.push(item.id.toString());
+  });
+
   return (
     <Grid>
       <Card>
@@ -33,10 +39,11 @@ const FileManager = ({ dossiers }) => {
           title={"Liste des dossiers"}
         />
         <CardContent>
-          <Grid item xs={12} md={8} mb={2}>
+          <Grid item xs={12} mb={2}>
             <DossierFilters
               dossiers={dossiers}
               setFilteredDossiers={setFilteredDossiers}
+              numDos={dosOnly}
             />
           </Grid>
           <Stack direction="row" spacing={2}>

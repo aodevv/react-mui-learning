@@ -73,7 +73,6 @@ const MachinerieModalForm = ({
   });
 
   const sites = globalValues.sites.map((site) => site.site);
-  console.log(sites);
 
   const handleSubmit = (values) => {
     let id;
@@ -94,7 +93,6 @@ const MachinerieModalForm = ({
     newMachine = Object.assign([], newMachine);
     newMachine.push({ ...values, site_con: sites[values.site_con] });
     if (existing) {
-      console.log("floo");
       let newMachs = JSON.parse(JSON.stringify(machineries));
       const dosInt = globalValues.numero;
       Object.keys(newMachs).forEach(function (key, index) {

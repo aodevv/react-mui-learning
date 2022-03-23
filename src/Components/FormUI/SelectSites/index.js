@@ -31,7 +31,7 @@ const SelectWrapper = ({ name, sites, ...otherProps }) => {
 
   useEffect(() => {
     if (values.numDos !== "") {
-      const dosInt = parseInt(values.numDos);
+      const dosInt = values.numDos;
 
       setSitesList(sites[dosInt].map((site) => site.site));
       setFieldValue("site_con", "");

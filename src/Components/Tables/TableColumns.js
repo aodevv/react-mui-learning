@@ -31,12 +31,7 @@ export const filesTableColumns = [
         showInMenu
       />,
 
-      <GridActionsCellItem
-        icon={<PaidIcon />}
-        label="Verser"
-        onClick={console.log(params)}
-        showInMenu
-      />,
+      <GridActionsCellItem icon={<PaidIcon />} label="Verser" showInMenu />,
     ],
   },
   {
@@ -136,7 +131,7 @@ export const facturesColumns = [
   {
     field: "dos",
     headerName: "Dossier",
-    width: 80,
+    width: 100,
   },
   {
     field: "type",
@@ -145,6 +140,10 @@ export const facturesColumns = [
     valueFormatter: (params) => {
       return typePrejudices[params.value];
     },
+    cellClassName: (params) =>
+      clsx("super-app", {
+        dab: params.value === "dab",
+      }),
   },
   {
     field: "desc_fact",
@@ -213,6 +212,10 @@ export const machineriesColumns = [
     valueFormatter: (params) => {
       return typePrejudices[params.value];
     },
+    cellClassName: (params) =>
+      clsx("super-app", {
+        dab: params.value === "dab",
+      }),
   },
   {
     field: "site_con",
@@ -293,12 +296,7 @@ export const salairesColumns = [
   {
     field: "dos",
     headerName: "Dossier",
-    width: 80,
-  },
-  {
-    field: "name",
-    headerName: "name",
-    minWidth: 150,
+    width: 100,
   },
   {
     field: "type",
@@ -307,7 +305,17 @@ export const salairesColumns = [
     valueFormatter: (params) => {
       return typePrejudices[params.value];
     },
+    cellClassName: (params) =>
+      clsx("super-app", {
+        dab: params.value === "dab",
+      }),
   },
+  {
+    field: "name",
+    headerName: "name",
+    minWidth: 150,
+  },
+
   {
     field: "site_con",
     headerName: "Site concerné",
@@ -392,7 +400,7 @@ export const salairesColumns = [
     flex: 1,
     minWidth: 120,
     valueFormatter: (params) => {
-      const valueFormatted = params.value * 100;
+      const valueFormatted = params.value;
       return `${valueFormatted} %`;
     },
   },

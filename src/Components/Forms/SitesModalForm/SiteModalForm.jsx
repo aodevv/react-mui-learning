@@ -48,7 +48,6 @@ const SiteModalForm = ({
     part_end: "",
     pourc_end: 0,
     type_ret: "",
-    adm: false,
     pourc_adm: 0,
     montant_rec: 0,
   };
@@ -155,7 +154,7 @@ const SiteModalForm = ({
                     <Grid item xs={12}>
                       <Textfield name="type_ret" label="Type rétabli" />
                     </Grid>
-                    <Grid item xs={6} mt={1}>
+                    {/* <Grid item xs={6} mt={1}>
                       <Box>
                         <Checkbox
                           name="adm"
@@ -163,11 +162,10 @@ const SiteModalForm = ({
                           label="oui"
                         />
                       </Box>
-                    </Grid>
+                    </Grid> */}
                     <Grid container spacing={1} mb={1}>
                       <Grid item xs={6}>
                         <Textfield
-                          disabled={!values.adm}
                           name="pourc_adm"
                           label="Pourcentage admissible"
                           type="number"

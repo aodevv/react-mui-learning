@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -22,6 +23,7 @@ import FilesTable from "../../Components/Tables/FilesTable";
 import DossierFilters from "../../Components/Filters/DossierFilters/DossierFilters";
 
 const FileManager = ({ dossiers }) => {
+  const navigate = useNavigate();
   const [filteredDossiers, setFilteredDossiers] = useState(dossiers);
 
   let dosOnly = [];
@@ -29,6 +31,10 @@ const FileManager = ({ dossiers }) => {
   dossiers.forEach((item) => {
     dosOnly.push(item.id.toString());
   });
+
+  const openDosForm = () => {
+    navigate("/nouveau_dossier");
+  };
 
   return (
     <Grid>
@@ -47,7 +53,12 @@ const FileManager = ({ dossiers }) => {
             />
           </Grid>
           <Stack direction="row" spacing={2}>
-            <Button variant="contained" size="small" startIcon={<AddIcon />}>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={openDosForm}
+              startIcon={<AddIcon />}
+            >
               Ajouter
             </Button>
             <Button

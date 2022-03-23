@@ -65,7 +65,7 @@ const SalaireModalFormDos = ({
   };
 
   const handleSubmit = (values, { resetForm }) => {
-    const dosInt = parseInt(values.numDos);
+    const dosInt = values.numDos;
     let newSals = JSON.parse(JSON.stringify(salaires));
     const salaireDos = newSals[dosInt];
     let id;
@@ -100,7 +100,7 @@ const SalaireModalFormDos = ({
     };
     salaireDos.push(newSal);
     Object.keys(newSals).forEach(function (key, index) {
-      if (parseInt(key) === dosInt) {
+      if (key === dosInt) {
         newSals[key] = salaireDos;
       }
     });
@@ -145,15 +145,17 @@ const SalaireModalFormDos = ({
                             disabled={values.numDos === ""}
                           />
                         </Grid>
-                        <Grid item xs={6}>
-                          <SelectSites
-                            defaultValue=""
-                            name="site_con"
-                            label="Site concerné"
-                            sites={sites}
-                            disabled={values.type !== "dab"}
-                          />
-                        </Grid>
+                        {values.type === "dab" ? (
+                          <Grid item xs={6}>
+                            <SelectSites
+                              defaultValue=""
+                              name="site_con"
+                              label="Site concerné"
+                              sites={sites}
+                              disabled={values.type !== "dab"}
+                            />
+                          </Grid>
+                        ) : null}
                       </Grid>
                       <Grid container spacing={1}>
                         <Grid item xs={6}>

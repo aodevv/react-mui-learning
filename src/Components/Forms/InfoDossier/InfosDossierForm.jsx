@@ -14,7 +14,13 @@ import Checkbox from "../../FormUI/Checkbox";
 
 import TotalReclame from "../../../pages/NouveauDossier/TotalReclame";
 
-const InfosDossierForm = ({ values, openSubmit, existing }) => {
+//TOTALS
+import SitesTotal from "../../../pages/NouveauDossier/SitesTotal";
+import MPTTotal from "../../../pages/NouveauDossier/Cumulatives/MPTTotal";
+import MITotal from "../../../pages/NouveauDossier/Cumulatives/MIITotal";
+import BCGTotal from "../../../pages/NouveauDossier/Cumulatives/BCGTotal";
+
+const InfosDossierForm = ({ values, openSubmit, existing, isValid }) => {
   const [editing, setEditing] = useState(existing);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -94,11 +100,7 @@ const InfosDossierForm = ({ values, openSubmit, existing }) => {
                     <Box sx={{ width: 80 }}>
                       <Checkbox name="dab" label="DAB" />
                     </Box>
-                    {values.dab ? (
-                      <Typography>
-                        Total <b>$ 0.00</b>
-                      </Typography>
-                    ) : null}
+                    {values.dab ? <SitesTotal /> : null}
                   </Box>
                 </Grid>
                 <Grid item xs={6}>
@@ -106,11 +108,7 @@ const InfosDossierForm = ({ values, openSubmit, existing }) => {
                     <Box sx={{ width: 80 }}>
                       <Checkbox name="mpt" label="MPT" />
                     </Box>
-                    {values.mpt ? (
-                      <Typography>
-                        Total <b>$ 0.00</b>
-                      </Typography>
-                    ) : null}
+                    {values.mpt ? <MPTTotal /> : null}
                   </Box>
                 </Grid>
                 <Grid item xs={6}>
@@ -118,11 +116,7 @@ const InfosDossierForm = ({ values, openSubmit, existing }) => {
                     <Box sx={{ width: 80 }}>
                       <Checkbox name="mi" label="MI" />
                     </Box>
-                    {values.mi ? (
-                      <Typography>
-                        Total <b>$ 0.00</b>
-                      </Typography>
-                    ) : null}
+                    {values.mi ? <MITotal /> : null}
                   </Box>
                 </Grid>
                 <Grid item xs={6}>
@@ -130,11 +124,7 @@ const InfosDossierForm = ({ values, openSubmit, existing }) => {
                     <Box sx={{ width: 80 }}>
                       <Checkbox name="bcg" label="BCG" />
                     </Box>
-                    {values.bcg ? (
-                      <Typography>
-                        Total <b>$ 0.00</b>
-                      </Typography>
-                    ) : null}
+                    {values.bcg ? <BCGTotal /> : null}
                   </Box>
                 </Grid>
               </Grid>
@@ -185,6 +175,7 @@ const InfosDossierForm = ({ values, openSubmit, existing }) => {
                         variant="contained"
                         color="error"
                         onClick={openSubmit}
+                        disabled={!isValid}
                       >
                         Terminer
                       </Button>

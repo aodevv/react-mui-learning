@@ -28,6 +28,7 @@ const ContentRouter = () => {
       <Route path="/factures" element={<FacturePage />} />
       <Route path="/salaires" element={<SalairesPage />} />
       <Route path="/machineries" element={<MachineriePage />} />
+      <Route path="/nouveau_dossier" element={<NouveauDossier />} />
       <Route path="/testing" element={<NouveauDossier />} />
       <Route path="/testing2" element={<ExistingDossier />} />
     </Routes>

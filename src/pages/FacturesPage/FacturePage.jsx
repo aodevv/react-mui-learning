@@ -101,7 +101,7 @@ const FacturePage = ({ factures, sites, dossiers }) => {
         flatFactures.push({
           ...fac,
           id: `${item};${fac.id}`,
-          dos: parseInt(item),
+          dos: item,
         });
       })
     );
@@ -156,7 +156,6 @@ const FacturePage = ({ factures, sites, dossiers }) => {
         <Fade in={factureModal}>
           <Box sx={style}>
             <FactureModalFormDos
-              dossier={dossiers}
               prejudices={typePrejudices}
               closeModal={closeFacture}
               sites={sites}

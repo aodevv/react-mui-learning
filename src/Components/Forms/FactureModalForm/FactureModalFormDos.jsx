@@ -42,7 +42,7 @@ const FactureModalFormDos = ({
   };
 
   const handleSubmit = (values, { resetForm }) => {
-    const dosInt = parseInt(values.numDos);
+    const dosInt = values.numDos;
     let newFacts = JSON.parse(JSON.stringify(factures));
     const factureDos = newFacts[dosInt];
     let id;
@@ -113,15 +113,17 @@ const FactureModalFormDos = ({
                           />
                         </Grid>
 
-                        <Grid item xs={6}>
-                          <SelectSites
-                            defaultValue=""
-                            name="site_con"
-                            label="Site concerné"
-                            sites={sites}
-                            disabled={values.type !== "dab"}
-                          />
-                        </Grid>
+                        {values.type === "dab" ? (
+                          <Grid item xs={6}>
+                            <SelectSites
+                              defaultValue=""
+                              name="site_con"
+                              label="Site concerné"
+                              sites={sites}
+                              disabled={values.type !== "dab"}
+                            />
+                          </Grid>
+                        ) : null}
                       </Grid>
 
                       <Grid item xs={12}>

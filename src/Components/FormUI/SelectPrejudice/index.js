@@ -31,9 +31,7 @@ const SelectWrapper = ({ name, options, dossiers, ...otherProps }) => {
 
   useEffect(() => {
     if (values.numDos !== "") {
-      const dos = dossiers.filter(
-        (dos) => dos.id === parseInt(values.numDos)
-      )[0];
+      const dos = dossiers.filter((dos) => dos.id === values.numDos)[0];
       setFieldValue("type", "");
 
       const allowed = [];

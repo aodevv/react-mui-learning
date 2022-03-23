@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, Card, Typography } from "@mui/material";
 
-const MyCard = ({ title, children, bgColor, textColor, onClick }) => {
+const MyCard = ({ title, children, bgColor, textColor, onClick, bl, br }) => {
   return (
     <>
       <Card
@@ -15,6 +15,10 @@ const MyCard = ({ title, children, bgColor, textColor, onClick }) => {
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
+          borderTopLeftRadius: `${bl ? "0" : null}`,
+          borderBottomLeftRadius: `${bl ? "0" : null}`,
+          borderTopRightRadius: `${br ? "0" : null}`,
+          borderBottomRightRadius: `${br ? "0" : null}`,
           transition: "all linear 100ms",
           cursor: "pointer",
           "&:hover": {

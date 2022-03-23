@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Grid, TextField, MenuItem } from "@mui/material";
+import { Grid, TextField, MenuItem, Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -13,6 +13,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import UndoIcon from "@mui/icons-material/Undo";
 import SearchIcon from "@mui/icons-material/Search";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 const DossierFilters = ({ dossiers, setFilteredDossiers, numDos }) => {
   const [mrFilter, setMrFilter] = useState(0);
@@ -96,7 +97,12 @@ const DossierFilters = ({ dossiers, setFilteredDossiers, numDos }) => {
           id="panel1a-header"
           sx={{ backgroundColor: "#eeeb" }}
         >
-          <Typography variant="h5">Filtres</Typography>
+          <Box display="flex" alignItems="center">
+            <FilterAltIcon />
+            <Typography ml={1} variant="h5" textAlign="center">
+              Filtres
+            </Typography>
+          </Box>
         </AccordionSummary>
         <AccordionDetails>
           <Grid container columnSpacing={2}>

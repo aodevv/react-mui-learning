@@ -349,11 +349,6 @@ export const siteColumns = [
     },
   },
   {
-    field: "adm",
-    headerName: "Admissible ?",
-    type: "boolean",
-  },
-  {
     field: "pourc_adm",
     headerName: "Pourcentage admissible",
     flex: 1,

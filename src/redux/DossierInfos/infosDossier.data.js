@@ -1,6 +1,6 @@
 export const dossierAll = [
   {
-    id: 0,
+    id: "2021MU01",
     Evenement: "Revision of Nonaut Sub in L Low Femur, Open Approach",
     datEv: "1/11/2021",
     status: "actif",
@@ -18,7 +18,7 @@ export const dossierAll = [
     prgm: "Programme",
   },
   {
-    id: 1,
+    id: "2021MU02",
     Evenement: "Replacement of L Atrium with Nonaut Sub, Perc Endo Approach",
     datEv: "9/30/2021",
     status: "fermé",
@@ -28,7 +28,7 @@ export const dossierAll = [
     MV: 82261.95,
     Participation: 1.4,
     dab: true,
-    mi: false,
+    mi: true,
     mpt: true,
     bcg: false,
     datOuv: "1/01/2022",
@@ -36,7 +36,7 @@ export const dossierAll = [
     prgm: "Programme",
   },
   {
-    id: 2,
+    id: "2021MU03",
     Evenement: "Repair Pelvis Lymphatic, Percutaneous Approach",
     datEv: "10/17/2021",
     status: "actif",
@@ -54,7 +54,7 @@ export const dossierAll = [
     prgm: "Programme",
   },
   {
-    id: 3,
+    id: "2021MU04",
     Evenement: "Restrict of L Parotid Duct with Intralum Dev, Perc Approach",
     datEv: "3/3/2021",
     status: "actif",
@@ -72,7 +72,7 @@ export const dossierAll = [
     prgm: "Programme",
   },
   {
-    id: 4,
+    id: "2021MU05",
     Evenement: "Dilate L Subclav Art, Bifurc, w 2 Drug-elut, Perc",
     datEv: "4/23/2021",
     status: "actif",
@@ -90,7 +90,7 @@ export const dossierAll = [
     prgm: "Programme",
   },
   {
-    id: 5,
+    id: "2021MU06",
     Evenement: "Occlusion of Descending Colon, Perc Endo Approach",
     datEv: "3/21/2021",
     status: "actif",
@@ -108,7 +108,7 @@ export const dossierAll = [
     prgm: "Programme",
   },
   {
-    id: 6,
+    id: "2021MU07",
     Evenement: "Extirpation of Matter from Pons, Open Approach",
     datEv: "7/7/2021",
     status: "actif",
@@ -126,7 +126,7 @@ export const dossierAll = [
     prgm: "Programme",
   },
   {
-    id: 7,
+    id: "2021MU08",
     Evenement: "Supplement Left Vocal Cord with Nonaut Sub, Endo",
     datEv: "8/28/2021",
     status: "actif",
@@ -144,7 +144,7 @@ export const dossierAll = [
     prgm: "Programme",
   },
   {
-    id: 8,
+    id: "2021MU09",
     Evenement: "High Dose Rate (HDR) Brachytherapy of Chest using Iodine 125",
     datEv: "9/28/2021",
     status: "fermé",
@@ -162,7 +162,7 @@ export const dossierAll = [
     prgm: "Programme",
   },
   {
-    id: 9,
+    id: "2021MU10",
     Evenement: "Resection of Right Large Intestine, Endo",
     datEv: "10/3/2021",
     status: "fermé",

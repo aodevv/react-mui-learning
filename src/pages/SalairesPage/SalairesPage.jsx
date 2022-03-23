@@ -53,7 +53,7 @@ const SalairesPage = ({ salaires, dossiers, sites }) => {
     salaires[item].forEach((sal) => {
       flatSalaires.push({
         ...sal,
-        dos: parseInt(item),
+        dos: item,
         id: `${item};${sal.id}`,
       });
     })
@@ -98,7 +98,7 @@ const SalairesPage = ({ salaires, dossiers, sites }) => {
       salaires[item].forEach((sal) => {
         flatSalaires.push({
           ...sal,
-          dos: parseInt(item),
+          dos: item,
           id: `${item};${sal.id}`,
         });
       })

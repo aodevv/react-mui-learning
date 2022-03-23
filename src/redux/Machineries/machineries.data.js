@@ -1,5 +1,6 @@
 export const machineriesAll = {
-  1: [
+  "2021MU01": [],
+  "2021MU02": [
     {
       id: 0,
       code: "Caterpillar",
@@ -25,7 +26,7 @@ export const machineriesAll = {
       type: "mpt",
     },
   ],
-  2: [
+  "2021MU03": [
     {
       id: 0,
       code: "Hitachi",
@@ -51,11 +52,11 @@ export const machineriesAll = {
       type: "dab",
     },
   ],
-  3: [],
-  4: [],
-  5: [],
-  6: [],
-  7: [],
-  8: [],
-  9: [],
+  "2021MU04": [],
+  "2021MU05": [],
+  "2021MU06": [],
+  "2021MU07": [],
+  "2021MU08": [],
+  "2021MU09": [],
+  "2021MU10": [],
 };

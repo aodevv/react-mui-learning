@@ -55,7 +55,7 @@ const MachineriePage = ({ machinerie, dossiers, sites }) => {
     machinerie[item].forEach((mach) => {
       flatMachines.push({
         ...mach,
-        dos: parseInt(item),
+        dos: item,
         id: `${item};${mach.id}`,
       });
     })
@@ -100,7 +100,7 @@ const MachineriePage = ({ machinerie, dossiers, sites }) => {
       machinerie[item].forEach((mach) => {
         flatMachines.push({
           ...mach,
-          dos: parseInt(item),
+          dos: item,
           id: `${item};${mach.id}`,
         });
       })

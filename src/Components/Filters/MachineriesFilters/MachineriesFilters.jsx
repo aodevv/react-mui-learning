@@ -231,7 +231,7 @@ const MachineriesFilters = ({
             Heures
           </Typography>
           <Grid container columnSpacing={3} rowSpacing={1}>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <Grid container spacing={1}>
                 <Box display="flex" alignItems="center">
                   <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
@@ -282,7 +282,7 @@ const MachineriesFilters = ({
                 </Box>
               </Grid>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <Grid container spacing={1}>
                 <Box display="flex" alignItems="center">
                   <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
@@ -347,7 +347,7 @@ const MachineriesFilters = ({
             Taux
           </Typography>
           <Grid container columnSpacing={3} rowSpacing={1}>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <Grid container spacing={1}>
                 <Box display="flex" alignItems="center">
                   <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
@@ -398,7 +398,7 @@ const MachineriesFilters = ({
                 </Box>
               </Grid>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <Grid container spacing={1}>
                 <Box display="flex" alignItems="center">
                   <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>

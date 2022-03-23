@@ -308,7 +308,7 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
           </Grid>
           <Typography variant="h6">Heures</Typography>
           <Grid container columnSpacing={3} rowSpacing={1}>
-            <Grid item xs={6} lg={4}>
+            <Grid item xs={12} md={6} lg={4}>
               <Grid container spacing={1}>
                 <Box display="flex" alignItems="center">
                   <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
@@ -359,7 +359,7 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
                 </Box>
               </Grid>
             </Grid>
-            <Grid item xs={6} lg={4}>
+            <Grid item xs={12} md={6} lg={4}>
               <Grid container spacing={1}>
                 <Box display="flex" alignItems="center">
                   <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
@@ -411,7 +411,7 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
                 </Box>
               </Grid>
             </Grid>
-            <Grid item xs={6} lg={4}>
+            <Grid item xs={12} md={6} lg={4}>
               <Grid container spacing={1}>
                 <Box display="flex" alignItems="center">
                   <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
@@ -475,7 +475,7 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
             Taux
           </Typography>
           <Grid container columnSpacing={3} rowSpacing={1}>
-            <Grid item xs={6} lg={4}>
+            <Grid item xs={12} md={6} lg={4}>
               <Grid container spacing={1}>
                 <Box display="flex" alignItems="center">
                   <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
@@ -526,7 +526,7 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
                 </Box>
               </Grid>
             </Grid>
-            <Grid item xs={6} lg={4}>
+            <Grid item xs={12} md={6} lg={4}>
               <Grid container spacing={1}>
                 <Box display="flex" alignItems="center">
                   <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>
@@ -578,7 +578,7 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
                 </Box>
               </Grid>
             </Grid>
-            <Grid item xs={6} lg={4}>
+            <Grid item xs={12} md={6} lg={4}>
               <Grid container spacing={1}>
                 <Box display="flex" alignItems="center">
                   <Typography sx={{ whiteSpace: "nowrap" }} mr={1}>

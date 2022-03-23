@@ -47,7 +47,7 @@ const MachinerieModalFormDos = ({
   };
 
   const handleSubmit = (values, { resetForm }) => {
-    const dosInt = parseInt(values.numDos);
+    const dosInt = values.numDos;
     let newMachs = JSON.parse(JSON.stringify(machineries));
     const machDos = newMachs[dosInt];
     let id;
@@ -74,7 +74,7 @@ const MachinerieModalFormDos = ({
     };
     machDos.push(newMach);
     Object.keys(newMachs).forEach(function (key, index) {
-      if (parseInt(key) === dosInt) {
+      if (key === dosInt) {
         newMachs[key] = machDos;
       }
     });
@@ -119,17 +119,19 @@ const MachinerieModalFormDos = ({
                           disabled={values.numDos === ""}
                         />
                       </Grid>
-                      <Grid item xs={6}>
-                        <SelectSites
-                          defaultValue=""
-                          name="site_con"
-                          label="Site concerné"
-                          sites={sites}
-                          disabled={values.type !== "dab"}
-                        />
-                      </Grid>
+                      {values.type === "dab" ? (
+                        <Grid item xs={6}>
+                          <SelectSites
+                            defaultValue=""
+                            name="site_con"
+                            label="Site concerné"
+                            sites={sites}
+                            disabled={values.type !== "dab"}
+                          />
+                        </Grid>
+                      ) : null}
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                       <Textfield name="code" label="Code et appelation" />
                     </Grid>
                     <Grid item xs={12}>

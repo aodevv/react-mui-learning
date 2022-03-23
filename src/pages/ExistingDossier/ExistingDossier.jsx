@@ -45,6 +45,12 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+//TOTALS
+import FacturesTotal from "../NouveauDossier/FacturesTotal";
+import SalairesTotal from "../NouveauDossier/SalairesTotal";
+import MachineriesTotal from "../NouveauDossier/MachineriesTotal";
+import SitesTotal from "../NouveauDossier/SitesTotal";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -83,8 +89,8 @@ const ExistingDossier = ({
   const [machinerieModal, setMachinerieModal] = useState(false);
   const [siteModal, setSiteModal] = useState(false);
   const [submitModal, setSubmitModal] = useState(false);
-  const testing = 1;
-  const curInfosDos = dossiers[testing];
+  const testing = "2021MU01";
+  const curInfosDos = dossiers.find((dos) => dos.id === testing);
   const curFacts = factures[testing];
   const curSites = sites[testing];
   const curSals = salaires[testing];
@@ -183,7 +189,7 @@ const ExistingDossier = ({
                       Dossier
                     </Typography>
                     <Typography variant="h5" sx={{ backgroundColor: "yellow" }}>
-                      <b>ABC</b>
+                      <b>2021MU01</b>
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -240,9 +246,7 @@ const ExistingDossier = ({
                           <Typography ml={1} mr={4} variant="h5">
                             Sites
                           </Typography>
-                          <Typography>
-                            <b>$ 0.00</b>
-                          </Typography>
+                          <SitesTotal />
                         </Box>
                       </Box>
                     }
@@ -280,7 +284,7 @@ const ExistingDossier = ({
                           <Typography ml={1} mr={4} variant="h5">
                             Factures
                           </Typography>
-                          {/* <FacturesTotal /> */}
+                          <FacturesTotal />
                         </Box>
                       </Box>
                     }
@@ -324,9 +328,7 @@ const ExistingDossier = ({
                           <Typography ml={1} mr={4} variant="h5">
                             Salaires
                           </Typography>
-                          <Typography>
-                            <b>$ 0.00</b>
-                          </Typography>
+                          <SalairesTotal />
                         </Box>
                       </Box>
                     }
@@ -365,9 +367,7 @@ const ExistingDossier = ({
                           <Typography ml={1} mr={4} variant="h5">
                             Machineries
                           </Typography>
-                          <Typography>
-                            <b>$ 0.00</b>
-                          </Typography>
+                          <MachineriesTotal />
                         </Box>
                       </Box>
                     }

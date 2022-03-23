@@ -1,5 +1,5 @@
 export const facturesAll = {
-  0: [
+  "2021MU01": [
     {
       id: 0,
       desc_fact: "Facture 1",
@@ -14,13 +14,13 @@ export const facturesAll = {
       id: 1,
       desc_fact: "Facture 2",
       date_fact: "2021-09-30",
-      site_con: "Site 2",
+      site_con: "",
       montant_rec: 2978.3,
       tax: true,
       type: "mpt",
     },
   ],
-  1: [
+  "2021MU02": [
     {
       id: 0,
       desc_fact: "Facture 1",
@@ -35,13 +35,13 @@ export const facturesAll = {
       id: 1,
       desc_fact: "Facture 2",
       date_fact: "2021-09-30",
-      site_con: "Site 2",
+      site_con: "",
       montant_rec: 2978.3,
       tax: true,
       type: "mpt",
     },
   ],
-  2: [
+  "2021MU03": [
     {
       id: 0,
       desc_fact: "Facture 1",
@@ -61,11 +61,11 @@ export const facturesAll = {
       type: "dab",
     },
   ],
-  3: [],
-  4: [],
-  5: [],
-  6: [],
-  7: [],
-  8: [],
-  9: [],
+  "2021MU04": [],
+  "2021MU05": [],
+  "2021MU06": [],
+  "2021MU07": [],
+  "2021MU08": [],
+  "2021MU09": [],
+  "2021MU10": [],
 };

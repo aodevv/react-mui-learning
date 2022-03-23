@@ -90,7 +90,6 @@ const FactureModalForm = ({
     newFactures = Object.assign([], newFactures);
     newFactures.push({ ...values, site_con: sites[values.site_con] });
     if (existing) {
-      console.log("floo");
       let newFacts = JSON.parse(JSON.stringify(factures));
       const dosInt = globalValues.numero;
       Object.keys(newFacts).forEach(function (key, index) {

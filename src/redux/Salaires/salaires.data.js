@@ -1,6 +1,6 @@
 export const salairesAll = {
-  0: [],
-  1: [
+  "2021MU01": [],
+  "2021MU02": [
     {
       id: 1,
       name: "Aimarah Oussama",
@@ -13,7 +13,7 @@ export const salairesAll = {
       Treg: 25,
       Tsup: 33,
       Tsup2: 20,
-      taux_vac: 0.25,
+      taux_vac: 25,
       ae: true,
       rrq: false,
       rqap: true,
@@ -34,17 +34,17 @@ export const salairesAll = {
       Treg: 10,
       Tsup: 12,
       Tsup2: 20,
-      taux_vac: 0.25,
+      taux_vac: 25,
       ae: true,
       rrq: true,
       rqap: false,
       fss: true,
       csst: false,
-      type: "bcg",
+      type: "dab",
       site_con: "Site 1",
     },
   ],
-  2: [
+  "2021MU03": [
     {
       id: 1,
       name: "Said 2",
@@ -57,7 +57,7 @@ export const salairesAll = {
       Treg: 25,
       Tsup: 33,
       Tsup2: 20,
-      taux_vac: 0.25,
+      taux_vac: 25,
       ae: true,
       rrq: false,
       rqap: true,
@@ -77,7 +77,7 @@ export const salairesAll = {
       Treg: 10,
       Tsup: 12,
       Tsup2: 20,
-      taux_vac: 0.25,
+      taux_vac: 25,
       ae: true,
       rrq: true,
       rqap: true,
@@ -86,22 +86,22 @@ export const salairesAll = {
       type: "mpt",
     },
   ],
-  3: [],
-  4: [],
-  5: [],
-  6: [],
-  7: [],
-  8: [],
-  9: [],
+  "2021MU04": [],
+  "2021MU05": [],
+  "2021MU06": [],
+  "2021MU07": [],
+  "2021MU08": [],
+  "2021MU09": [],
+  "2021MU10": [],
 };
 
 export const listeSal = {
   1: {
     name: "Oussama",
-    taux_vac: 0.25,
+    taux_vac: 25,
   },
   2: {
     name: "Hicham",
-    taux_vac: 0.3,
+    taux_vac: 3,
   },
 };

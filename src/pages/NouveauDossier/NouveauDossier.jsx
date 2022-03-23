@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 // selectors
@@ -23,6 +25,7 @@ import * as Yup from "yup";
 import Grid from "@mui/material/Grid";
 
 import { Box, Typography, Button, Modal, Fade, Stack } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import FacturesMiniTables from "../../Components/MiniTables/Factures/FacturesMiniTable";
 
@@ -45,7 +48,11 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import SignpostOutlinedIcon from "@mui/icons-material/SignpostOutlined";
 
+//TOTALS
 import FacturesTotal from "./FacturesTotal";
+import SalairesTotal from "./SalairesTotal";
+import MachineriesTotal from "./MachineriesTotal";
+import SitesTotal from "./SitesTotal";
 
 const style = {
   position: "absolute",
@@ -85,11 +92,17 @@ const NouveauDossier = ({
   addSites,
   addInfosDossier,
 }) => {
+  const navigate = useNavigate();
+
   const [factureModal, setFactureModal] = useState(false);
   const [salaireModal, setSalaireModal] = useState(false);
   const [machinerieModal, setMachinerieModal] = useState(false);
   const [siteModal, setSiteModal] = useState(false);
   const [submitModal, setSubmitModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const dosIds = dossiers.map((dos) => dos.id);
+
   const INITIAL_FORM_STATE = {
     id: "",
     numero: "",
@@ -107,6 +120,10 @@ const NouveauDossier = ({
     facTT: 0,
     salTT: 0,
     machTT: 0,
+    dabTT: 0,
+    mptTT: 0,
+    miTT: 0,
+    bcgTT: 0,
 
     factures: [],
     salaires: [],
@@ -120,6 +137,11 @@ const NouveauDossier = ({
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
   const FORM_VALIDATION = Yup.object().shape({
+    numero: Yup.string().test(
+      "unique",
+      "Ce numéro existe déjà",
+      (value) => !dosIds.includes(value)
+    ),
     prgm: Yup.string().required("Champ obligatoire"),
     act_of: Yup.string().required("Champ obligatoire"),
     date_ev: Yup.date()
@@ -152,8 +174,7 @@ const NouveauDossier = ({
     values.id = id;
 
     const infoDos = {
-      id: values.id,
-      numero: values.numero,
+      id: values.numero,
       datEv: values.date_ev,
       datOuv: values.date_ouv,
       Evenement: values.desc_ev,
@@ -173,19 +194,19 @@ const NouveauDossier = ({
 
     addInfosDossier([...dossiers, infoDos]);
     let newFacts = factures;
-    newFacts[id] = values.factures;
+    newFacts[values.numero] = values.factures;
     addFactures(newFacts);
 
     let newSites = sites;
-    newSites[id] = values.sites;
+    newSites[values.numero] = values.sites;
     addSites(newSites);
 
     let newSals = salaires;
-    newSals[id] = values.salaires;
+    newSals[values.numero] = values.salaires;
     addSalaires(newSals);
 
     let newMach = machineries;
-    newMach[id] = values.machineries;
+    newMach[values.numero] = values.machineries;
     addMachinerie(newMach);
   };
 
@@ -225,8 +246,14 @@ const NouveauDossier = ({
   };
 
   const resetAndExit = (values) => {
-    values = INITIAL_FORM_STATE;
-    closeSubmit();
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+
+      values = INITIAL_FORM_STATE;
+      closeSubmit();
+      navigate("/dossier");
+    }, 3000);
   };
 
   const typePrejudices = {
@@ -243,12 +270,16 @@ const NouveauDossier = ({
         onSubmit={handleSubmit}
       >
         {(formikProps) => {
-          const { values, submitForm } = formikProps;
+          const { values, submitForm, isValid } = formikProps;
 
           return (
             <Form>
               <Grid>
-                <InfosDossierForm values={values} openSubmit={openSubmit} />
+                <InfosDossierForm
+                  isValid={isValid}
+                  values={values}
+                  openSubmit={openSubmit}
+                />
               </Grid>
               <Modal
                 open={submitModal}
@@ -259,16 +290,17 @@ const NouveauDossier = ({
                   <Box sx={style2}>
                     <Typography variant="h5">Confimer ?</Typography>
                     <Stack direction="row-reverse" spacing={1} mt={2}>
-                      <Button
+                      <LoadingButton
                         size="small"
                         variant="contained"
+                        loading={loading}
                         onClick={() => {
                           submitForm();
-                          resetAndExit();
+                          if (isValid) resetAndExit(values);
                         }}
                       >
                         Oui
-                      </Button>
+                      </LoadingButton>
                       <Button
                         variant="outlined"
                         color="error"
@@ -282,7 +314,7 @@ const NouveauDossier = ({
                 </Fade>
               </Modal>
               <Grid container spacing={2} mt={3}>
-                <Grid item xs={12} md={6} lg={7}>
+                <Grid item xs={12} md={6}>
                   <MiniTableWrapper
                     disable={values.dab ? false : true}
                     title={
@@ -296,9 +328,7 @@ const NouveauDossier = ({
                           <Typography ml={1} mr={4} variant="h5">
                             Sites
                           </Typography>
-                          <Typography>
-                            <b>$ 0.00</b>
-                          </Typography>
+                          <SitesTotal />
                         </Box>
                       </Box>
                     }
@@ -321,7 +351,7 @@ const NouveauDossier = ({
                     </Fade>
                   </Modal>
                 </Grid>
-                <Grid item xs={12} md={6} lg={5}>
+                <Grid item xs={12} md={6}>
                   <MiniTableWrapper
                     title={
                       <Box
@@ -364,7 +394,7 @@ const NouveauDossier = ({
               </Grid>
 
               <Grid container spacing={2} mt={1}>
-                <Grid item xs={12} md={6} lg={8}>
+                <Grid item xs={12} md={6}>
                   <MiniTableWrapper
                     disable={values.date_ev !== "" ? false : true}
                     title={
@@ -378,9 +408,7 @@ const NouveauDossier = ({
                           <Typography ml={1} mr={4} variant="h5">
                             Salaires
                           </Typography>
-                          <Typography>
-                            <b>$ 0.00</b>
-                          </Typography>
+                          <SalairesTotal />
                         </Box>
                       </Box>
                     }
@@ -405,7 +433,7 @@ const NouveauDossier = ({
                     </Fade>
                   </Modal>
                 </Grid>
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid item xs={12} md={6}>
                   <MiniTableWrapper
                     title={
                       <Box
@@ -418,9 +446,7 @@ const NouveauDossier = ({
                           <Typography ml={1} mr={4} variant="h5">
                             Machineries
                           </Typography>
-                          <Typography>
-                            <b>$ 0.00</b>
-                          </Typography>
+                          <MachineriesTotal />
                         </Box>
                       </Box>
                     }
@@ -446,8 +472,6 @@ const NouveauDossier = ({
                   </Modal>
                 </Grid>
               </Grid>
-
-              <Button onClick={submitForm}>Submit</Button>
             </Form>
           );
         }}

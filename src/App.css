@@ -29,4 +29,14 @@
   .sidemenu {
     box-shadow: 10px 0px 12px -10px rgba(0, 0, 0, 0.5);
   }
+
+  .content {
+    padding: 16px 16px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .content {
+    padding: 16px 8px;
+  }
 }

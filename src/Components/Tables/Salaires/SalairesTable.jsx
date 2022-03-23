@@ -22,6 +22,10 @@ const SalairesTable = ({ data }) => {
           color: "#1a3e72",
           fontWeight: "600",
         },
+        "& .super-app.dab": {
+          color: "#d30c0c",
+          fontWeight: "600",
+        },
       }}
     >
       <div style={{ flexGrow: 1 }}>

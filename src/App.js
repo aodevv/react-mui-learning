@@ -16,6 +16,8 @@ import Collapse from "@mui/material/Collapse";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { frFR } from "@mui/material/locale";
 
+import Login from "./pages/Login/Login";
+
 const navWidth = {
   "@media (max-width: 1366px)": {
     position: "fixed",
@@ -25,6 +27,7 @@ const navWidth = {
 
 const App = () => {
   const [sideNav, setSideNav] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { pathname } = useLocation();
   const theme = createTheme(
     {
@@ -37,25 +40,38 @@ const App = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <ThemeProvider theme={theme}>
-        <div className="App">
-          <div className="App__top">
-            <Topnav sideNav={sideNav} setSideNav={setSideNav} />
-          </div>
-          <div className="App__bottom">
-            <Collapse sx={navWidth} orientation="horizontal" in={sideNav}>
-              {
-                <div className="sidemenu">
-                  <Sidemenu pathname={pathname.split("/")[1]} />
-                </div>
-              }
-            </Collapse>
+        {isLoggedIn ? (
+          <div className="App">
+            <div className="App__top">
+              <Topnav
+                setIsLoggedIn={setIsLoggedIn}
+                sideNav={sideNav}
+                setSideNav={setSideNav}
+              />
+            </div>
+            <div className="App__bottom">
+              <Collapse sx={navWidth} orientation="horizontal" in={sideNav}>
+                {
+                  <div className="sidemenu">
+                    <Sidemenu pathname={pathname.split("/")[1]} />
+                  </div>
+                }
+              </Collapse>
 
-            <div className="content">
-              <BreadCrumb />
-              <ContentRouter />
+              <div className="content">
+                <BreadCrumb />
+                <ContentRouter />
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="login">
+            <div className="login__background"></div>
+            <div className="login__right">
+              <Login setIsLoggedIn={setIsLoggedIn} />
+            </div>
+          </div>
+        )}
       </ThemeProvider>
     </LocalizationProvider>
   );

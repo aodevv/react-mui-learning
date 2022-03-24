@@ -326,10 +326,6 @@ const SalaireModalFormDos = ({
                         </Button>
                       </Stack>
                     </Grid>
-                    <Button
-                      variant="outlined"
-                      onClick={() => console.log(values.curSal)}
-                    ></Button>
                   </Form>
                 );
               }}

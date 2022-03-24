@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 
-const Topnav = ({ sideNav, setSideNav }) => {
+const Topnav = ({ sideNav, setSideNav, setIsLoggedIn }) => {
   const toggleSideNav = () => {
     setSideNav(!sideNav);
   };
@@ -28,7 +28,9 @@ const Topnav = ({ sideNav, setSideNav }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             App
           </Typography>
-          <Button color="inherit">Déconnexion</Button>
+          <Button onClick={() => setIsLoggedIn(false)} color="inherit">
+            Déconnexion
+          </Button>
         </Toolbar>
       </AppBar>
     </Box>

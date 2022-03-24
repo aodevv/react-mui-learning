@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { useParams } from "react-router-dom";
+
 //REDUX
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -46,7 +48,10 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 //TOTALS
-import FacturesTotal from "../NouveauDossier/FacturesTotal";
+//import FacturesTotal from "../NouveauDossier/FacturesTotal";
+import FacturesTotalTAX from "../NouveauDossier/FacturesTotalTAX";
+import FacturesTotalHT from "../NouveauDossier/FacturesTotalHT";
+
 import SalairesTotal from "../NouveauDossier/SalairesTotal";
 import MachineriesTotal from "../NouveauDossier/MachineriesTotal";
 import SitesTotal from "../NouveauDossier/SitesTotal";
@@ -84,17 +89,18 @@ const ExistingDossier = ({
   salaires,
   machineries,
 }) => {
+  const params = useParams();
   const [factureModal, setFactureModal] = useState(false);
   const [salaireModal, setSalaireModal] = useState(false);
   const [machinerieModal, setMachinerieModal] = useState(false);
   const [siteModal, setSiteModal] = useState(false);
   const [submitModal, setSubmitModal] = useState(false);
-  const testing = "2021MU01";
-  const curInfosDos = dossiers.find((dos) => dos.id === testing);
-  const curFacts = factures[testing];
-  const curSites = sites[testing];
-  const curSals = salaires[testing];
-  const curMachs = machineries[testing];
+  const dosId = params.dossierId;
+  const curInfosDos = dossiers.find((dos) => dos.id === dosId);
+  const curFacts = factures[dosId];
+  const curSites = sites[dosId];
+  const curSals = salaires[dosId];
+  const curMachs = machineries[dosId];
 
   let [mm, dd, yyyy] = curInfosDos.datEv.split("/");
   dd = dd.length === 1 ? "0" + dd : dd;
@@ -189,7 +195,7 @@ const ExistingDossier = ({
                       Dossier
                     </Typography>
                     <Typography variant="h5" sx={{ backgroundColor: "yellow" }}>
-                      <b>2021MU01</b>
+                      <b>{dosId}</b>
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -281,10 +287,12 @@ const ExistingDossier = ({
                       >
                         <ReceiptOutlinedIcon />
                         <Box display="flex" alignItems="center">
-                          <Typography ml={1} mr={4} variant="h5">
+                          <Typography ml={1} mr={3} variant="h5">
                             Factures
                           </Typography>
-                          <FacturesTotal />
+                          <FacturesTotalTAX />
+                          <Box mr={2}></Box>
+                          <FacturesTotalHT />
                         </Box>
                       </Box>
                     }

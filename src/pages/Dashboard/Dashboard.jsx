@@ -8,7 +8,10 @@ import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors"
 import { selectFacturesMemo } from "../../redux/Factures/Factures.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
 import { selectMachineriesMemo } from "../../redux/Machineries/machineries.selectors";
-import { selectSalairesMemo } from "../../redux/Salaires/salaires.selectors";
+import {
+  selectSalairesMemo,
+  selectPayroll,
+} from "../../redux/Salaires/salaires.selectors";
 
 import {
   Grid,
@@ -56,6 +59,7 @@ const Dashboard = ({
   facutures,
   machineries,
   factures,
+  payroll,
 }) => {
   const [factureModal, setFactureModal] = useState(false);
   const openFacture = () => {
@@ -336,6 +340,7 @@ const Dashboard = ({
                 numDos={dosOnly}
                 dossiers={dossiers}
                 salaires={salaires}
+                payroll={payroll}
               />
             </Box>
           </Fade>
@@ -369,6 +374,7 @@ const mapStateToProps = createStructuredSelector({
   sites: selectSitesMemo,
   machineries: selectMachineriesMemo,
   salaires: selectSalairesMemo,
+  payroll: selectPayroll,
 });
 
 export default connect(mapStateToProps)(Dashboard);

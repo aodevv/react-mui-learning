@@ -50,7 +50,9 @@ import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import SignpostOutlinedIcon from "@mui/icons-material/SignpostOutlined";
 
 //TOTALS
-import FacturesTotal from "./FacturesTotal";
+//import FacturesTotal from "./FacturesTotal";
+import FacturesTotalTAX from "./FacturesTotalTAX";
+import FacturesTotalHT from "./FacturesTotalHT";
 import SalairesTotal from "./SalairesTotal";
 import MachineriesTotal from "./MachineriesTotal";
 import SitesTotal from "./SitesTotal";
@@ -364,10 +366,12 @@ const NouveauDossier = ({
                       >
                         <ReceiptOutlinedIcon />
                         <Box display="flex" alignItems="center">
-                          <Typography ml={1} mr={4} variant="h5">
+                          <Typography ml={1} mr={3} variant="h5">
                             Factures
                           </Typography>
-                          <FacturesTotal />
+                          <FacturesTotalTAX />
+                          <Box mr={2}></Box>
+                          <FacturesTotalHT />
                         </Box>
                       </Box>
                     }

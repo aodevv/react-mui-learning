@@ -29,7 +29,6 @@ const Sidemenu = ({ pathname }) => {
       factures: 3,
       salaires: 4,
       machineries: 5,
-      testing2: 6,
     };
     pathname === ""
       ? setSelectedIndex(0)
@@ -121,18 +120,6 @@ const Sidemenu = ({ pathname }) => {
           <ConstructionIcon />
         </ListItemIcon>
         <ListItemText primary="Testing" />
-      </ListItemButton>
-      <ListItemButton
-        selected={selectedIndex === 6 && pathname === "testing2"}
-        onClick={(event) => {
-          handleListItemClick(event, 6);
-          navigate("/testing2");
-        }}
-      >
-        <ListItemIcon>
-          <ConstructionIcon />
-        </ListItemIcon>
-        <ListItemText primary="Testing 2" />
       </ListItemButton>
     </List>
   );

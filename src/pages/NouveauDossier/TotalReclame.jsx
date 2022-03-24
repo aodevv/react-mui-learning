@@ -48,7 +48,9 @@ const TotalReclame = () => {
       <Box mt={2}>
         <Typography variant="h5">
           Total réclamé:{" "}
-          <Box sx={{ fontWeight: 600, display: "inline" }}>
+          <Box
+            sx={{ fontWeight: 600, display: "inline", whiteSpace: "nowrap" }}
+          >
             {`$ ${ins1000Sep(formatNum(MR))}`}
           </Box>
         </Typography>

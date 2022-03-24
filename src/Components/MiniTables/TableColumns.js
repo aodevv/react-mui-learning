@@ -121,6 +121,12 @@ export const facturesColumns = [
     },
   },
   {
+    field: "site_con",
+    headerName: "Site concerné",
+    flex: 1,
+    minWidth: 120,
+  },
+  {
     field: "desc_fact",
     headerName: "Description",
     flex: 1,
@@ -133,12 +139,7 @@ export const facturesColumns = [
     flex: 1,
     minWidth: 130,
   },
-  {
-    field: "site_con",
-    headerName: "Site concerné",
-    flex: 1,
-    minWidth: 140,
-  },
+
   {
     field: "montant_rec",
     headerName: "Montant réclamé",
@@ -183,6 +184,12 @@ export const machineriesColumns = [
     valueFormatter: (params) => {
       return typePrejudices[params.value];
     },
+  },
+  {
+    field: "site_con",
+    headerName: "Site concerné",
+    flex: 1,
+    minWidth: 120,
   },
   {
     field: "code",
@@ -231,6 +238,12 @@ export const salairesColumns = [
     valueFormatter: (params) => {
       return typePrejudices[params.value];
     },
+  },
+  {
+    field: "site_con",
+    headerName: "Site concerné",
+    flex: 1,
+    minWidth: 120,
   },
   {
     field: "nom",

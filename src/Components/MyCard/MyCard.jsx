@@ -22,7 +22,6 @@ const MyCard = ({ title, children, bgColor, textColor, onClick, bl, br }) => {
           transition: "all linear 100ms",
           cursor: "pointer",
           "&:hover": {
-            transform: "translateY(-6px)",
             boxShadow: "0px 0px 25px 2px rgba(0,0,0,0.22)",
           },
         }}

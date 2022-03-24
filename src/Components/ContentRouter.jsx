@@ -8,7 +8,6 @@ import SalairesPage from "../pages/SalairesPage/SalairesPage";
 import MachineriePage from "../pages/MachineriePage/MachineriePage";
 import FactureTypes from "../pages/TypeHandlers/FactureTypes";
 import MachinerieTypes from "../pages/TypeHandlers/MachineriesTypes";
-import DossierDetails from "../pages/Dossier/DossierDetails";
 import SalairesTypes from "../pages/TypeHandlers/SalairesTypes";
 import NouveauDossier from "../pages/NouveauDossier/NouveauDossier";
 import ExistingDossier from "../pages/ExistingDossier/ExistingDossier";
@@ -19,7 +18,7 @@ const ContentRouter = () => {
     <Routes>
       <Route path="/" exact element={<Dashboard />} />
       <Route path="/dossier" element={<FileManager />} />
-      <Route path="/dossier/:dossierId" element={<DossierDetails />} />
+      <Route path="/dossier/:dossierId" element={<ExistingDossier />} />
       <Route path="/dossier/:dossierId/:type/">
         <Route path="Factures" element={<FactureTypes />} />
         <Route path="machineries" element={<MachinerieTypes />} />
@@ -30,7 +29,6 @@ const ContentRouter = () => {
       <Route path="/machineries" element={<MachineriePage />} />
       <Route path="/nouveau_dossier" element={<NouveauDossier />} />
       <Route path="/testing" element={<NouveauDossier />} />
-      <Route path="/testing2" element={<ExistingDossier />} />
     </Routes>
   );
 };

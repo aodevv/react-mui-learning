@@ -3,10 +3,12 @@ export const salairesAll = {
   "2021MU02": [
     {
       id: 1,
-      name: "Aimarah Oussama",
+      nom: "Aimarah",
+      prenom: "Oussama",
       status: "occ",
       date_per: "2021-02-11",
       montant_rec: 2460,
+      ajust: 0,
       Hreg: 12,
       Hsup: 20,
       Hsup2: 12,
@@ -24,10 +26,12 @@ export const salairesAll = {
     },
     {
       id: 2,
-      name: "Karim",
+      nom: "Hans",
+      prenom: "Landa",
       status: "reg",
       date_per: "2021-04-30",
       montant_rec: 9830,
+      ajust: 0,
       Hreg: 86,
       Hsup: 41,
       Hsup2: 12,
@@ -47,10 +51,12 @@ export const salairesAll = {
   "2021MU03": [
     {
       id: 1,
-      name: "Said 2",
+      nom: "Isaac",
+      prenom: "Newton",
       status: "reg",
       date_per: "2021-12-11",
       montant_rec: 2460,
+      ajust: 0,
       Hreg: 12,
       Hsup: 20,
       Hsup2: 12,
@@ -67,10 +73,12 @@ export const salairesAll = {
     },
     {
       id: 2,
-      name: "Karim 2",
+      nom: "Walter",
+      prenom: "White",
       status: "occ",
       date_per: "2021-01-01",
       montant_rec: 9830,
+      ajust: 0,
       Hreg: 86,
       Hsup: 41,
       Hsup2: 12,
@@ -95,13 +103,25 @@ export const salairesAll = {
   "2021MU10": [],
 };
 
-export const listeSal = {
-  1: {
-    name: "Oussama",
+export const listeSal = [
+  {
+    id: 1,
+    nom: "Aimarah",
+    prenom: "Oussama",
     taux_vac: 25,
+    status: "occ",
+    Treg: 20,
+    Tsup: 30,
+    Tsup2: 40,
   },
-  2: {
-    name: "Hicham",
-    taux_vac: 3,
+  {
+    id: 2,
+    nom: "Laqrafi",
+    prenom: "Hicham",
+    taux_vac: 12,
+    status: "reg",
+    Treg: 10,
+    Tsup: 15,
+    Tsup2: 20,
   },
-};
+];

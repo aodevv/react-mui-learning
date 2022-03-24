@@ -34,7 +34,8 @@ const FactureModalForm = ({
     desc_fact: "",
     date_fact: "",
     type: "",
-    montant_rec: "",
+    montant_rec: 0,
+    ajust: 0,
     site_con: "",
     tax: false,
   };
@@ -83,6 +84,8 @@ const FactureModalForm = ({
     if (values.type === "dab") {
       globalValues.sites[values.site_con].montant_rec =
         globalValues.sites[values.site_con].montant_rec + values.montant_rec;
+      globalValues.sites[values.site_con].f_montant_rec =
+        globalValues.sites[values.site_con].f_montant_rec + values.montant_rec;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     values.id = id;
@@ -156,12 +159,22 @@ const FactureModalForm = ({
                         <DatePicker name="date_fact" label="Date" />
                       </Grid>
 
-                      <Grid item xs={12}>
-                        <Textfield
-                          name="montant_rec"
-                          label="Montant réclamé"
-                          type="number"
-                        />
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <Textfield
+                            name="montant_rec"
+                            label="Montant réclamé"
+                            type="number"
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Textfield
+                            disabled
+                            name="ajust"
+                            label="Ajustement"
+                            type="number"
+                          />
+                        </Grid>
                       </Grid>
                       <Grid item xs={12}>
                         <Box mt={1}>

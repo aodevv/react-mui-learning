@@ -36,7 +36,8 @@ const FactureModalFormDos = ({
     desc_fact: "",
     date_fact: "",
     type: "",
-    montant_rec: "",
+    montant_rec: 0,
+    ajust: 0,
     site_con: "",
     tax: false,
   };
@@ -141,14 +142,24 @@ const FactureModalFormDos = ({
                           disabled={values.numDos === ""}
                         />
                       </Grid>
-
-                      <Grid item xs={12}>
-                        <Textfield
-                          name="montant_rec"
-                          label="Montant réclamé"
-                          type="number"
-                        />
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <Textfield
+                            name="montant_rec"
+                            label="Montant réclamé"
+                            type="number"
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Textfield
+                            disabled
+                            name="ajust"
+                            label="Ajustement"
+                            type="number"
+                          />
+                        </Grid>
                       </Grid>
+
                       <Grid item xs={12}>
                         <Box mt={1}>
                           <Checkbox name="tax" legend="Taxable ?" label="oui" />

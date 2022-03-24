@@ -26,6 +26,12 @@ import SalaireTotal from "./SalaireTotal";
 
 import Tsup from "./Tsup";
 import Tsup2 from "./Tsup2";
+import id from "date-fns/esm/locale/id/index.js";
+import Nom from "../../FormUI/Payroll/Nom";
+import Prenom from "../../FormUI/Payroll/Prenom";
+import Status from "../../FormUI/Payroll/Status";
+import Treg from "../../FormUI/Payroll/Treg";
+import TauxVac from "../../FormUI/Payroll/TauxVac";
 
 const SalaireModalFormDos = ({
   prejudices,
@@ -36,14 +42,18 @@ const SalaireModalFormDos = ({
   dossiers,
   addSalaires,
   salaires,
+  payroll,
 }) => {
   const INITIAL_FORM_STATE = {
+    curSal: "",
     numDos: "",
     type: "",
-    name: "",
+    nom: "",
+    prenom: "",
     status: "",
     date_per: "",
     montant_rec: 0,
+    ajust: 0,
     site_con: "",
     Hreg: 0,
     Hsup: 0,
@@ -64,6 +74,12 @@ const SalaireModalFormDos = ({
     reg: "Régulier",
   };
 
+  const payrollNameList = [""];
+
+  payroll.forEach((pay, index) =>
+    payrollNameList.push(`${pay.nom} ${pay.prenom}`)
+  );
+
   const handleSubmit = (values, { resetForm }) => {
     const dosInt = values.numDos;
     let newSals = JSON.parse(JSON.stringify(salaires));
@@ -80,10 +96,12 @@ const SalaireModalFormDos = ({
     const newSal = {
       id: id,
       type: values.type,
-      name: values.name,
+      prenom: values.nom,
+      nom: values.prenom,
       status: values.status,
       date_per: values.date_per,
       montant_rec: values.montant_rec,
+      ajust: values.ajust,
       site_con: siteToAdd,
       Hreg: values.Hreg,
       Hsup: values.Hsup,
@@ -127,13 +145,24 @@ const SalaireModalFormDos = ({
                       <Typography variant="h5" mb={1}>
                         Ajout salaire
                       </Typography>
-                      <Grid item xs={12}>
-                        <SelectDossier
-                          name="numDos"
-                          label="Numéro dossier"
-                          options={numDos}
-                        />
+                      <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                          <Select
+                            name="curSal"
+                            label="Salarié"
+                            options={payrollNameList}
+                            defaultValue=""
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <SelectDossier
+                            name="numDos"
+                            label="Numéro dossier"
+                            options={numDos}
+                          />
+                        </Grid>
                       </Grid>
+
                       <Grid container spacing={1}>
                         <Grid item xs={6}>
                           <SelectPrejudice
@@ -158,11 +187,23 @@ const SalaireModalFormDos = ({
                         ) : null}
                       </Grid>
                       <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                          <Textfield name="name" label="Nom et prénom" />
+                        <Grid item xs={4}>
+                          <Nom name="nom" label="Nom" payroll={payroll} />
                         </Grid>
-                        <Grid item xs={6}>
-                          <Select name="status" label="Status" options={data} />
+                        <Grid item xs={4}>
+                          <Prenom
+                            name="prenom"
+                            label="Prénom"
+                            payroll={payroll}
+                          />
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Status
+                            name="status"
+                            label="Status"
+                            options={data}
+                            payroll={payroll}
+                          />
                         </Grid>
                       </Grid>
 
@@ -196,9 +237,10 @@ const SalaireModalFormDos = ({
                       <Typography mt={1}>Taux</Typography>
                       <Grid container spacing={1}>
                         <Grid item xs={3}>
-                          <Textfield
+                          <Treg
                             name="Treg"
                             label="Taux régulier"
+                            payroll={payroll}
                             type="number"
                           />
                         </Grid>
@@ -213,10 +255,11 @@ const SalaireModalFormDos = ({
                           />
                         </Grid>
                         <Grid item xs={3}>
-                          <Textfield
+                          <TauxVac
                             name="taux_vac"
                             label="Taux vacances"
                             type="number"
+                            payroll={payroll}
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position="end">
@@ -245,14 +288,22 @@ const SalaireModalFormDos = ({
                         </Grid>
                       </Grid>
                       <Grid item xs={12}>
-                        <Box mt={2}>
-                          <Typography variant="h5">
+                        <Box mt={2} display="flex" alignItems="center">
+                          <Typography variant="h5" mr={2}>
                             Salaire réclamé:{" "}
                             <Box sx={{ fontWeight: 600, display: "inline" }}>
                               {/* {`$ ${ins1000Sep(formatNum(values.cout))}`} */}
                               <SalaireTotal name="montant_rec" />
                             </Box>
                           </Typography>
+                          <Grid item xs={4}>
+                            <Textfield
+                              disabled
+                              name="ajust"
+                              label="Ajustement"
+                              type="number"
+                            />
+                          </Grid>
                         </Box>
                       </Grid>
                       <Stack direction="row" spacing={1} mt={2}>
@@ -275,6 +326,10 @@ const SalaireModalFormDos = ({
                         </Button>
                       </Stack>
                     </Grid>
+                    <Button
+                      variant="outlined"
+                      onClick={() => console.log(values.curSal)}
+                    ></Button>
                   </Form>
                 );
               }}

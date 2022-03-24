@@ -4,7 +4,10 @@ import { Outlet } from "react-router-dom";
 // REDUX
 import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
-import { selectSalairesMemo } from "../../redux/Salaires/salaires.selectors";
+import {
+  selectSalairesMemo,
+  selectPayroll,
+} from "../../redux/Salaires/salaires.selectors";
 import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
 
@@ -25,7 +28,10 @@ import AddIcon from "@mui/icons-material/Add";
 import SalairesTable from "../../Components/Tables/Salaires/SalairesTable";
 import SalairesFilters from "../../Components/Filters/SalairesFilters/SalairesFilters";
 
+import PayrollTable from "../../Components/Tables/Payroll/PayrollTable";
+
 import SalaireModalFormDos from "../../Components/Forms/SalaireModalForm/SalaireModalFormDos";
+import PayrollModalForm from "../../Components/Forms/PayrollForm/PayrollModalForm";
 
 const style = {
   position: "absolute",
@@ -40,13 +46,20 @@ const style = {
   p: "30px 10px",
 };
 
-const SalairesPage = ({ salaires, dossiers, sites }) => {
+const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
   const [salaireModal, setSalaireModal] = useState(false);
   const openSalaire = () => {
     setSalaireModal(true);
   };
   const closeSalaire = () => {
     setSalaireModal(false);
+  };
+  const [payrollModal, setPayrollModal] = useState(false);
+  const openPay = () => {
+    setPayrollModal(true);
+  };
+  const closePay = () => {
+    setPayrollModal(false);
   };
   let flatSalaires = [];
   Object.keys(salaires).forEach((item) =>
@@ -146,6 +159,37 @@ const SalairesPage = ({ salaires, dossiers, sites }) => {
           </Box>
         </CardContent>
       </Card>
+      <Box mt={2}></Box>
+      <Card>
+        <CardHeader
+          disableTypography={false}
+          titleTypographyProps={{ fontWeight: "bold" }}
+          title={"Liste des salairés"}
+        />
+        <CardContent>
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<AddIcon />}
+              onClick={openPay}
+            >
+              Ajouter
+            </Button>
+            <Button
+              variant="contained"
+              disabled
+              size="small"
+              startIcon={<DeleteIcon />}
+            >
+              Supprimer
+            </Button>
+          </Stack>
+          <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
+            <PayrollTable data={payroll} />
+          </Box>
+        </CardContent>
+      </Card>
       <Modal
         open={salaireModal}
         aria-labelledby="modal-modal-title"
@@ -160,7 +204,23 @@ const SalairesPage = ({ salaires, dossiers, sites }) => {
               numDos={dosOnly}
               dossiers={dossiers}
               salaires={salaires}
+              payroll={payroll}
             />
+          </Box>
+        </Fade>
+      </Modal>
+      {/* PAYROLL */}
+      {/* PAYROLL */}
+      {/* PAYROLL */}
+      {/* PAYROLL */}
+      <Modal
+        open={payrollModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Fade in={payrollModal}>
+          <Box sx={style}>
+            <PayrollModalForm closeModal={closePay} payroll={payroll} />
           </Box>
         </Fade>
       </Modal>
@@ -173,6 +233,7 @@ const mapStateToProps = createStructuredSelector({
   dossiers: selectDossiers,
   salaires: selectSalairesMemo,
   sites: selectSitesMemo,
+  payroll: selectPayroll,
 });
 
 export default connect(mapStateToProps)(SalairesPage);

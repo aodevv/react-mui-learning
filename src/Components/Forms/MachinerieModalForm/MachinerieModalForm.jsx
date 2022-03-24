@@ -86,6 +86,8 @@ const MachinerieModalForm = ({
     if (values.type === "dab") {
       globalValues.sites[values.site_con].montant_rec =
         globalValues.sites[values.site_con].montant_rec + values.cout;
+      globalValues.sites[values.site_con].m_montant_rec =
+        globalValues.sites[values.site_con].m_montant_rec + values.cout;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     values.id = id;

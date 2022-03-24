@@ -10,6 +10,7 @@ import { selectFacturesMemo } from "../../redux/Factures/Factures.selectors";
 import { selectSalairesMemo } from "../../redux/Salaires/salaires.selectors";
 import { selectMachineriesMemo } from "../../redux/Machineries/machineries.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
+import { selectPayroll } from "../../redux/Salaires/salaires.selectors";
 
 // actions
 import { addInfosDossier } from "../../redux/DossierInfos/infosDossier.actions";
@@ -85,6 +86,7 @@ const NouveauDossier = ({
   sites,
   factures,
   salaires,
+  payroll,
   machineries,
   addFactures,
   addSalaires,
@@ -424,6 +426,7 @@ const NouveauDossier = ({
                     <Fade in={salaireModal}>
                       <Box sx={style}>
                         <SalaireModalForm
+                          payroll={payroll}
                           globalValues={values}
                           prejudices={typePrejudices}
                           closeModal={closeSalaire}
@@ -486,6 +489,7 @@ const mapStateToProps = createStructuredSelector({
   factures: selectFacturesMemo,
   salaires: selectSalairesMemo,
   machineries: selectMachineriesMemo,
+  payroll: selectPayroll,
 });
 
 const mapDispatchToProps = (dispatch) => ({

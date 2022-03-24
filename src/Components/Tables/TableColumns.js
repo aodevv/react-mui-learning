@@ -175,6 +175,16 @@ export const facturesColumns = [
     },
   },
   {
+    field: "ajust",
+    headerName: "Ajustement",
+    flex: 1,
+    minWidth: 140,
+    valueFormatter: (params) => {
+      const valueFormatted = currencyFormatter.format(Number(params.value));
+      return `${valueFormatted}`;
+    },
+  },
+  {
     field: "tax",
     headerName: "Taxable ?",
     type: "boolean",
@@ -311,9 +321,14 @@ export const salairesColumns = [
       }),
   },
   {
-    field: "name",
-    headerName: "name",
-    minWidth: 150,
+    field: "nom",
+    headerName: "Nom",
+    minWidth: 110,
+  },
+  {
+    field: "prenom",
+    headerName: "Prénom",
+    minWidth: 110,
   },
 
   {
@@ -443,5 +458,121 @@ export const salairesColumns = [
       const valueFormatted = ins1000Sep(formatNum(params.value));
       return `$ ${valueFormatted}`;
     },
+  },
+  {
+    field: "ajust",
+    headerName: "Ajustement",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+];
+
+export const PayrollColumns = [
+  {
+    field: "id",
+    headerName: "",
+    hide: true,
+  },
+  {
+    field: "nom",
+    headerName: "Nom",
+    minWidth: 110,
+  },
+  {
+    field: "prenom",
+    headerName: "Prénom",
+    minWidth: 110,
+  },
+
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      return status[params.value];
+    },
+    cellClassName: (params) =>
+      clsx("super-app", {
+        occ: params.value === "occ",
+      }),
+  },
+  {
+    field: "taux_vac",
+    headerName: "Taux de vacances",
+    flex: 1,
+    minWidth: 120,
+    valueFormatter: (params) => {
+      const valueFormatted = params.value;
+      return `${valueFormatted} %`;
+    },
+  },
+  {
+    field: "Treg",
+    headerName: "Treg",
+    flex: 1,
+    minWidth: 100,
+    cellClassName: "super-app actif",
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+
+  {
+    field: "Tsup",
+    headerName: "Tsup",
+    flex: 1,
+    minWidth: 100,
+    cellClassName: "super-app actif",
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "Tsup2",
+    headerName: "Tsup 2",
+    flex: 1,
+    minWidth: 100,
+    cellClassName: "super-app actif",
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "ae",
+    headerName: "AE",
+    type: "boolean",
+    width: 80,
+  },
+  {
+    field: "rrq",
+    headerName: "RRQ",
+    type: "boolean",
+    width: 80,
+  },
+  {
+    field: "rqap",
+    headerName: "RQAP",
+    type: "boolean",
+    width: 80,
+  },
+  {
+    field: "fss",
+    headerName: "FSS",
+    type: "boolean",
+    width: 80,
+  },
+  {
+    field: "csst",
+    headerName: "CSST",
+    type: "boolean",
+    width: 80,
   },
 ];

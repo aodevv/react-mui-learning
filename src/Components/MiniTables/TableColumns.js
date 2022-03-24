@@ -233,10 +233,16 @@ export const salairesColumns = [
     },
   },
   {
-    field: "name",
-    headerName: "Nom et Prénom",
-    minWidth: 140,
+    field: "nom",
+    headerName: "Nom",
+    minWidth: 100,
   },
+  {
+    field: "prenom",
+    headerName: "Prénom",
+    minWidth: 100,
+  },
+
   {
     field: "status",
     headerName: "Status",
@@ -341,6 +347,36 @@ export const siteColumns = [
   {
     field: "montant_rec",
     headerName: "Montant réclamé",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "f_montant_rec",
+    headerName: "Factures total",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "s_montant_rec",
+    headerName: "Salaires total",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "m_montant_rec",
+    headerName: "Machineries total",
     flex: 1,
     minWidth: 100,
     valueFormatter: (params) => {

@@ -3,7 +3,7 @@ import { listeSal } from "./salaires.data";
 
 const INITIAL_STATE = {
   salaires: salairesAll,
-  Payroll: listeSal,
+  payroll: listeSal,
 };
 
 const salairesReducer = (state = INITIAL_STATE, action) => {
@@ -16,7 +16,7 @@ const salairesReducer = (state = INITIAL_STATE, action) => {
     case "ADD_SALAIRES_TO_LIST":
       return {
         ...state,
-        Payroll: action.payload,
+        payroll: action.payload,
       };
     default:
       return state;

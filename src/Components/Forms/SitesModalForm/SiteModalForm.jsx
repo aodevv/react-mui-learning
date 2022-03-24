@@ -50,6 +50,9 @@ const SiteModalForm = ({
     type_ret: "",
     pourc_adm: 0,
     montant_rec: 0,
+    f_montant_rec: 0,
+    s_montant_rec: 0,
+    m_montant_rec: 0,
   };
 
   const FORM_VALIDATION = Yup.object().shape({

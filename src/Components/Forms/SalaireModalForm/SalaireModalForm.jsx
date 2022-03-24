@@ -28,6 +28,12 @@ import SalaireTotal from "./SalaireTotal";
 import Tsup from "./Tsup";
 import Tsup2 from "./Tsup2";
 
+import Nom from "../../FormUI/Payroll/Nom";
+import Prenom from "../../FormUI/Payroll/Prenom";
+import Status from "../../FormUI/Payroll/Status";
+import Treg from "../../FormUI/Payroll/Treg";
+import TauxVac from "../../FormUI/Payroll/TauxVac";
+
 const SalaireModalForm = ({
   closeModal,
   globalValues,
@@ -36,6 +42,7 @@ const SalaireModalForm = ({
   salaires,
   addSalaires,
   existing,
+  payroll,
 }) => {
   const allowed = [];
   if (globalValues.dab) allowed.push("dab");
@@ -52,13 +59,22 @@ const SalaireModalForm = ({
 
   const sites = globalValues.sites.map((site) => site.site);
 
+  const payrollNameList = [""];
+
+  payroll.forEach((pay, index) =>
+    payrollNameList.push(`${pay.nom} ${pay.prenom}`)
+  );
+
   const INITIAL_FORM_STATE = {
+    curSal: "",
     id: null,
     type: "",
-    name: "",
+    nom: "",
+    prenom: "",
     status: "",
     date_per: "",
     montant_rec: 0,
+    ajust: 0,
     site_con: "",
     Hreg: 0,
     Hsup: 0,
@@ -80,7 +96,8 @@ const SalaireModalForm = ({
       is: "dab", // alternatively: (val) => val == true
       then: (schema) => schema.required("Champ obligatoire"),
     }),
-    name: Yup.string().required("Champ obligatoire"),
+    nom: Yup.string().required("Champ obligatoire"),
+    prenom: Yup.string().required("Champ obligatoire"),
     status: Yup.string().required("Champ obligatoire"),
     Hreg: Yup.number().when("status", {
       is: "occ",
@@ -126,6 +143,8 @@ const SalaireModalForm = ({
     if (values.type === "dab") {
       globalValues.sites[values.site_con].montant_rec =
         globalValues.sites[values.site_con].montant_rec + values.montant_rec;
+      globalValues.sites[values.site_con].s_montant_rec =
+        globalValues.sites[values.site_con].s_montant_rec + values.montant_rec;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     values.id = id;
@@ -165,11 +184,33 @@ const SalaireModalForm = ({
                         Ajout salaire
                       </Typography>
                       <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                          <Textfield name="name" label="Nom et prénom" />
+                        <Grid item xs={12}>
+                          <Select
+                            name="curSal"
+                            label="Salarié"
+                            options={payrollNameList}
+                            defaultValue=""
+                          />
                         </Grid>
-                        <Grid item xs={6}>
-                          <Select name="status" label="Status" options={data} />
+                      </Grid>
+                      <Grid container spacing={1}>
+                        <Grid item xs={4}>
+                          <Nom name="nom" label="Nom" payroll={payroll} />
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Prenom
+                            name="prenom"
+                            label="Prénom"
+                            payroll={payroll}
+                          />
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Status
+                            name="status"
+                            label="Status"
+                            options={data}
+                            payroll={payroll}
+                          />
                         </Grid>
                       </Grid>
                       <Grid container spacing={2}>
@@ -224,9 +265,10 @@ const SalaireModalForm = ({
                       <Typography mt={1}>Taux</Typography>
                       <Grid container spacing={1}>
                         <Grid item xs={3}>
-                          <Textfield
+                          <Treg
                             name="Treg"
                             label="Taux régulier"
+                            payroll={payroll}
                             type="number"
                           />
                         </Grid>
@@ -241,10 +283,11 @@ const SalaireModalForm = ({
                           />
                         </Grid>
                         <Grid item xs={3}>
-                          <Textfield
+                          <TauxVac
                             name="taux_vac"
                             label="Taux vacances"
                             type="number"
+                            payroll={payroll}
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position="end">

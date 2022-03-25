@@ -26,7 +26,6 @@ const Sidemenu = ({ pathname }) => {
   useEffect(() => {
     const mapPathToNav = {
       dossier: 1,
-      testing: 2,
       factures: 3,
       salaires: 4,
       machineries: 5,
@@ -122,19 +121,6 @@ const Sidemenu = ({ pathname }) => {
           <PrecisionManufacturingOutlinedIcon />
         </ListItemIcon>
         <ListItemText primary="Machineries" />
-      </ListItemButton>
-
-      <ListItemButton
-        selected={selectedIndex === 2 && pathname === "testing"}
-        onClick={(event) => {
-          handleListItemClick(event, 2);
-          navigate("/testing");
-        }}
-      >
-        <ListItemIcon>
-          <ConstructionIcon />
-        </ListItemIcon>
-        <ListItemText primary="Testing" />
       </ListItemButton>
     </List>
   );

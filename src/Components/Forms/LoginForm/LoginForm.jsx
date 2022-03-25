@@ -12,13 +12,13 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 import Textfield from "../../../Components/FormUI/Textfield";
 
-import Submit from "../../../Components/FormUI/Submit";
+//import Submit from "../../../Components/FormUI/Submit";
 
 const LoginForm = ({ LogIn }) => {
   const [loading, setLoading] = useState(false);
   const INITIAL_FORM_STATE = {
-    login: "admin",
-    password: "admin",
+    login: "",
+    password: "",
   };
 
   const FORM_VALIDATION = Yup.object().shape({

@@ -214,7 +214,7 @@ export const machineriesColumns = [
   {
     field: "dos",
     headerName: "Dossier",
-    width: 80,
+    width: 100,
   },
   {
     field: "type",

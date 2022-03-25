@@ -91,6 +91,7 @@ const ExistingDossier = ({
   salaires,
   machineries,
 }) => {
+  console.log(dossiers);
   const params = useParams();
   const [factureModal, setFactureModal] = useState(false);
   const [salaireModal, setSalaireModal] = useState(false);
@@ -104,11 +105,11 @@ const ExistingDossier = ({
   const curSals = salaires[dosId];
   const curMachs = machineries[dosId];
 
-  let [mm, dd, yyyy] = curInfosDos.datEv.split("/");
+  let [yyyy, mm, dd] = curInfosDos.datEv.split("-");
   dd = dd.length === 1 ? "0" + dd : dd;
   mm = mm.length === 1 ? "0" + mm : mm;
 
-  let [mm2, dd2, yyyy2] = curInfosDos.datOuv.split("/");
+  let [yyyy2, mm2, dd2] = curInfosDos.datOuv.split("-");
   dd2 = dd2.length === 1 ? "0" + dd2 : dd2;
   mm2 = mm2.length === 1 ? "0" + mm2 : mm2;
 

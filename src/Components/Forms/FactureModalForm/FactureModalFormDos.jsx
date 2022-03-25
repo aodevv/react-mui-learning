@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
-//import * as Yup from "yup";
+import * as Yup from "yup";
 
 import { connect } from "react-redux";
 import { addFactures } from "../../../redux/Factures/Factures.actions";
@@ -25,7 +25,6 @@ import Submit from "../../../Components/FormUI/Submit";
 const FactureModalFormDos = ({
   prejudices,
   closeModal,
-  date,
   sites,
   numDos,
   dossiers,
@@ -34,6 +33,11 @@ const FactureModalFormDos = ({
   addInfosDossier,
   factures,
 }) => {
+  const [validDate, setValiDate] = useState("2010-01-01");
+  var today = new Date();
+
+  var date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
   const INITIAL_FORM_STATE = {
     numDos: "",
     id: "",
@@ -45,6 +49,23 @@ const FactureModalFormDos = ({
     site_con: "",
     tax: false,
   };
+  const FORM_VALIDATION = Yup.object().shape({
+    numDos: Yup.string().required("Champ obligatoire"),
+    type: Yup.string().required("Champ obligatoire"),
+    site_con: Yup.string().when("type", {
+      is: "dab", // alternatively: (val) => val == true
+      then: (schema) => schema.required("Champ obligatoire"),
+    }),
+    date_fact: Yup.date()
+      .typeError("INVALID_DATE")
+      .min(validDate, `La date ne peut pas précéder le ${validDate}`)
+      .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
+      .required("Champ obligatoire"),
+    desc_fact: Yup.string().required("Champ obligatoire"),
+    montant_rec: Yup.number()
+      .min(0, "Valeur négatif !")
+      .required("Champ obligatoire"),
+  });
   const dosCopy = JSON.parse(JSON.stringify(dossiers));
   const sitesCopy = JSON.parse(JSON.stringify(sites));
 
@@ -70,6 +91,7 @@ const FactureModalFormDos = ({
       montant_rec: values.montant_rec,
       site_con: siteToAdd,
       tax: values.tax,
+      ajust: 0,
     };
     factureDos.push(newFact);
     Object.keys(newFacts).forEach(function (key, index) {
@@ -113,6 +135,7 @@ const FactureModalFormDos = ({
           <Container maxWidth="l">
             <Formik
               initialValues={{ ...INITIAL_FORM_STATE }}
+              validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
             >
               {(formikProps) => {
@@ -126,6 +149,8 @@ const FactureModalFormDos = ({
                       </Typography>
                       <Grid item xs={12}>
                         <Select
+                          dossiers={dossiers}
+                          setValiDate={setValiDate}
                           name="numDos"
                           label="Numéro dossier"
                           options={numDos}

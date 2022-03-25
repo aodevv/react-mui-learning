@@ -98,7 +98,8 @@ const Dashboard = ({
   const navigate = useNavigate();
 
   const isSmall = useMediaQuery("(max-width:1200px)");
-  let actif = dossiers.filter((dos) => dos.status === "actif");
+  const dosCopy = JSON.parse(JSON.stringify(dossiers));
+  let actif = dosCopy.filter((dos) => dos.status === "actif");
   // actif = actif.sort((a, b) =>
   //   a.datEv > b.datEv ? 1 : b.datEv > a.datEv ? -1 : 0
   // );
@@ -106,6 +107,7 @@ const Dashboard = ({
 
   let sitesOnly = [];
   let dosOnly = [];
+  console.log(dossiers);
 
   const totalRec = dossiers.reduce((acc, dos) => acc + dos.MR, 0);
   const totalVer = dossiers.reduce((acc, dos) => acc + dos.MV, 0);
@@ -153,6 +155,9 @@ const Dashboard = ({
                 <Box p={3} sx={{ textAlign: "center", height: "30%" }}>
                   <Typography mb={isSmall ? 3 : 8} variant="h2">
                     Municipalité X
+                  </Typography>
+                  <Typography mb={isSmall ? 3 : 8} variant="h4">
+                    Autres infos...
                   </Typography>
                   <Grid container>
                     <Grid item xs={12} lg={4}>

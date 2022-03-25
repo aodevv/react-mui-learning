@@ -4,6 +4,9 @@ import { ins1000Sep, formatNum } from "./TableColumnsUtils";
 import { connect } from "react-redux";
 import { addInfosDossier } from "../../redux/DossierInfos/infosDossier.actions";
 
+import { createStructuredSelector } from "reselect";
+import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
+
 import { Link } from "react-router-dom";
 //import { filesTableColumns } from "./TableColumns";
 import { DataGrid } from "@mui/x-data-grid";
@@ -12,19 +15,21 @@ import { Box, Button } from "@mui/material";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { renderCellExpand } from "./CellExpand";
 
-import DeleteIcon from "@mui/icons-material/Delete";
+//import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import PaidIcon from "@mui/icons-material/Paid";
 import clsx from "clsx";
 
 import DepositModal from "../DepositModal/DepositModal";
 import DangerousIcon from "@mui/icons-material/Dangerous";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const FilesTable = ({
   data,
   hiddenStatus,
   addInfosDossier,
   setFilteredDossiers,
+  dossiers,
 }) => {
   const [deposit, setDeposit] = useState(false);
   const [dosId, setDosId] = useState(0);
@@ -38,25 +43,37 @@ const FilesTable = ({
     setDeposit(true);
   };
 
-  const blabla = (id) => {
-    return function () {
-      console.log(id);
-    };
-  };
-
   const depositToDos = (id) => {
-    const dosCopy = JSON.parse(JSON.stringify(data));
+    const dosCopy = JSON.parse(JSON.stringify(dossiers));
     setDosId(id);
     setDosToEdit(dosCopy.find((dossier) => dossier.id === id));
     openDeposit();
   };
 
   const changeStatus = (id) => {
-    const dosCopy = JSON.parse(JSON.stringify(data));
+    const dosCopy = JSON.parse(JSON.stringify(dossiers));
 
     const dosToEdit = dosCopy.find((dossier) => dossier.id === id);
     if (dosToEdit.status === "actif") {
       dosToEdit.status = "fermé";
+      const otherDoses = dosCopy.filter((dossier) => dossier.id !== id);
+      const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
+        a.id >= b.id ? 1 : -1
+      );
+      addInfosDossier(newDoses);
+
+      if (!hiddenStatus) {
+        setFilteredDossiers(newDoses);
+      }
+    }
+  };
+
+  const changeStatusOpen = (id) => {
+    const dosCopy = JSON.parse(JSON.stringify(dossiers));
+
+    const dosToEdit = dosCopy.find((dossier) => dossier.id === id);
+    if (dosToEdit.status === "fermé") {
+      dosToEdit.status = "actif";
       const otherDoses = dosCopy.filter((dossier) => dossier.id !== id);
       const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
         a.id >= b.id ? 1 : -1
@@ -92,6 +109,12 @@ const FilesTable = ({
           icon={<DangerousIcon />}
           label="Fermer"
           onClick={() => changeStatus(params.id)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<CheckCircleIcon />}
+          label="Réactiver"
+          onClick={() => changeStatusOpen(params.id)}
           showInMenu
         />,
       ],
@@ -210,8 +233,8 @@ const FilesTable = ({
         <DepositModal
           deposit={deposit}
           dosToEdit={dosToEdit}
-          dossiers={data}
-          fullDosPage
+          dossiers={dossiers}
+          fullDosPage={!hiddenStatus}
           closeDeposit={closeDeposit}
           setFilteredDossiers={setFilteredDossiers}
         />
@@ -224,4 +247,8 @@ const mapDispatchToProps = (dispatch) => ({
   addInfosDossier: (newInfos) => dispatch(addInfosDossier(newInfos)),
 });
 
-export default connect(null, mapDispatchToProps)(FilesTable);
+const mapStateToProps = createStructuredSelector({
+  dossiers: selectDossiers,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilesTable);

@@ -122,6 +122,7 @@ const NouveauDossier = ({
     MR: 0,
     siteTT: 0,
     facTT: 0,
+    facHT: 0,
     salTT: 0,
     machTT: 0,
     dabTT: 0,

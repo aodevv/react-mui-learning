@@ -11,7 +11,7 @@ import {
 } from "../../Components/Tables/TableColumnsUtils";
 const FacturesTotal = () => {
   const {
-    values: { factures, facTT },
+    values: { factures, facHT },
     setFieldValue,
   } = useFormikContext();
 
@@ -25,12 +25,12 @@ const FacturesTotal = () => {
       total = total + facturesTotal;
     }
 
-    setFieldValue("facTT", total);
+    setFieldValue("facHT", total);
   }, [setFieldValue, factures]);
   return (
     <>
       <Typography noWrap sx={{ color: "gray" }}>
-        NT: <b>{`$ ${ins1000Sep(formatNum(facTT))}`}</b>
+        NT: <b>{`$ ${ins1000Sep(formatNum(facHT))}`}</b>
       </Typography>
     </>
   );

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
-//import * as Yup from "yup";
+import * as Yup from "yup";
 
 import { connect } from "react-redux";
 import { addMachinerie } from "../../../redux/Machineries/machineries.actions";
@@ -37,6 +37,11 @@ const MachinerieModalFormDos = ({
   dossiers,
   closeModal,
 }) => {
+  const [validDate, setValiDate] = useState("2010-01-01");
+  var today = new Date();
+
+  var date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
   const INITIAL_FORM_STATE = {
     numDos: "",
     code: "",
@@ -49,6 +54,22 @@ const MachinerieModalFormDos = ({
     taux_fonc: 0,
     cout: 0,
   };
+
+  const FORM_VALIDATION = Yup.object().shape({
+    numDos: Yup.string().required("Champ obligatoire"),
+    type: Yup.string().required("Champ obligatoire"),
+    site_con: Yup.string().when("type", {
+      is: "dab", // alternatively: (val) => val == true
+      then: (schema) => schema.required("Champ obligatoire"),
+    }),
+    code: Yup.string().required("Champ obligatoire"),
+    desc: Yup.string().required("Champ obligatoire"),
+    maintenance: Yup.number().min(0, "Valeur négative !"),
+    hrs_fonc: Yup.number().min(0, "Valeur négative !"),
+    hrs_stat: Yup.number().min(0, "Valeur négative !"),
+    taux_fonc: Yup.number().min(0, "Valeur négative !"),
+  });
+
   const dosCopy = JSON.parse(JSON.stringify(dossiers));
   const sitesCopy = JSON.parse(JSON.stringify(sites));
 
@@ -119,6 +140,7 @@ const MachinerieModalFormDos = ({
           <Container maxWidth="l">
             <Formik
               initialValues={{ ...INITIAL_FORM_STATE }}
+              validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
             >
               {(formikProps) => {
@@ -132,6 +154,8 @@ const MachinerieModalFormDos = ({
 
                     <Grid item xs={12}>
                       <SelectDossier
+                        dossiers={dossiers}
+                        setValiDate={setValiDate}
                         name="numDos"
                         label="Numéro dossier"
                         options={numDos}

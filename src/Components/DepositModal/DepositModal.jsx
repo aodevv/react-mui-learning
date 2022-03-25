@@ -68,6 +68,7 @@ const DepositModal = ({
       a.id >= b.id ? 1 : -1
     );
     addInfosDossier(newDoses);
+    setAVerse(0);
 
     if (fullDosPage) {
       setFilteredDossiers(newDoses);

@@ -11,6 +11,7 @@ import { selectFacturesMemo } from "../../redux/Factures/Factures.selectors";
 import { selectSalairesMemo } from "../../redux/Salaires/salaires.selectors";
 import { selectMachineriesMemo } from "../../redux/Machineries/machineries.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
+import { selectPayroll } from "../../redux/Salaires/salaires.selectors";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
@@ -85,6 +86,7 @@ const style2 = {
 const ExistingDossier = ({
   dossiers,
   sites,
+  payroll,
   factures,
   salaires,
   machineries,
@@ -352,6 +354,7 @@ const ExistingDossier = ({
                     <Fade in={salaireModal}>
                       <Box sx={style}>
                         <SalaireModalForm
+                          payroll={payroll}
                           existing={true}
                           globalValues={values}
                           prejudices={typePrejudices}
@@ -418,6 +421,7 @@ const mapStateToProps = createStructuredSelector({
   factures: selectFacturesMemo,
   salaires: selectSalairesMemo,
   machineries: selectMachineriesMemo,
+  payroll: selectPayroll,
 });
 
 export default connect(mapStateToProps)(ExistingDossier);

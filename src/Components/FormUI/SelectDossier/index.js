@@ -1,16 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { TextField, MenuItem } from "@mui/material";
 
 import { useField, useFormikContext } from "formik";
+import { id } from "date-fns/locale";
 
-const SelectWrapper = ({ name, options, ...otherProps }) => {
+const SelectWrapper = ({
+  name,
+  dossiers,
+  setValiDate,
+  options,
+  ...otherProps
+}) => {
   const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
+  const [dosId, setdosId] = useState("");
 
   const handleChange = (e) => {
     const { value } = e.target;
     setFieldValue(name, value);
+    setdosId(value);
   };
   const config = {
     ...field,
@@ -27,6 +36,15 @@ const SelectWrapper = ({ name, options, ...otherProps }) => {
     config.error = true;
     config.helperText = meta.error;
   }
+
+  useEffect(() => {
+    if (dosId !== "") {
+      const rightDos = dossiers.find((dos) => dos.id === dosId);
+      const dosDate = rightDos.datEv;
+      console.log(dosDate);
+      setValiDate(dosDate);
+    }
+  }, [dosId, dossiers, setValiDate]);
 
   return (
     <TextField {...config}>

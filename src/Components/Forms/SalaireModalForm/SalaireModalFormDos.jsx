@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
-//import * as Yup from "yup";
+import * as Yup from "yup";
 
 import { connect } from "react-redux";
 import { addSalaires } from "../../../redux/Salaires/salaires.actions";
@@ -48,6 +48,11 @@ const SalaireModalFormDos = ({
   salaires,
   payroll,
 }) => {
+  const [validDate, setValiDate] = useState("2010-01-01");
+  var today = new Date();
+
+  var date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
   const INITIAL_FORM_STATE = {
     curSal: "",
     numDos: "",
@@ -72,6 +77,37 @@ const SalaireModalFormDos = ({
     fss: false,
     csst: false,
   };
+  const FORM_VALIDATION = Yup.object().shape({
+    numDos: Yup.string().required("Champ obligatoire"),
+    type: Yup.string().required("Champ obligatoire"),
+    site_con: Yup.string().when("type", {
+      is: "dab", // alternatively: (val) => val == true
+      then: (schema) => schema.required("Champ obligatoire"),
+    }),
+    nom: Yup.string().required("Champ obligatoire"),
+    prenom: Yup.string().required("Champ obligatoire"),
+    status: Yup.string().required("Champ obligatoire"),
+    Hreg: Yup.number().when("status", {
+      is: "occ",
+      then: Yup.number().min(1, "Champ obligatoire"),
+    }),
+    Treg: Yup.number().when("status", {
+      is: "occ",
+      then: Yup.number().min(1, "Champ obligatoire"),
+    }),
+    taux_vac: Yup.number()
+      .max(100, "Ne doit pas dépasser 100%")
+      .required("Champ obligatoire"),
+    date_per: Yup.date()
+      .typeError("INVALID_DATE")
+      .min(validDate, `La date ne peut pas précéder le ${validDate}`)
+      .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
+      .required("Champ obligatoire"),
+    Hsup: Yup.number().min(0, "Valeur négative !"),
+    Hsup2: Yup.number().min(0, "Valeur négative !"),
+    Tsup: Yup.number().min(0, "Valeur négative !"),
+    Tsup2: Yup.number().min(0, "Valeur négative !"),
+  });
   const dosCopy = JSON.parse(JSON.stringify(dossiers));
   const sitesCopy = JSON.parse(JSON.stringify(sites));
 
@@ -162,6 +198,7 @@ const SalaireModalFormDos = ({
           <Container maxWidth="l">
             <Formik
               initialValues={{ ...INITIAL_FORM_STATE }}
+              validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
             >
               {(formikProps) => {
@@ -184,6 +221,8 @@ const SalaireModalFormDos = ({
                         </Grid>
                         <Grid item xs={6}>
                           <SelectDossier
+                            dossiers={dossiers}
+                            setValiDate={setValiDate}
                             name="numDos"
                             label="Numéro dossier"
                             options={numDos}

@@ -114,7 +114,7 @@ const SalaireModalForm = ({
       .typeError("INVALID_DATE")
       .min(
         globalValues.date_ev,
-        `La date ne peut pas précéder la date de l'événement`
+        `La date ne peut pas précéder le ${globalValues.date_ev}`
       )
       .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
       .required("Champ obligatoire"),

@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 
+import { connect } from "react-redux";
+import { addInfosDossier } from "../../redux/DossierInfos/infosDossier.actions";
+
 import TextField from "@mui/material/TextField";
 
 import { ins1000Sep, formatNum } from "../Tables/TableColumnsUtils";
 
 import { Modal, Fade, Typography, Button, Box, Grid } from "@mui/material";
 import MontantBox from "./MontantBox";
+import CloseIcon from "@mui/icons-material/Close";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 const style = {
   position: "absolute",
@@ -23,10 +28,21 @@ const style = {
   //   alignItems: "center",
 };
 
-const DepositModal = ({ deposit, closeDeposit, dos, dossiers, MR, MA, MV }) => {
+const DepositModal = ({
+  deposit,
+  closeDeposit,
+  dosToEdit,
+  dossiers,
+  addInfosDossier,
+  setFilteredDossiers,
+  fullDosPage,
+}) => {
   const [aVerse, setAVerse] = useState(0);
-  const [reste, setRest] = useState(MA - MV);
-  const [mv, setMv] = useState(MV);
+  const [MA, setMA] = useState(0);
+  const [MR, setMR] = useState(0);
+  const [MV, setMV] = useState(0);
+  const [reste, setRest] = useState(0);
+  const [mv, setMv] = useState(0);
 
   const calculations = (event) => {
     const verse = parseFloat(event.target.value);
@@ -41,6 +57,32 @@ const DepositModal = ({ deposit, closeDeposit, dos, dossiers, MR, MA, MV }) => {
       }
     }
   };
+
+  const depositMoney = () => {
+    const dosCopy = JSON.parse(JSON.stringify(dossiers));
+    const dosId = dosToEdit.id;
+    dosToEdit.MV = mv;
+
+    const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
+    const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
+      a.id >= b.id ? 1 : -1
+    );
+    addInfosDossier(newDoses);
+
+    if (fullDosPage) {
+      setFilteredDossiers(newDoses);
+    }
+
+    closeDeposit();
+  };
+
+  useEffect(() => {
+    setMA(dosToEdit.MA);
+    setMR(dosToEdit.MR);
+    setMV(dosToEdit.MV);
+    setMv(dosToEdit.MV);
+    setRest(dosToEdit.MA - dosToEdit.MV);
+  }, [dosToEdit]);
 
   return (
     <>
@@ -69,7 +111,7 @@ const DepositModal = ({ deposit, closeDeposit, dos, dossiers, MR, MA, MV }) => {
                 </Grid>
                 <Grid item xs={6}>
                   <MontantBox
-                    percent={20}
+                    percent={100 - (MA / MR) * 100}
                     borderTopRight={true}
                     bgColor="rgba(0,0,255,0.2)"
                   >
@@ -107,7 +149,7 @@ const DepositModal = ({ deposit, closeDeposit, dos, dossiers, MR, MA, MV }) => {
                 </Grid>
               </Grid>
             </Box>
-            <Box mt={2}>
+            <Box mt={2} mb={2}>
               <Grid item xs={8} margin="auto">
                 <TextField
                   fullWidth
@@ -120,8 +162,34 @@ const DepositModal = ({ deposit, closeDeposit, dos, dossiers, MR, MA, MV }) => {
                   margin="dense"
                 />
               </Grid>
+              <Box mt={1}></Box>
+              <Grid
+                item
+                xs={8}
+                margin="auto"
+                display="flex"
+                flexDirection="row-reverse"
+              >
+                <Button
+                  onClick={closeDeposit}
+                  size="small"
+                  startIcon={<CloseIcon />}
+                  color="error"
+                >
+                  Annuler
+                </Button>
+                <Button
+                  startIcon={<AttachMoneyIcon />}
+                  variant="contained"
+                  size="small"
+                  color="success"
+                  disabled={MV === MA}
+                  onClick={depositMoney}
+                >
+                  Vérser
+                </Button>
+              </Grid>
             </Box>
-            <Button onClick={closeDeposit}>Close</Button>
           </Box>
         </Fade>
       </Modal>
@@ -129,4 +197,8 @@ const DepositModal = ({ deposit, closeDeposit, dos, dossiers, MR, MA, MV }) => {
   );
 };
 
-export default DepositModal;
+const mapDispatchToProps = (dispatch) => ({
+  addInfosDossier: (newInfos) => dispatch(addInfosDossier(newInfos)),
+});
+
+export default connect(null, mapDispatchToProps)(DepositModal);

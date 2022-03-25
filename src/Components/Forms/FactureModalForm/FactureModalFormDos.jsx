@@ -6,6 +6,8 @@ import { Formik, Form } from "formik";
 
 import { connect } from "react-redux";
 import { addFactures } from "../../../redux/Factures/Factures.actions";
+import { addSites } from "../../../redux/Sites/Sites.actions";
+import { addInfosDossier } from "../../../redux/DossierInfos/infosDossier.actions";
 
 // MUI ICONS
 import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
@@ -28,6 +30,8 @@ const FactureModalFormDos = ({
   numDos,
   dossiers,
   addFactures,
+  addSites,
+  addInfosDossier,
   factures,
 }) => {
   const INITIAL_FORM_STATE = {
@@ -41,6 +45,8 @@ const FactureModalFormDos = ({
     site_con: "",
     tax: false,
   };
+  const dosCopy = JSON.parse(JSON.stringify(dossiers));
+  const sitesCopy = JSON.parse(JSON.stringify(sites));
 
   const handleSubmit = (values, { resetForm }) => {
     const dosInt = values.numDos;
@@ -71,8 +77,31 @@ const FactureModalFormDos = ({
         newFacts[key] = factureDos;
       }
     });
-    console.log(newFacts);
     addFactures(newFacts);
+
+    const dosId = values.numDos;
+    const siteId = siteToAdd;
+
+    const dosToEdit = dosCopy.find((dossier) => dossier.id === dosId);
+    dosToEdit.MR = dosToEdit.MR + values.montant_rec;
+
+    const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
+    addInfosDossier(
+      [...otherDoses, dosToEdit].sort((a, b) => (a.id >= b.id ? 1 : -1))
+    );
+
+    if (values.type === "dab") {
+      const siteDos = sitesCopy[dosId];
+      const siteToEdit = siteDos.find((site) => site.site === siteId);
+      const otherSites = siteDos.filter((site) => site.site !== siteId);
+      siteToEdit.f_montant_rec = siteToEdit.f_montant_rec + values.montant_rec;
+      siteToEdit.montant_rec = siteToEdit.montant_rec + values.montant_rec;
+      Object.keys(sitesCopy).forEach((item, key) => {
+        if (key === dosId) sitesCopy[key] = [...otherSites, siteToEdit];
+      });
+      addSites(sitesCopy);
+    }
+
     resetForm();
     closeModal();
   };
@@ -198,6 +227,8 @@ const FactureModalFormDos = ({
 
 const mapDispatchToProps = (dispatch) => ({
   addFactures: (newFacts) => dispatch(addFactures(newFacts)),
+  addInfosDossier: (newInfos) => dispatch(addInfosDossier(newInfos)),
+  addSites: (newSites) => dispatch(addSites(newSites)),
 });
 
 export default connect(null, mapDispatchToProps)(FactureModalFormDos);

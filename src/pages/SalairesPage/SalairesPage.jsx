@@ -76,8 +76,12 @@ const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
 
   let dosOnly = [];
 
-  Object.keys(salaires).forEach((item) => {
-    dosOnly.push(item);
+  // Object.keys(salaires).forEach((item) => {
+  //   dosOnly.push(item);
+  // });
+
+  dossiers.forEach((dos) => {
+    if (dos.status === "actif") dosOnly.push(dos.id);
   });
 
   let sitesOnly = [];

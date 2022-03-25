@@ -6,6 +6,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import FacturePage from "../pages/FacturesPage/FacturePage";
 import SalairesPage from "../pages/SalairesPage/SalairesPage";
 import MachineriePage from "../pages/MachineriePage/MachineriePage";
+import SitesPage from "../pages/SitesPage/SitesPage";
 import FactureTypes from "../pages/TypeHandlers/FactureTypes";
 import MachinerieTypes from "../pages/TypeHandlers/MachineriesTypes";
 import SalairesTypes from "../pages/TypeHandlers/SalairesTypes";
@@ -26,6 +27,7 @@ const ContentRouter = () => {
       </Route>
       <Route path="/factures" element={<FacturePage />} />
       <Route path="/salaires" element={<SalairesPage />} />
+      <Route path="/sites" element={<SitesPage />} />
       <Route path="/machineries" element={<MachineriePage />} />
       <Route path="/nouveau_dossier" element={<NouveauDossier />} />
       <Route path="/testing" element={<NouveauDossier />} />

@@ -71,8 +71,12 @@ const FacturePage = ({ factures, sites, dossiers }) => {
     sites[item].map((site) => sitesOnly.push(site.site));
   });
 
-  Object.keys(factures).forEach((item) => {
-    dosOnly.push(item);
+  // Object.keys(factures).forEach((item) => {
+  //   dosOnly.push(item);
+  // });
+
+  dossiers.forEach((dos) => {
+    if (dos.status === "actif") dosOnly.push(dos.id);
   });
 
   const remove_duplicates = (arr) => {

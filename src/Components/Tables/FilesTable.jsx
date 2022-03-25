@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { ins1000Sep, formatNum } from "./TableColumnsUtils";
 
+import { connect } from "react-redux";
+import { addInfosDossier } from "../../redux/DossierInfos/infosDossier.actions";
+
 import { Link } from "react-router-dom";
 //import { filesTableColumns } from "./TableColumns";
 import { DataGrid } from "@mui/x-data-grid";
@@ -15,10 +18,17 @@ import PaidIcon from "@mui/icons-material/Paid";
 import clsx from "clsx";
 
 import DepositModal from "../DepositModal/DepositModal";
+import DangerousIcon from "@mui/icons-material/Dangerous";
 
-const FilesTable = ({ data }) => {
+const FilesTable = ({
+  data,
+  hiddenStatus,
+  addInfosDossier,
+  setFilteredDossiers,
+}) => {
   const [deposit, setDeposit] = useState(false);
   const [dosId, setDosId] = useState(0);
+  const [dosToEdit, setDosToEdit] = useState(0);
 
   const closeDeposit = () => {
     setDeposit(false);
@@ -34,6 +44,31 @@ const FilesTable = ({ data }) => {
     };
   };
 
+  const depositToDos = (id) => {
+    const dosCopy = JSON.parse(JSON.stringify(data));
+    setDosId(id);
+    setDosToEdit(dosCopy.find((dossier) => dossier.id === id));
+    openDeposit();
+  };
+
+  const changeStatus = (id) => {
+    const dosCopy = JSON.parse(JSON.stringify(data));
+
+    const dosToEdit = dosCopy.find((dossier) => dossier.id === id);
+    if (dosToEdit.status === "actif") {
+      dosToEdit.status = "fermé";
+      const otherDoses = dosCopy.filter((dossier) => dossier.id !== id);
+      const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
+        a.id >= b.id ? 1 : -1
+      );
+      addInfosDossier(newDoses);
+
+      if (!hiddenStatus) {
+        setFilteredDossiers(newDoses);
+      }
+    }
+  };
+
   const filesTableColumns = [
     {
       field: "actions",
@@ -46,16 +81,17 @@ const FilesTable = ({ data }) => {
           to={`/dossier/${params.id}`}
           label="Afficher"
         />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Supprimer"
-          showInMenu
-        />,
 
         <GridActionsCellItem
           icon={<PaidIcon />}
-          onClick={blabla(params.id)}
+          onClick={() => depositToDos(params.id)}
           label="Verser"
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<DangerousIcon />}
+          label="Fermer"
+          onClick={() => changeStatus(params.id)}
           showInMenu
         />,
       ],
@@ -67,6 +103,7 @@ const FilesTable = ({ data }) => {
     {
       field: "status",
       headerName: "Status",
+      hide: hiddenStatus,
       width: 90,
       cellClassName: (params) =>
         clsx("super-app", {
@@ -172,19 +209,19 @@ const FilesTable = ({ data }) => {
         </div>
         <DepositModal
           deposit={deposit}
-          dos={dosId}
+          dosToEdit={dosToEdit}
           dossiers={data}
+          fullDosPage
           closeDeposit={closeDeposit}
-          MR={10000}
-          MA={8000}
-          MV={6000}
+          setFilteredDossiers={setFilteredDossiers}
         />
       </Box>
-      <Button variant="outlined" onClick={openDeposit}>
-        Open
-      </Button>
     </>
   );
 };
 
-export default FilesTable;
+const mapDispatchToProps = (dispatch) => ({
+  addInfosDossier: (newInfos) => dispatch(addInfosDossier(newInfos)),
+});
+
+export default connect(null, mapDispatchToProps)(FilesTable);

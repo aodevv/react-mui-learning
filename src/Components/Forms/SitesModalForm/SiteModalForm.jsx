@@ -20,7 +20,7 @@ import * as Yup from "yup";
 import Textfield from "../../../Components/FormUI/Textfield";
 //import Select from "../../../Components/FormUI/Select";
 //import DatePicker from "../../../Components/FormUI/DateTime";
-import Checkbox from "../../../Components/FormUI/Checkbox";
+//import Checkbox from "../../../Components/FormUI/Checkbox";
 import Submit from "../../../Components/FormUI/Submit";
 import Select from "../../FormUI/Select";
 
@@ -94,7 +94,7 @@ const SiteModalForm = ({
       let newSites = JSON.parse(JSON.stringify(allSites));
       const dosInt = globalValues.numero;
       Object.keys(newSites).forEach(function (key, index) {
-        if (parseInt(key) === dosInt) {
+        if (key === dosInt) {
           newSites[key] = newSite;
         }
       });

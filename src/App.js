@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { selectAuth } from "./redux/Auth/Auth.selectors";
+
 import "@fontsource/roboto/400.css";
 
 import "./App.css";
@@ -25,9 +29,8 @@ const navWidth = {
   },
 };
 
-const App = () => {
+const App = ({ isLoggedIn }) => {
   const [sideNav, setSideNav] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { pathname } = useLocation();
   const theme = createTheme(
     {
@@ -43,11 +46,7 @@ const App = () => {
         {isLoggedIn ? (
           <div className="App">
             <div className="App__top">
-              <Topnav
-                setIsLoggedIn={setIsLoggedIn}
-                sideNav={sideNav}
-                setSideNav={setSideNav}
-              />
+              <Topnav sideNav={sideNav} setSideNav={setSideNav} />
             </div>
             <div className="App__bottom">
               <Collapse sx={navWidth} orientation="horizontal" in={sideNav}>
@@ -68,7 +67,7 @@ const App = () => {
           <div className="login">
             <div className="login__background"></div>
             <div className="login__right">
-              <Login setIsLoggedIn={setIsLoggedIn} />
+              <Login />
             </div>
           </div>
         )}
@@ -77,4 +76,8 @@ const App = () => {
   );
 };
 
-export default App;
+const mapStateToProps = createStructuredSelector({
+  isLoggedIn: selectAuth,
+});
+
+export default connect(mapStateToProps)(App);

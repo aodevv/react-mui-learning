@@ -1,4 +1,8 @@
 import React from "react";
+
+import { connect } from "react-redux";
+import { LogOut } from "../../redux/Auth/Auth.actions";
+
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -7,7 +11,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 
-const Topnav = ({ sideNav, setSideNav, setIsLoggedIn }) => {
+const Topnav = ({ sideNav, setSideNav, LogOut }) => {
   const toggleSideNav = () => {
     setSideNav(!sideNav);
   };
@@ -28,7 +32,7 @@ const Topnav = ({ sideNav, setSideNav, setIsLoggedIn }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             App
           </Typography>
-          <Button onClick={() => setIsLoggedIn(false)} color="inherit">
+          <Button onClick={() => LogOut()} color="inherit">
             Déconnexion
           </Button>
         </Toolbar>
@@ -37,4 +41,8 @@ const Topnav = ({ sideNav, setSideNav, setIsLoggedIn }) => {
   );
 };
 
-export default Topnav;
+const mapDispatchToProps = (dispatch) => ({
+  LogOut: () => dispatch(LogOut()),
+});
+
+export default connect(null, mapDispatchToProps)(Topnav);

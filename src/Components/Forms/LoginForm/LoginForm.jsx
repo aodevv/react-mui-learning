@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+import { connect } from "react-redux";
+import { LogIn } from "../../../redux/Auth/Auth.actions";
+
 // FORMIK and YUP
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -11,7 +14,7 @@ import Textfield from "../../../Components/FormUI/Textfield";
 
 import Submit from "../../../Components/FormUI/Submit";
 
-const LoginForm = ({ setIsLoggedIn }) => {
+const LoginForm = ({ LogIn }) => {
   const [loading, setLoading] = useState(false);
   const INITIAL_FORM_STATE = {
     login: "admin",
@@ -35,10 +38,10 @@ const LoginForm = ({ setIsLoggedIn }) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      setIsLoggedIn(true);
+      LogIn();
 
       values = INITIAL_FORM_STATE;
-    }, 3000);
+    }, 2000);
   };
 
   const handleSubmit = (values) => {
@@ -102,4 +105,8 @@ const LoginForm = ({ setIsLoggedIn }) => {
   );
 };
 
-export default LoginForm;
+const mapDispatchToProps = (dispatch) => ({
+  LogIn: () => dispatch(LogIn()),
+});
+
+export default connect(null, mapDispatchToProps)(LoginForm);

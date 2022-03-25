@@ -65,8 +65,12 @@ const MachineriePage = ({ machinerie, dossiers, sites }) => {
 
   let dosOnly = [];
 
-  Object.keys(machinerie).forEach((item) => {
-    dosOnly.push(item);
+  // Object.keys(machinerie).forEach((item) => {
+  //   dosOnly.push(item);
+  // });
+
+  dossiers.forEach((dos) => {
+    if (dos.status === "actif") dosOnly.push(dos.id);
   });
 
   let sitesOnly = [];

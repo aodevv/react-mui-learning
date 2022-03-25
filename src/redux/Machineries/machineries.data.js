@@ -49,7 +49,7 @@ export const machineriesAll = {
       hrs_stat: 67,
       cout: 220000,
       taux_fonc: 88,
-      type: "dab",
+      type: "mpt",
     },
   ],
   "2021MU04": [],

@@ -6,6 +6,8 @@ import { Formik, Form } from "formik";
 
 import { connect } from "react-redux";
 import { addMachinerie } from "../../../redux/Machineries/machineries.actions";
+import { addSites } from "../../../redux/Sites/Sites.actions";
+import { addInfosDossier } from "../../../redux/DossierInfos/infosDossier.actions";
 
 // MUI ICONS
 import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
@@ -14,12 +16,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import InputAdornment from "@mui/material/InputAdornment";
 
 import Textfield from "../../../Components/FormUI/Textfield";
-import Select from "../../../Components/FormUI/Select";
+//import Select from "../../../Components/FormUI/Select";
 import SelectDossier from "../../../Components/FormUI/SelectDossier";
 import SelectPrejudice from "../../../Components/FormUI/SelectPrejudice";
 import SelectSites from "../../../Components/FormUI/SelectSites";
-import DatePicker from "../../../Components/FormUI/DateTime";
-import Checkbox from "../../../Components/FormUI/Checkbox";
+//import DatePicker from "../../../Components/FormUI/DateTime";
+//import Checkbox from "../../../Components/FormUI/Checkbox";
 import Submit from "../../../Components/FormUI/Submit";
 
 import Cout from "./Cout";
@@ -28,6 +30,8 @@ const MachinerieModalFormDos = ({
   sites,
   numDos,
   addMachinerie,
+  addInfosDossier,
+  addSites,
   machineries,
   prejudices,
   dossiers,
@@ -45,6 +49,8 @@ const MachinerieModalFormDos = ({
     taux_fonc: 0,
     cout: 0,
   };
+  const dosCopy = JSON.parse(JSON.stringify(dossiers));
+  const sitesCopy = JSON.parse(JSON.stringify(sites));
 
   const handleSubmit = (values, { resetForm }) => {
     const dosInt = values.numDos;
@@ -79,6 +85,30 @@ const MachinerieModalFormDos = ({
       }
     });
     addMachinerie(newMachs);
+
+    const dosId = values.numDos;
+    const siteId = siteToAdd;
+
+    const dosToEdit = dosCopy.find((dossier) => dossier.id === dosId);
+    dosToEdit.MR = dosToEdit.MR + values.cout;
+
+    const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
+    addInfosDossier(
+      [...otherDoses, dosToEdit].sort((a, b) => (a.id >= b.id ? 1 : -1))
+    );
+
+    if (values.type === "dab") {
+      const siteDos = sitesCopy[dosId];
+      const siteToEdit = siteDos.find((site) => site.site === siteId);
+      const otherSites = siteDos.filter((site) => site.site !== siteId);
+      siteToEdit.m_montant_rec = siteToEdit.m_montant_rec + values.cout;
+      siteToEdit.montant_rec = siteToEdit.montant_rec + values.cout;
+      Object.keys(sitesCopy).forEach((item, key) => {
+        if (key === dosId) sitesCopy[key] = [...otherSites, siteToEdit];
+      });
+      addSites(sitesCopy);
+    }
+
     resetForm();
     closeModal();
   };
@@ -221,6 +251,8 @@ const MachinerieModalFormDos = ({
 
 const mapDispatchToProps = (dispatch) => ({
   addMachinerie: (newMach) => dispatch(addMachinerie(newMach)),
+  addInfosDossier: (newInfos) => dispatch(addInfosDossier(newInfos)),
+  addSites: (newSites) => dispatch(addSites(newSites)),
 });
 
 export default connect(null, mapDispatchToProps)(MachinerieModalFormDos);

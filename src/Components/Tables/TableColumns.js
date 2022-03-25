@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import PaidIcon from "@mui/icons-material/Paid";
+import EditIcon from "@mui/icons-material/Edit";
 
 export const filesTableColumns = [
   {
@@ -574,5 +575,109 @@ export const PayrollColumns = [
     headerName: "CSST",
     type: "boolean",
     width: 80,
+  },
+];
+
+export const sitesColumns = [
+  {
+    field: "id",
+    headerName: "",
+    hide: true,
+  },
+  {
+    field: "dos",
+    headerName: "Dossier",
+    width: 80,
+  },
+  {
+    field: "site",
+    headerName: "Site",
+    minWidth: 100,
+  },
+  {
+    field: "nature",
+    headerName: "Nature",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "part_end",
+    headerName: "Partie endommagée",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "pourc_end",
+    headerName: "Pourcentage endommagé",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      return `${params.value} %`;
+    },
+  },
+  {
+    field: "type_ret",
+    headerName: "Type rétabli",
+    flex: 1,
+    minWidth: 100,
+  },
+  {
+    field: "montant_rec",
+    headerName: "Montant réclamé",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "f_montant_rec",
+    headerName: "Factures total",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "s_montant_rec",
+    headerName: "Salaires total",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "m_montant_rec",
+    headerName: "Machineries total",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      const valueFormatted = ins1000Sep(formatNum(params.value));
+      return `$ ${valueFormatted}`;
+    },
+  },
+  {
+    field: "pourc_adm",
+    headerName: "Pourcentage admissible",
+    flex: 1,
+    minWidth: 100,
+    valueFormatter: (params) => {
+      return `${params.value} %`;
+    },
+  },
+
+  {
+    field: "actions",
+    type: "actions",
+    width: 80,
+    getActions: (params) => [
+      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
+      <GridActionsCellItem icon={<EditIcon />} label="Modifier" />,
+    ],
   },
 ];

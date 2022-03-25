@@ -13,6 +13,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import PrecisionManufacturingOutlinedIcon from "@mui/icons-material/PrecisionManufacturingOutlined";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+import SignpostOutlinedIcon from "@mui/icons-material/SignpostOutlined";
 
 const Sidemenu = ({ pathname }) => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const Sidemenu = ({ pathname }) => {
       factures: 3,
       salaires: 4,
       machineries: 5,
+      sites: 6,
     };
     pathname === ""
       ? setSelectedIndex(0)
@@ -68,6 +70,19 @@ const Sidemenu = ({ pathname }) => {
           <FolderOpenIcon />
         </ListItemIcon>
         <ListItemText primary="Gestion dossier" />
+      </ListItemButton>
+
+      <ListItemButton
+        selected={selectedIndex === 6 && pathname === "sites"}
+        onClick={(event) => {
+          handleListItemClick(event, 6);
+          navigate("/sites");
+        }}
+      >
+        <ListItemIcon>
+          <SignpostOutlinedIcon />
+        </ListItemIcon>
+        <ListItemText primary="Sites" />
       </ListItemButton>
 
       <ListItemButton

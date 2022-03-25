@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
+import {
+  ins1000Sep,
+  formatNum,
+} from "../../Components/Tables/TableColumnsUtils";
 
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -31,6 +35,7 @@ import FilesTable from "../../Components/Tables/FilesTable";
 import FactureModalFormDos from "../../Components/Forms/FactureModalForm/FactureModalFormDos";
 import SalaireModalFormDos from "../../Components/Forms/SalaireModalForm/SalaireModalFormDos";
 import MachinerieModalFormDos from "../../Components/Forms/MachinerieModalForm/MachinerieModalFormDos";
+import SitesModalFormDos from "../../Components/Forms/SitesModalForm/SitesModalFormDos";
 
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PrecisionManufacturingOutlinedIcon from "@mui/icons-material/PrecisionManufacturingOutlined";
@@ -38,6 +43,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
 import AddIcon from "@mui/icons-material/Add";
+import SignpostOutlinedIcon from "@mui/icons-material/SignpostOutlined";
 
 const style = {
   position: "absolute",
@@ -82,6 +88,13 @@ const Dashboard = ({
   const closeMachines = () => {
     setMachineriesModal(false);
   };
+  const [sitesModal, setSitesModal] = useState(false);
+  const openSites = () => {
+    setSitesModal(true);
+  };
+  const closeSites = () => {
+    setSitesModal(false);
+  };
   const navigate = useNavigate();
 
   const isSmall = useMediaQuery("(max-width:1200px)");
@@ -93,6 +106,10 @@ const Dashboard = ({
 
   let sitesOnly = [];
   let dosOnly = [];
+
+  const totalRec = dossiers.reduce((acc, dos) => acc + dos.MR, 0);
+  const totalVer = dossiers.reduce((acc, dos) => acc + dos.MV, 0);
+  const totalAdm = dossiers.reduce((acc, dos) => acc + dos.MA, 0);
 
   Object.keys(sites).forEach((item, index) => {
     sites[item].map((site) => sitesOnly.push(site.site));
@@ -141,10 +158,14 @@ const Dashboard = ({
                     <Grid item xs={12} lg={4}>
                       <Box sx={isSmall ? null : { borderRight: 1 }}>
                         <Typography variant="h5" mb={isSmall ? 0 : 3}>
-                          Nombre dossier en cours:
+                          Total réclamé
                         </Typography>
-                        <Typography variant="h4">
-                          <b>12</b>
+                        <Typography
+                          mb={isSmall ? 2 : 0}
+                          sx={{ whiteSpace: "nowrap" }}
+                          variant="h4"
+                        >
+                          <b>$ {ins1000Sep(formatNum(totalRec))}</b>
                         </Typography>
                       </Box>
                       {isSmall ? <Divider /> : null}
@@ -156,14 +177,14 @@ const Dashboard = ({
                           mb={isSmall ? 0 : 3}
                           mt={isSmall ? 2 : 0}
                         >
-                          Total réclamé:
+                          Total admissible:
                         </Typography>
                         <Typography
                           mb={isSmall ? 2 : 0}
                           sx={{ whiteSpace: "nowrap" }}
                           variant="h4"
                         >
-                          <b>$ 123,255,214.20</b>
+                          <b>$ {ins1000Sep(formatNum(totalAdm))}</b>
                         </Typography>
                         {isSmall ? <Divider /> : null}
                       </Box>
@@ -177,7 +198,7 @@ const Dashboard = ({
                         Total vérsé:
                       </Typography>
                       <Typography sx={{ whiteSpace: "nowrap" }} variant="h4">
-                        <b>$ 68,779,259.16</b>
+                        <b>$ {ins1000Sep(formatNum(totalVer))}</b>
                       </Typography>
                     </Grid>
                   </Grid>
@@ -295,6 +316,34 @@ const Dashboard = ({
                 </Grid>
               </Grid>
             </Grid>
+            <Grid item xs={6}>
+              <Grid container display="flex">
+                <Grid item xs={10}>
+                  <MyCard
+                    onClick={() => navigate("/sites")}
+                    bgColor="#EE292E55"
+                    textColor="#EE292E"
+                    br
+                    color="success"
+                    title="Sites"
+                  >
+                    <SignpostOutlinedIcon />
+                  </MyCard>
+                </Grid>
+
+                <Grid item xs={2}>
+                  <MyCard
+                    onClick={openSites}
+                    bgColor="#EE292E55"
+                    textColor="#EE292E"
+                    bl
+                    title=""
+                  >
+                    <AddIcon />
+                  </MyCard>
+                </Grid>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
 
@@ -304,7 +353,7 @@ const Dashboard = ({
               <Typography variant="h5" mb={2}>
                 <b>Dossiers en cours</b>
               </Typography>
-              <FilesTable data={actif} />
+              <FilesTable hiddenStatus data={actif} />
             </Box>
           </Paper>
         </Box>
@@ -359,6 +408,21 @@ const Dashboard = ({
                 numDos={dosOnly}
                 dossiers={dossiers}
                 machineries={machineries}
+              />
+            </Box>
+          </Fade>
+        </Modal>
+        <Modal
+          open={sitesModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Fade in={sitesModal}>
+            <Box sx={style}>
+              <SitesModalFormDos
+                closeModal={closeSites}
+                sites={sites}
+                numDos={dosOnly}
               />
             </Box>
           </Fade>

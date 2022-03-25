@@ -71,7 +71,10 @@ const FileManager = ({ dossiers }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <FilesTable data={filteredDossiers} />
+            <FilesTable
+              data={filteredDossiers}
+              setFilteredDossiers={setFilteredDossiers}
+            />
           </Box>
         </CardContent>
       </Card>

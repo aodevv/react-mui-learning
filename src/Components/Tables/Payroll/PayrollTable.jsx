@@ -33,8 +33,8 @@ const PayrollTable = ({ data }) => {
           autoHeight
           rows={data ? data : salairesTempData[1]}
           columns={PayrollColumns}
-          pageSize={10}
-          rowsPerPageOptions={[10]}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
           checkboxSelection
         />
       </div>

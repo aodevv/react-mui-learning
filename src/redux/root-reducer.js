@@ -7,11 +7,12 @@ import facturesReducer from "./Factures/Factures.reducer";
 import salairesReducer from "./Salaires/salaires.reducer";
 import machineriesReducer from "./Machineries/machineries.reducer";
 import sitesReducer from "./Sites/Sites.reducer";
+import authReducer from "./Auth/Auth.reducer";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: [],
+  whitelist: ["auth"],
 };
 
 const rootReducer = combineReducers({
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   factures: facturesReducer,
   salaires: salairesReducer,
   machineries: machineriesReducer,
+  auth: authReducer,
 });
 
 export default persistReducer(persistConfig, rootReducer);

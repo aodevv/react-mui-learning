@@ -26,7 +26,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 
 const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
   const [mrFilter, setMrFilter] = useState(0);
-  const [name, setName] = useState("");
+  const [nom, setNom] = useState("");
+  const [prenom, setPrenom] = useState("");
   const [status, setStatus] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -46,8 +47,11 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
     setMrFilter(e.target.value);
   };
 
-  const filterName = (e) => {
-    setName(e.target.value);
+  const filterNom = (e) => {
+    setNom(e.target.value);
+  };
+  const filterPrenom = (e) => {
+    setPrenom(e.target.value);
   };
   const filterDebut = (e) => {
     setStartDate(e.target.value);
@@ -84,7 +88,8 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
   const resetForm = () => {
     setFilteredSalaires(salaires);
     setMrFilter(0);
-    setName("");
+    setNom("");
+    setPrenom("");
     setStatus("");
     setStartDate("");
     setEndDate("");
@@ -138,7 +143,8 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
           ? sal.Tsup2 >= tsup2[0] && sal.Tsup2 <= tsup2[1]
           : true
       )
-      .filter((sal) => sal.name.toLowerCase().includes(name.toLowerCase()))
+      .filter((sal) => sal.nom.toLowerCase().includes(nom.toLowerCase()))
+      .filter((sal) => sal.prenom.toLowerCase().includes(prenom.toLowerCase()))
       .filter((fac) =>
         numDoses.length > 0 ? numDoses.includes(fac.id.split(";")[0]) : true
       )
@@ -238,15 +244,26 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
             </Grid>
           </Grid>
           <Grid container spacing={2}>
-            <Grid item xs={4}>
+            <Grid item xs={2}>
               <TextField
                 fullWidth
-                label="Nom et prénom"
+                label="Nom"
                 variant="outlined"
                 size="small"
                 margin="dense"
-                value={name}
-                onChange={filterName}
+                value={nom}
+                onChange={filterNom}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <TextField
+                fullWidth
+                label="Prénom"
+                variant="outlined"
+                size="small"
+                margin="dense"
+                value={prenom}
+                onChange={filterPrenom}
               />
             </Grid>
             <Grid item xs={4}>

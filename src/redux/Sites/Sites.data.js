@@ -3,7 +3,7 @@ export const sitesAll = {
     {
       id: 0,
       site: "Site 1",
-      nature: "sinistre",
+      nature: "sinistros",
       part_end: "ABC",
       pourc_end: 22,
       type_ret: "type",

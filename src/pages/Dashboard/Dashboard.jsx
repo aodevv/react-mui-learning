@@ -107,7 +107,6 @@ const Dashboard = ({
 
   let sitesOnly = [];
   let dosOnly = [];
-  console.log(dossiers);
 
   const totalRec = dossiers.reduce((acc, dos) => acc + dos.MR, 0);
   const totalVer = dossiers.reduce((acc, dos) => acc + dos.MV, 0);

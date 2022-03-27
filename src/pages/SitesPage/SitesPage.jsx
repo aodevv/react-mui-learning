@@ -128,6 +128,7 @@ const SitesPage = ({ dossiers, sites }) => {
         <Fade in={sitesModal}>
           <Box sx={style}>
             <SitesModalFormDos
+              dossiers={dossiers}
               closeModal={closeSites}
               sites={sites}
               numDos={dosOnly}

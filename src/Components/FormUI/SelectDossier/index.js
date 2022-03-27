@@ -41,8 +41,9 @@ const SelectWrapper = ({
     if (dosId !== "") {
       const rightDos = dossiers.find((dos) => dos.id === dosId);
       const dosDate = rightDos.datEv;
-      console.log(dosDate);
-      setValiDate(dosDate);
+      if (setValiDate) {
+        setValiDate(dosDate);
+      }
     }
   }, [dosId, dossiers, setValiDate]);
 

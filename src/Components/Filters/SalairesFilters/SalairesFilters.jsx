@@ -231,7 +231,7 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
                 defaultValue=""
               >
                 <MenuItem value="">
-                  <em>Tout</em>
+                  <em>Selectioner</em>
                 </MenuItem>
                 {Object.keys(prejudices).map((item) => {
                   return (
@@ -277,7 +277,7 @@ const SalairesFilters = ({ salaires, setFilteredSalaires, numDos, sites }) => {
                 defaultValue=""
               >
                 <MenuItem value="">
-                  <em>Tout</em>
+                  <em>Selectioner</em>
                 </MenuItem>
 
                 <MenuItem value="occ">Occasionnel</MenuItem>

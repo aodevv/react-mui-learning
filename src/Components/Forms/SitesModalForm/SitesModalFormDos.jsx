@@ -35,7 +35,13 @@ const SiteTempData = {
   "Site 16": "Site 16",
 };
 
-const SitesModalFormDos = ({ sites, numDos, addSites, closeModal }) => {
+const SitesModalFormDos = ({
+  sites,
+  numDos,
+  addSites,
+  closeModal,
+  dossiers,
+}) => {
   const INITIAL_FORM_STATE = {
     numDos: "",
     id: "",
@@ -61,6 +67,7 @@ const SitesModalFormDos = ({ sites, numDos, addSites, closeModal }) => {
       .max(100, "Ne peux pas depasser 100%")
       .required("Champ obligatoire"),
   });
+  console.log(numDos);
 
   const handleSubmit = (values, { resetForm }) => {
     const dosInt = values.numDos;
@@ -119,6 +126,7 @@ const SitesModalFormDos = ({ sites, numDos, addSites, closeModal }) => {
                     </Typography>
                     <Grid item xs={12}>
                       <SelectDossier
+                        dossiers={dossiers}
                         name="numDos"
                         label="Numéro dossier"
                         options={numDos}

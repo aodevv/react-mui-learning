@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 //REDUX
 import { connect } from "react-redux";
@@ -91,47 +91,62 @@ const ExistingDossier = ({
   salaires,
   machineries,
 }) => {
-  console.log(dossiers);
+  const navigate = useNavigate();
   const params = useParams();
   const [factureModal, setFactureModal] = useState(false);
   const [salaireModal, setSalaireModal] = useState(false);
   const [machinerieModal, setMachinerieModal] = useState(false);
   const [siteModal, setSiteModal] = useState(false);
   const [submitModal, setSubmitModal] = useState(false);
+
+  let INITIAL_FORM_STATE;
+
   const dosId = params.dossierId;
-  const curInfosDos = dossiers.find((dos) => dos.id === dosId);
-  const curFacts = factures[dosId];
-  const curSites = sites[dosId];
-  const curSals = salaires[dosId];
-  const curMachs = machineries[dosId];
+  let dosOnly = [];
+  dossiers.forEach((item) => {
+    dosOnly.push(item.id.toString());
+  });
+  const dosIdNotFound = !dosOnly.includes(dosId);
+  if (!dosIdNotFound) {
+    const curInfosDos = dossiers.find((dos) => dos.id === dosId);
+    const curFacts = factures[dosId];
+    const curSites = sites[dosId];
+    const curSals = salaires[dosId];
+    const curMachs = machineries[dosId];
 
-  let [yyyy, mm, dd] = curInfosDos.datEv.split("-");
-  dd = dd.length === 1 ? "0" + dd : dd;
-  mm = mm.length === 1 ? "0" + mm : mm;
+    if (dosOnly.includes(dosId)) {
+      var [yyyy, mm, dd] = curInfosDos.datEv.split("-");
+      dd = dd.length === 1 ? "0" + dd : dd;
+      mm = mm.length === 1 ? "0" + mm : mm;
 
-  let [yyyy2, mm2, dd2] = curInfosDos.datOuv.split("-");
-  dd2 = dd2.length === 1 ? "0" + dd2 : dd2;
-  mm2 = mm2.length === 1 ? "0" + mm2 : mm2;
+      var [yyyy2, mm2, dd2] = curInfosDos.datOuv.split("-");
+      dd2 = dd2.length === 1 ? "0" + dd2 : dd2;
+      mm2 = mm2.length === 1 ? "0" + mm2 : mm2;
+    } else {
+      var [yyyy, mm, dd] = "2010-01-01".split("-");
+      var [yyyy2, mm2, dd2] = "2010-01-01".split("-");
+    }
 
-  const INITIAL_FORM_STATE = {
-    id: "",
-    numero: curInfosDos.id,
-    date_ev: `${yyyy}-${mm}-${dd}`,
-    date_ouv: `${yyyy2}-${mm2}-${dd2}`,
-    desc_ev: curInfosDos.Evenement,
-    act_of: curInfosDos.actOf,
-    prgm: curInfosDos.prgm,
-    dab: curInfosDos.dab,
-    mpt: curInfosDos.mpt,
-    mi: curInfosDos.mi,
-    bcg: curInfosDos.bcg,
-    MR: curInfosDos.MR,
+    INITIAL_FORM_STATE = {
+      id: "",
+      numero: curInfosDos.id,
+      date_ev: `${yyyy}-${mm}-${dd}`,
+      date_ouv: `${yyyy2}-${mm2}-${dd2}`,
+      desc_ev: curInfosDos.Evenement,
+      act_of: curInfosDos.actOf,
+      prgm: curInfosDos.prgm,
+      dab: curInfosDos.dab,
+      mpt: curInfosDos.mpt,
+      mi: curInfosDos.mi,
+      bcg: curInfosDos.bcg,
+      MR: curInfosDos.MR,
 
-    factures: curFacts,
-    salaires: curSals,
-    machineries: curMachs,
-    sites: curSites,
-  };
+      factures: curFacts,
+      salaires: curSals,
+      machineries: curMachs,
+      sites: curSites,
+    };
+  }
 
   var today = new Date();
   var date =
@@ -179,6 +194,13 @@ const ExistingDossier = ({
     mi: "Mesures d'interventions",
     bcg: "Bris du couvert de glace",
   };
+
+  useEffect(() => {
+    if (dosIdNotFound) {
+      navigate("/dossier");
+    }
+  });
+
   return (
     <>
       <Formik initialValues={{ ...INITIAL_FORM_STATE }} onSubmit={handleSubmit}>

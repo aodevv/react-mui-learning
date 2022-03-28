@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -43,6 +43,12 @@ import FactureModalForm from "../../Components/Forms/FactureModalForm/FactureMod
 import SalaireModalForm from "../../Components/Forms/SalaireModalForm/SalaireModalForm";
 import MachinerieModalForm from "../../Components/Forms/MachinerieModalForm/MachinerieModalForm";
 import SiteModalForm from "../../Components/Forms/SitesModalForm/SiteModalForm";
+
+//Accordion stuff
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import PrecisionManufacturingOutlinedIcon from "@mui/icons-material/PrecisionManufacturingOutlined";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -104,6 +110,11 @@ const NouveauDossier = ({
   const [siteModal, setSiteModal] = useState(false);
   const [submitModal, setSubmitModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [activeForms, setActiveForms] = useState(true);
+  const [finishedInfos, setFinishedInfos] = useState(false);
+  const [accord, setAccord] = useState("panel");
+  const [facToEdit, setFacToEdit] = useState(null);
+  const [salToEdit, setSalToEdit] = useState(null);
 
   const dosIds = dossiers.map((dos) => dos.id);
 
@@ -199,19 +210,19 @@ const NouveauDossier = ({
 
     addInfosDossier([...dossiers, infoDos]);
     let newFacts = factures;
-    newFacts[values.numero] = values.factures;
+    newFacts[values.numero] = [];
     addFactures(newFacts);
 
     let newSites = sites;
-    newSites[values.numero] = values.sites;
+    newSites[values.numero] = [];
     addSites(newSites);
 
     let newSals = salaires;
-    newSals[values.numero] = values.salaires;
+    newSals[values.numero] = [];
     addSalaires(newSals);
 
     let newMach = machineries;
-    newMach[values.numero] = values.machineries;
+    newMach[values.numero] = [];
     addMachinerie(newMach);
   };
 
@@ -250,15 +261,22 @@ const NouveauDossier = ({
     setSubmitModal(false);
   };
 
-  const resetAndExit = (values) => {
+  const resetAndExit = (values, isValid) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
+      setFinishedInfos(true);
+      setAccord(false);
+      setActiveForms(false);
 
       values = INITIAL_FORM_STATE;
       closeSubmit();
-      navigate("/dossier");
-    }, 3000);
+      //navigate("/dossier");
+    }, 1000);
+  };
+
+  const handleAccord = (panel) => (event, accord) => {
+    setAccord(accord ? panel : false);
   };
 
   const typePrejudices = {
@@ -267,6 +285,19 @@ const NouveauDossier = ({
     mi: "Mesures d'interventions",
     bcg: "Bris du couvert de glace",
   };
+
+  useEffect(() => {
+    if (facToEdit !== null) {
+      openFacture();
+    }
+  }, [facToEdit]);
+
+  useEffect(() => {
+    if (salToEdit !== null) {
+      openSalaire();
+    }
+  }, [salToEdit]);
+
   return (
     <>
       <Formik
@@ -279,13 +310,29 @@ const NouveauDossier = ({
 
           return (
             <Form>
-              <Grid>
-                <InfosDossierForm
-                  isValid={isValid}
-                  values={values}
-                  openSubmit={openSubmit}
-                />
-              </Grid>
+              <Accordion
+                expanded={accord === "panel"}
+                onChange={handleAccord("panel")}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                  sx={{ backgroundColor: "#00F2" }}
+                >
+                  <Typography variant="h5" mr={2}>
+                    Nouveau Dossier
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <InfosDossierForm
+                    isValid={isValid}
+                    values={values}
+                    openSubmit={openSubmit}
+                    finishedInfos={finishedInfos}
+                  />
+                </AccordionDetails>
+              </Accordion>
               <Modal
                 open={submitModal}
                 aria-labelledby="modal-modal-title"
@@ -301,7 +348,7 @@ const NouveauDossier = ({
                         loading={loading}
                         onClick={() => {
                           submitForm();
-                          if (isValid) resetAndExit(values);
+                          if (isValid) resetAndExit(values, isValid);
                         }}
                       >
                         Oui
@@ -318,10 +365,10 @@ const NouveauDossier = ({
                   </Box>
                 </Fade>
               </Modal>
-              <Grid container spacing={2} mt={3}>
+              <Grid container spacing={2} mt={1}>
                 <Grid item xs={12} md={6}>
                   <MiniTableWrapper
-                    disable={values.dab ? false : true}
+                    disable={activeForms || !values.dab}
                     title={
                       <Box
                         display="flex"
@@ -351,6 +398,7 @@ const NouveauDossier = ({
                         <SiteModalForm
                           globalValues={values}
                           closeModal={closeSite}
+                          existing
                         />
                       </Box>
                     </Fade>
@@ -376,10 +424,13 @@ const NouveauDossier = ({
                         </Box>
                       </Box>
                     }
-                    disable={values.date_ev !== "" ? false : true}
+                    disable={activeForms}
                     btnClick={openFacture}
                   >
-                    <FacturesMiniTables data={values.factures} />
+                    <FacturesMiniTables
+                      setFacToEdit={setFacToEdit}
+                      data={values.factures}
+                    />
                   </MiniTableWrapper>
                   <Modal
                     open={factureModal}
@@ -389,10 +440,13 @@ const NouveauDossier = ({
                     <Fade in={factureModal}>
                       <Box sx={style}>
                         <FactureModalForm
+                          setFacToEdit={setFacToEdit}
+                          edit={facToEdit}
                           globalValues={values}
                           prejudices={typePrejudices}
                           closeModal={closeFacture}
                           date={date}
+                          existing
                         />
                       </Box>
                     </Fade>
@@ -403,7 +457,7 @@ const NouveauDossier = ({
               <Grid container spacing={2} mt={1}>
                 <Grid item xs={12} md={6}>
                   <MiniTableWrapper
-                    disable={values.date_ev !== "" ? false : true}
+                    disable={activeForms}
                     title={
                       <Box
                         display="flex"
@@ -421,7 +475,10 @@ const NouveauDossier = ({
                     }
                     btnClick={openSalaire}
                   >
-                    <SalairesMiniTable data={values.salaires} />
+                    <SalairesMiniTable
+                      setSalToEdit={setSalToEdit}
+                      data={values.salaires}
+                    />
                   </MiniTableWrapper>
                   <Modal
                     open={salaireModal}
@@ -431,11 +488,14 @@ const NouveauDossier = ({
                     <Fade in={salaireModal}>
                       <Box sx={style}>
                         <SalaireModalForm
+                          edit={salToEdit}
+                          setSalToEdit={setSalToEdit}
                           payroll={payroll}
                           globalValues={values}
                           prejudices={typePrejudices}
                           closeModal={closeSalaire}
                           date={date}
+                          existing
                         />
                       </Box>
                     </Fade>
@@ -458,7 +518,7 @@ const NouveauDossier = ({
                         </Box>
                       </Box>
                     }
-                    disable={values.date_ev !== "" ? false : true}
+                    disable={activeForms}
                     btnClick={openMachinerie}
                   >
                     <MachineriesMiniTable data={values.machineries} />
@@ -474,6 +534,7 @@ const NouveauDossier = ({
                           globalValues={values}
                           prejudices={typePrejudices}
                           closeModal={closeMachinerie}
+                          existing
                         />
                       </Box>
                     </Fade>

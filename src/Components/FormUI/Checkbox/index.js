@@ -20,6 +20,7 @@ const CheckBoxWrapper = ({ name, label, legend, ...otherProps }) => {
 
   const configCheckbox = {
     ...field,
+    ...otherProps,
     onChange: handleChange,
     size: "small",
   };

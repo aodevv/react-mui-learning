@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -10,7 +10,15 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 // MUI ICONS
-import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Typography,
+  Box,
+  Button,
+  Stack,
+  IconButton,
+} from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -20,6 +28,8 @@ import DatePicker from "../../../Components/FormUI/DateTime";
 import Checkbox from "../../../Components/FormUI/Checkbox";
 import Submit from "../../../Components/FormUI/Submit";
 
+import EditIcon from "@mui/icons-material/Edit";
+
 const FactureModalForm = ({
   globalValues,
   prejudices,
@@ -28,17 +38,36 @@ const FactureModalForm = ({
   existing,
   factures,
   addFactures,
+  edit,
+  setFacToEdit,
 }) => {
-  const INITIAL_FORM_STATE = {
-    id: "",
-    desc_fact: "",
-    date_fact: "",
-    type: "",
-    montant_rec: 0,
-    ajust: 0,
-    site_con: "",
-    tax: false,
-  };
+  const [editing, setEditing] = useState(false);
+
+  let INITIAL_FORM_STATE;
+  if (edit !== null) {
+    INITIAL_FORM_STATE = {
+      id: edit,
+      desc_fact: globalValues.factures[edit].desc_fact,
+      date_fact: globalValues.factures[edit].date_fact,
+      type: globalValues.factures[edit].type,
+      montant_rec: globalValues.factures[edit].montant_rec,
+      ajust: globalValues.factures[edit].ajust,
+      site_con: globalValues.factures[edit].site_con,
+      tax: globalValues.factures[edit].tax,
+    };
+  } else {
+    INITIAL_FORM_STATE = {
+      id: "",
+      desc_fact: "",
+      date_fact: "",
+      type: "",
+      montant_rec: 0,
+      ajust: 0,
+      site_con: "",
+      tax: false,
+    };
+  }
+
   const FORM_VALIDATION = Yup.object().shape({
     type: Yup.string().required("Champ obligatoire"),
     site_con: Yup.string().when("type", {
@@ -76,6 +105,7 @@ const FactureModalForm = ({
   const handleSubmit = (values) => {
     let id;
     let newFactures = globalValues.factures;
+
     const ids = newFactures
       .map((fac) => fac.id)
       .sort(function (a, b) {
@@ -88,15 +118,23 @@ const FactureModalForm = ({
         globalValues.sites[values.site_con].f_montant_rec + values.montant_rec;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
-    values.id = id;
-    //values.site_con = sites[values.site_con];
     newFactures = Object.assign([], newFactures);
-    newFactures.push({ ...values, site_con: sites[values.site_con] });
+    if (edit === null) {
+      values.id = id;
+      newFactures.push({ ...values, site_con: sites[values.site_con] });
+    } else {
+      const otherFacs = newFactures.filter((fac) => fac.id !== edit);
+      newFactures = [
+        ...otherFacs,
+        { ...values, site_con: sites[values.site_con] },
+      ].sort((a, b) => (a.id >= b.id ? 1 : -1));
+    }
+
     if (existing) {
       let newFacts = JSON.parse(JSON.stringify(factures));
       const dosInt = globalValues.numero;
       Object.keys(newFacts).forEach(function (key, index) {
-        if (parseInt(key) === dosInt) {
+        if (key === dosInt) {
           newFacts[key] = newFactures;
         }
       });
@@ -104,8 +142,21 @@ const FactureModalForm = ({
     }
     globalValues.factures = newFactures;
 
+    setFacToEdit(null);
+    setEditing(false);
     closeModal();
   };
+
+  const handleClose = () => {
+    setFacToEdit(null);
+    closeModal();
+    setEditing(false);
+  };
+
+  const handleEdit = () => {
+    setEditing(!editing);
+  };
+
   return (
     <>
       <Grid container>
@@ -122,9 +173,22 @@ const FactureModalForm = ({
                 return (
                   <Form>
                     <Grid item>
-                      <Typography variant="h5" mb={1}>
-                        Ajout facture
-                      </Typography>
+                      <Box display="flex" justifyContent="space-between">
+                        <Typography variant="h5" mb={1}>
+                          {edit !== null ? "Modification" : "Ajout facture"}
+                        </Typography>
+                        {edit !== null ? (
+                          <IconButton
+                            aria-label="delete"
+                            color={!editing ? "default" : "primary"}
+                            size="medium"
+                            onClick={handleEdit}
+                          >
+                            <EditIcon fontSize="inherit" />
+                          </IconButton>
+                        ) : null}
+                      </Box>
+
                       <Grid container spacing={2}>
                         <Grid item xs={6}>
                           <Select
@@ -132,7 +196,8 @@ const FactureModalForm = ({
                             label="Préjudice"
                             options={filteredPrejudices}
                             disabled={
-                              !Object.keys(filteredPrejudices).length > 0
+                              !Object.keys(filteredPrejudices).length > 0 ||
+                              (edit !== null && !editing)
                             }
                           />
                         </Grid>
@@ -142,6 +207,7 @@ const FactureModalForm = ({
                               name="site_con"
                               label="Site concerné"
                               options={sites}
+                              disabled={edit !== null && !editing}
                             />
                           </Grid>
                         ) : null}
@@ -153,10 +219,15 @@ const FactureModalForm = ({
                           multiline
                           rows={4}
                           label="Description"
+                          disabled={edit !== null && !editing}
                         />
                       </Grid>
                       <Grid item xs={12}>
-                        <DatePicker name="date_fact" label="Date" />
+                        <DatePicker
+                          name="date_fact"
+                          label="Date"
+                          disabled={edit !== null && !editing}
+                        />
                       </Grid>
 
                       <Grid container spacing={2}>
@@ -165,6 +236,7 @@ const FactureModalForm = ({
                             name="montant_rec"
                             label="Montant réclamé"
                             type="number"
+                            disabled={edit !== null && !editing}
                           />
                         </Grid>
                         <Grid item xs={6}>
@@ -178,12 +250,21 @@ const FactureModalForm = ({
                       </Grid>
                       <Grid item xs={12}>
                         <Box mt={1}>
-                          <Checkbox name="tax" legend="Taxable ?" label="oui" />
+                          <Checkbox
+                            name="tax"
+                            disabled={edit !== null && !editing}
+                            legend="Taxable ?"
+                            label="oui"
+                          />
                         </Box>
                       </Grid>
-                      <Stack direction="row" spacing={1} mt={2}>
-                        <Submit variant="contained" size="small">
-                          Ajouter
+                      <Stack direction="row-reverse" spacing={1} mt={2}>
+                        <Submit
+                          variant="contained"
+                          disabled={edit !== null && !editing}
+                          size="small"
+                        >
+                          {edit !== null ? "Modifier" : "Enregistrer"}
                         </Submit>
                         <Button
                           type="reset"
@@ -193,7 +274,7 @@ const FactureModalForm = ({
                           Réinitialiser
                         </Button>
                         <Button
-                          onClick={closeModal}
+                          onClick={handleClose}
                           size="small"
                           startIcon={<CloseIcon />}
                         >

@@ -14,6 +14,7 @@ const SelectWrapper = ({ name, payroll, label, options, ...otherProps }) => {
   };
   const config = {
     ...field,
+    ...otherProps,
 
     select: true,
     label: label,

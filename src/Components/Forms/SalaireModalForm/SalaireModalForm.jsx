@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -6,10 +6,19 @@ import { selectSalairesMemo } from "../../../redux/Salaires/salaires.selectors";
 import { addSalaires } from "../../../redux/Salaires/salaires.actions";
 
 // ICONS
-import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Typography,
+  Box,
+  Button,
+  Stack,
+  IconButton,
+} from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
 import InputAdornment from "@mui/material/InputAdornment";
+import EditIcon from "@mui/icons-material/Edit";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
@@ -43,8 +52,11 @@ const SalaireModalForm = ({
   addSalaires,
   existing,
   payroll,
+  edit,
+  setSalToEdit,
 }) => {
   const allowed = [];
+  const [editing, setEditing] = useState(false);
   if (globalValues.dab) allowed.push("dab");
   if (globalValues.mpt) allowed.push("mpt");
   if (globalValues.mi) allowed.push("mi");
@@ -65,30 +77,59 @@ const SalaireModalForm = ({
     payrollNameList.push(`${pay.nom} ${pay.prenom}`)
   );
 
-  const INITIAL_FORM_STATE = {
-    curSal: "",
-    id: null,
-    type: "",
-    nom: "",
-    prenom: "",
-    status: "",
-    date_per: "",
-    montant_rec: 0,
-    ajust: 0,
-    site_con: "",
-    Hreg: 0,
-    Hsup: 0,
-    Hsup2: 0,
-    Treg: 0,
-    Tsup: 0,
-    Tsup2: 0,
-    taux_vac: 0,
-    ae: false,
-    rrq: false,
-    rqap: false,
-    fss: false,
-    csst: false,
-  };
+  let INITIAL_FORM_STATE;
+
+  if (edit !== null) {
+    INITIAL_FORM_STATE = {
+      curSal: "",
+      id: edit,
+      type: globalValues.salaires[edit].type,
+      nom: globalValues.salaires[edit].nom,
+      prenom: globalValues.salaires[edit].prenom,
+      status: globalValues.salaires[edit].status,
+      date_per: globalValues.salaires[edit].date_per,
+      montant_rec: globalValues.salaires[edit].montant_rec,
+      ajust: globalValues.salaires[edit].ajust,
+      site_con: globalValues.salaires[edit].site_con,
+      Hreg: globalValues.salaires[edit].Hreg,
+      Hsup: globalValues.salaires[edit].Hsup,
+      Hsup2: globalValues.salaires[edit].Hsup2,
+      Treg: globalValues.salaires[edit].Treg,
+      Tsup: globalValues.salaires[edit].Tsup,
+      Tsup2: globalValues.salaires[edit].Tsup2,
+      taux_vac: globalValues.salaires[edit].taux_vac,
+      ae: globalValues.salaires[edit].ae,
+      rrq: globalValues.salaires[edit].rrq,
+      rqap: globalValues.salaires[edit].rqap,
+      fss: globalValues.salaires[edit].fss,
+      csst: globalValues.salaires[edit].csst,
+    };
+  } else {
+    INITIAL_FORM_STATE = {
+      curSal: "",
+      id: null,
+      type: "",
+      nom: "",
+      prenom: "",
+      status: "",
+      date_per: "",
+      montant_rec: 0,
+      ajust: 0,
+      site_con: "",
+      Hreg: 0,
+      Hsup: 0,
+      Hsup2: 0,
+      Treg: 0,
+      Tsup: 0,
+      Tsup2: 0,
+      taux_vac: 0,
+      ae: false,
+      rrq: false,
+      rqap: false,
+      fss: false,
+      csst: false,
+    };
+  }
 
   const FORM_VALIDATION = Yup.object().shape({
     type: Yup.string().required("Champ obligatoire"),
@@ -147,10 +188,20 @@ const SalaireModalForm = ({
         globalValues.sites[values.site_con].s_montant_rec + values.montant_rec;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
-    values.id = id;
-    //values.site_con = sites[values.site_con];
     newSalaires = Object.assign([], newSalaires);
-    newSalaires.push({ ...values, site_con: sites[values.site_con] });
+
+    if (edit === null) {
+      values.id = id;
+      newSalaires.push({ ...values, site_con: sites[values.site_con] });
+    } else {
+      const otherSals = newSalaires.filter((fac) => fac.id !== edit);
+      newSalaires = [
+        ...otherSals,
+        { ...values, site_con: sites[values.site_con] },
+      ].sort((a, b) => (a.id >= b.id ? 1 : -1));
+    }
+
+    //values.site_con = sites[values.site_con];
     if (existing) {
       console.log("floo");
       let newSals = JSON.parse(JSON.stringify(salaires));
@@ -165,6 +216,17 @@ const SalaireModalForm = ({
     globalValues.salaires = newSalaires;
     closeModal();
   };
+
+  const handleClose = () => {
+    setSalToEdit(null);
+    closeModal();
+    setEditing(false);
+  };
+
+  const handleEdit = () => {
+    setEditing(!editing);
+  };
+
   return (
     <>
       <Grid container>
@@ -180,28 +242,49 @@ const SalaireModalForm = ({
                 return (
                   <Form>
                     <Grid item>
-                      <Typography variant="h5" mb={1}>
-                        Ajout salaire
-                      </Typography>
-                      <Grid container spacing={1}>
-                        <Grid item xs={12}>
-                          <Select
-                            name="curSal"
-                            label="Salarié"
-                            options={payrollNameList}
-                            defaultValue=""
-                          />
+                      <Box display="flex" justifyContent="space-between">
+                        <Typography variant="h5" mb={1}>
+                          {edit !== null ? "Modification" : "Ajout salaire"}
+                        </Typography>
+                        {edit !== null ? (
+                          <IconButton
+                            aria-label="delete"
+                            color={!editing ? "default" : "primary"}
+                            size="medium"
+                            onClick={handleEdit}
+                          >
+                            <EditIcon fontSize="inherit" />
+                          </IconButton>
+                        ) : null}
+                      </Box>
+                      {edit === null ? (
+                        <Grid container spacing={1}>
+                          <Grid item xs={12}>
+                            <Select
+                              name="curSal"
+                              label="Salarié"
+                              options={payrollNameList}
+                              defaultValue=""
+                            />
+                          </Grid>
                         </Grid>
-                      </Grid>
+                      ) : null}
+
                       <Grid container spacing={1}>
                         <Grid item xs={4}>
-                          <Nom name="nom" label="Nom" payroll={payroll} />
+                          <Nom
+                            name="nom"
+                            label="Nom"
+                            payroll={payroll}
+                            disabled={edit !== null && !editing}
+                          />
                         </Grid>
                         <Grid item xs={4}>
                           <Prenom
                             name="prenom"
                             label="Prénom"
                             payroll={payroll}
+                            disabled={edit !== null && !editing}
                           />
                         </Grid>
                         <Grid item xs={4}>
@@ -210,6 +293,7 @@ const SalaireModalForm = ({
                             label="Status"
                             options={data}
                             payroll={payroll}
+                            disabled={edit !== null && !editing}
                           />
                         </Grid>
                       </Grid>
@@ -220,7 +304,8 @@ const SalaireModalForm = ({
                             label="Préjudice"
                             options={filteredPrejudices}
                             disabled={
-                              !Object.keys(filteredPrejudices).length > 0
+                              !Object.keys(filteredPrejudices).length > 0 ||
+                              (edit !== null && !editing)
                             }
                           />
                         </Grid>
@@ -230,13 +315,18 @@ const SalaireModalForm = ({
                               name="site_con"
                               label="Site concerné"
                               options={sites}
+                              disabled={edit !== null && !editing}
                             />
                           </Grid>
                         ) : null}
                       </Grid>
 
                       <Grid item xs={12}>
-                        <DatePicker name="date_per" label="Date" />
+                        <DatePicker
+                          name="date_per"
+                          disabled={edit !== null && !editing}
+                          label="Date"
+                        />
                       </Grid>
                       <Typography mt={1}>Heures</Typography>
                       <Grid container spacing={1}>
@@ -245,6 +335,7 @@ const SalaireModalForm = ({
                             name="Hreg"
                             label="Heures régulières"
                             type="number"
+                            disabled={edit !== null && !editing}
                           />
                         </Grid>
                         <Grid item xs={4}>
@@ -252,6 +343,7 @@ const SalaireModalForm = ({
                             name="Hsup"
                             label="Heures sup"
                             type="number"
+                            disabled={edit !== null && !editing}
                           />
                         </Grid>
                         <Grid item xs={4}>
@@ -259,6 +351,7 @@ const SalaireModalForm = ({
                             name="Hsup2"
                             label="Heures sup 2"
                             type="number"
+                            disabled={edit !== null && !editing}
                           />
                         </Grid>
                       </Grid>
@@ -270,16 +363,23 @@ const SalaireModalForm = ({
                             label="Taux régulier"
                             payroll={payroll}
                             type="number"
+                            disabled={edit !== null && !editing}
                           />
                         </Grid>
                         <Grid item xs={3}>
-                          <Tsup name="Tsup" label="Taux sup" type="number" />
+                          <Tsup
+                            name="Tsup"
+                            label="Taux sup"
+                            type="number"
+                            disabled={edit !== null && !editing}
+                          />
                         </Grid>
                         <Grid item xs={3}>
                           <Tsup2
                             name="Tsup2"
                             label="Taux sup 2"
                             type="number"
+                            disabled={edit !== null && !editing}
                           />
                         </Grid>
                         <Grid item xs={3}>
@@ -288,6 +388,7 @@ const SalaireModalForm = ({
                             label="Taux vacances"
                             type="number"
                             payroll={payroll}
+                            disabled={edit !== null && !editing}
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position="end">
@@ -300,19 +401,39 @@ const SalaireModalForm = ({
                       </Grid>
                       <Grid container mt={1} pl={2} spacing={2}>
                         <Grid item xs={2} l={1}>
-                          <Checkbox name="ae" label="AE" />
+                          <Checkbox
+                            disabled={edit !== null && !editing}
+                            name="ae"
+                            label="AE"
+                          />
                         </Grid>
                         <Grid item mr={2} xs={2} l={1}>
-                          <Checkbox name="rrq" label="RRQ" />
+                          <Checkbox
+                            disabled={edit !== null && !editing}
+                            name="rrq"
+                            label="RRQ"
+                          />
                         </Grid>
                         <Grid item mr={2} xs={2} l={1}>
-                          <Checkbox name="rqap" label="RQAP" />
+                          <Checkbox
+                            disabled={edit !== null && !editing}
+                            name="rqap"
+                            label="RQAP"
+                          />
                         </Grid>
                         <Grid item xs={2} l={1}>
-                          <Checkbox name="fss" label="FSS" />
+                          <Checkbox
+                            disabled={edit !== null && !editing}
+                            name="fss"
+                            label="FSS"
+                          />
                         </Grid>
                         <Grid item xs={2} l={1}>
-                          <Checkbox name="csst" label="CSST" />
+                          <Checkbox
+                            disabled={edit !== null && !editing}
+                            name="csst"
+                            label="CSST"
+                          />
                         </Grid>
                       </Grid>
                       <Grid item xs={12}>
@@ -326,20 +447,25 @@ const SalaireModalForm = ({
                           </Typography>
                         </Box>
                       </Grid>
-                      <Stack direction="row" spacing={1} mt={2}>
-                        <Submit variant="contained" size="small">
-                          Ajouter
+                      <Stack direction="row-reverse" spacing={1} mt={2}>
+                        <Submit
+                          disabled={edit !== null && !editing}
+                          variant="contained"
+                          size="small"
+                        >
+                          {edit !== null ? "Modifier" : "Enregistrer"}
                         </Submit>
                         <Button
                           onClick={handleReset}
                           size="small"
+                          disabled={edit !== null && !editing}
                           startIcon={<UndoIcon />}
                         >
                           Réinitialiser
                         </Button>
                         <Button
                           size="small"
-                          onClick={closeModal}
+                          onClick={handleClose}
                           startIcon={<CloseIcon />}
                         >
                           Annuler

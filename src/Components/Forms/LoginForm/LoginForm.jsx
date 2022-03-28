@@ -38,7 +38,9 @@ const LoginForm = ({ LogIn }) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      LogIn();
+      if (values.login === "admin" && values.login === "admin") LogIn();
+      values.login = "";
+      values.password = "";
 
       values = INITIAL_FORM_STATE;
     }, 2000);

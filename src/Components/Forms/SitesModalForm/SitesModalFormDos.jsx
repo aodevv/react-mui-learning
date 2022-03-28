@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
 import { addSites } from "../../../redux/Sites/Sites.actions";
 
 // ICONS
@@ -195,13 +194,13 @@ const SitesModalFormDos = ({
                       </Box>
                     </Grid> */}
 
-                    <Stack direction="row" spacing={1} mt={2}>
+                    <Stack direction="row-reverse" spacing={1} mt={2}>
                       <Submit
                         disabled={!isValid}
                         variant="contained"
                         size="small"
                       >
-                        Ajouter
+                        Enregistrer
                       </Submit>
                       <Button
                         type="reset"

@@ -20,7 +20,13 @@ import MPTTotal from "../../../pages/NouveauDossier/Cumulatives/MPTTotal";
 import MITotal from "../../../pages/NouveauDossier/Cumulatives/MIITotal";
 import BCGTotal from "../../../pages/NouveauDossier/Cumulatives/BCGTotal";
 
-const InfosDossierForm = ({ values, openSubmit, existing, isValid }) => {
+const InfosDossierForm = ({
+  values,
+  openSubmit,
+  existing,
+  isValid,
+  finishedInfos,
+}) => {
   const [editing, setEditing] = useState(existing);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -50,17 +56,21 @@ const InfosDossierForm = ({ values, openSubmit, existing, isValid }) => {
                 </Grid> */}
                 <Grid item xs={4}>
                   <Textfield
-                    disabled={editing}
+                    disabled={editing || finishedInfos}
                     name="numero"
                     label="Numéro dossier"
                   />
                 </Grid>
                 <Grid item xs={4}>
-                  <Textfield disabled={editing} name="prgm" label="Programme" />
+                  <Textfield
+                    disabled={editing || finishedInfos}
+                    name="prgm"
+                    label="Programme"
+                  />
                 </Grid>
                 <Grid item xs={4}>
                   <Textfield
-                    disabled={editing}
+                    disabled={editing || finishedInfos}
                     name="act_of"
                     label="Acte officiel"
                   />
@@ -70,14 +80,18 @@ const InfosDossierForm = ({ values, openSubmit, existing, isValid }) => {
               <Grid container spacing={2} mb={1}>
                 <Grid item xs={6}>
                   <DatePicker
-                    disabled={editing}
+                    disabled={editing || finishedInfos}
                     name="date_ev"
                     label="Date événement"
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <DatePicker
-                    disabled={(values.date_ev ? false : true) || editing}
+                    disabled={
+                      (values.date_ev ? false : true) ||
+                      editing ||
+                      finishedInfos
+                    }
                     name="date_ouv"
                     label="Date d'ouverture"
                   />
@@ -86,7 +100,7 @@ const InfosDossierForm = ({ values, openSubmit, existing, isValid }) => {
 
               <Grid item xs={12}>
                 <Textfield
-                  disabled={editing}
+                  disabled={editing || finishedInfos}
                   name="desc_ev"
                   multiline
                   rows={4}
@@ -98,7 +112,11 @@ const InfosDossierForm = ({ values, openSubmit, existing, isValid }) => {
                 <Grid item xs={6}>
                   <Box display="flex" alignItems="center">
                     <Box sx={{ width: 80 }}>
-                      <Checkbox name="dab" label="DAB" />
+                      <Checkbox
+                        disabled={finishedInfos}
+                        name="dab"
+                        label="DAB"
+                      />
                     </Box>
                     {values.dab ? <SitesTotal /> : null}
                   </Box>
@@ -106,7 +124,11 @@ const InfosDossierForm = ({ values, openSubmit, existing, isValid }) => {
                 <Grid item xs={6}>
                   <Box display="flex" alignItems="center">
                     <Box sx={{ width: 80 }}>
-                      <Checkbox name="mpt" label="MPT" />
+                      <Checkbox
+                        disabled={finishedInfos}
+                        name="mpt"
+                        label="MPT"
+                      />
                     </Box>
                     {values.mpt ? <MPTTotal /> : null}
                   </Box>
@@ -114,7 +136,7 @@ const InfosDossierForm = ({ values, openSubmit, existing, isValid }) => {
                 <Grid item xs={6}>
                   <Box display="flex" alignItems="center">
                     <Box sx={{ width: 80 }}>
-                      <Checkbox name="mi" label="MI" />
+                      <Checkbox disabled={finishedInfos} name="mi" label="MI" />
                     </Box>
                     {values.mi ? <MITotal /> : null}
                   </Box>
@@ -122,7 +144,11 @@ const InfosDossierForm = ({ values, openSubmit, existing, isValid }) => {
                 <Grid item xs={6}>
                   <Box display="flex" alignItems="center">
                     <Box sx={{ width: 80 }}>
-                      <Checkbox name="bcg" label="BCG" />
+                      <Checkbox
+                        disabled={finishedInfos}
+                        name="bcg"
+                        label="BCG"
+                      />
                     </Box>
                     {values.bcg ? <BCGTotal /> : null}
                   </Box>
@@ -173,9 +199,15 @@ const InfosDossierForm = ({ values, openSubmit, existing, isValid }) => {
                     ) : (
                       <Button
                         variant="contained"
-                        color="error"
                         onClick={openSubmit}
-                        disabled={!isValid}
+                        disabled={
+                          finishedInfos ||
+                          !isValid ||
+                          (!values.dab &&
+                            !values.mpt &&
+                            !values.mi &&
+                            !values.bcg)
+                        }
                       >
                         Terminer
                       </Button>

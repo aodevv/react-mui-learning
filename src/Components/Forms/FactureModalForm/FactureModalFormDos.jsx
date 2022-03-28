@@ -219,9 +219,9 @@ const FactureModalFormDos = ({
                           <Checkbox name="tax" legend="Taxable ?" label="oui" />
                         </Box>
                       </Grid>
-                      <Stack direction="row" spacing={1} mt={2}>
+                      <Stack direction="row-reverse" spacing={1} mt={2}>
                         <Submit variant="contained" size="small">
-                          Ajouter
+                          Enregistrer
                         </Submit>
                         <Button
                           type="reset"

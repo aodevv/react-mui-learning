@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { ins1000Sep, formatNum } from "./TableColumnsUtils";
 
+import { useNavigate } from "react-router-dom";
+
 import { connect } from "react-redux";
 import { addInfosDossier } from "../../redux/DossierInfos/infosDossier.actions";
 
@@ -34,6 +36,8 @@ const FilesTable = ({
   const [deposit, setDeposit] = useState(false);
   const [dosId, setDosId] = useState(0);
   const [dosToEdit, setDosToEdit] = useState(0);
+
+  const navigate = useNavigate();
 
   const closeDeposit = () => {
     setDeposit(false);
@@ -90,32 +94,22 @@ const FilesTable = ({
     {
       field: "actions",
       type: "actions",
-      width: 80,
+      hide: true,
       getActions: (params) => [
-        <GridActionsCellItem
-          icon={<SearchIcon />}
-          component={Link}
-          to={`/dossier/${params.id}`}
-          label="Afficher"
-        />,
-
         <GridActionsCellItem
           icon={<PaidIcon />}
           onClick={() => depositToDos(params.id)}
           label="Verser"
-          showInMenu
         />,
         <GridActionsCellItem
           icon={<DangerousIcon />}
           label="Fermer"
           onClick={() => changeStatus(params.id)}
-          showInMenu
         />,
         <GridActionsCellItem
           icon={<CheckCircleIcon />}
           label="Réactiver"
           onClick={() => changeStatusOpen(params.id)}
-          showInMenu
         />,
       ],
     },
@@ -195,6 +189,11 @@ const FilesTable = ({
       },
     },
   ];
+
+  const navigateToDos = ({ id }) => {
+    navigate(`/dossier/${id}`);
+  };
+
   return (
     <>
       <Box
@@ -228,6 +227,13 @@ const FilesTable = ({
             pageSize={5}
             rowsPerPageOptions={[5]}
             checkboxSelection={false}
+            onRowClick={navigateToDos}
+            sx={{
+              "& .MuiDataGrid-cell:hover": {
+                color: "primary.main",
+                cursor: "pointer",
+              },
+            }}
           />
         </div>
         <DepositModal

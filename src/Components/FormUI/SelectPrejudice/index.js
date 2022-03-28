@@ -4,7 +4,7 @@ import { TextField, MenuItem } from "@mui/material";
 
 import { useField, useFormikContext } from "formik";
 
-const SelectWrapper = ({ name, options, dossiers, ...otherProps }) => {
+const SelectWrapper = ({ name, options, dossiers, edit, ...otherProps }) => {
   const [filteredPrejudices, setFilteredPrejudices] = useState(options);
   const { values, setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
@@ -32,7 +32,9 @@ const SelectWrapper = ({ name, options, dossiers, ...otherProps }) => {
   useEffect(() => {
     if (values.numDos !== "") {
       const dos = dossiers.filter((dos) => dos.id === values.numDos)[0];
-      setFieldValue("type", "");
+      if (edit === null) {
+        setFieldValue("type", "");
+      }
 
       const allowed = [];
       if (dos.dab) allowed.push("dab");

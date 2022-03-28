@@ -80,6 +80,10 @@ const SalaireModalForm = ({
   let INITIAL_FORM_STATE;
 
   if (edit !== null) {
+    let siteId = sites.findIndex(
+      (site, index) => site === globalValues.salaires[edit].site_con
+    );
+    siteId = siteId !== -1 ? siteId : "";
     INITIAL_FORM_STATE = {
       curSal: "",
       id: edit,
@@ -90,7 +94,7 @@ const SalaireModalForm = ({
       date_per: globalValues.salaires[edit].date_per,
       montant_rec: globalValues.salaires[edit].montant_rec,
       ajust: globalValues.salaires[edit].ajust,
-      site_con: globalValues.salaires[edit].site_con,
+      site_con: siteId,
       Hreg: globalValues.salaires[edit].Hreg,
       Hsup: globalValues.salaires[edit].Hsup,
       Hsup2: globalValues.salaires[edit].Hsup2,

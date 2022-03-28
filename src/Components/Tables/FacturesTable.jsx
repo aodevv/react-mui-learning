@@ -6,7 +6,11 @@ import { facturesColumns } from "./TableColumns";
 import { facturesTableData } from "./tempdata";
 import { DataGrid } from "@mui/x-data-grid";
 
-const FacturesTable = ({ data }) => {
+const FacturesTable = ({ data, setFacToEdit }) => {
+  const editFac = ({ id }) => {
+    setFacToEdit(id);
+  };
+
   return (
     <Box
       sx={{
@@ -37,7 +41,14 @@ const FacturesTable = ({ data }) => {
             columns={facturesColumns}
             pageSize={10}
             rowsPerPageOptions={[10]}
-            checkboxSelection
+            checkboxSelection={false}
+            onRowClick={editFac}
+            sx={{
+              "& .MuiDataGrid-cell:hover": {
+                color: "primary.main",
+                cursor: "pointer",
+              },
+            }}
           />
         </div>
       </div>

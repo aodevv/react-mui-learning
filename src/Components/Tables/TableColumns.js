@@ -190,19 +190,6 @@ export const facturesColumns = [
     headerName: "Taxable ?",
     type: "boolean",
   },
-  {
-    field: "actions",
-    type: "actions",
-    width: 80,
-    getActions: (params) => [
-      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem
-        icon={<PictureAsPdfIcon />}
-        label="Télécharger"
-        showInMenu
-      />,
-    ],
-  },
 ];
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {

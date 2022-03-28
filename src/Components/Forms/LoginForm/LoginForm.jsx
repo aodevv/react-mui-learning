@@ -43,11 +43,11 @@ const LoginForm = ({ LogIn }) => {
       values.password = "";
 
       values = INITIAL_FORM_STATE;
-    }, 2000);
+    }, 1000);
   };
 
   const handleSubmit = (values) => {
-    console.log(values);
+    console.log("checking");
   };
   return (
     <div>
@@ -89,6 +89,7 @@ const LoginForm = ({ LogIn }) => {
                           fullWidth
                           loading={loading}
                           onClick={() => {
+                            submitForm();
                             if (isValid) resetAndExit(values);
                           }}
                         >

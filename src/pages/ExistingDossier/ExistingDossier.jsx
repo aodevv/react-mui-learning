@@ -98,6 +98,9 @@ const ExistingDossier = ({
   const [machinerieModal, setMachinerieModal] = useState(false);
   const [siteModal, setSiteModal] = useState(false);
   const [submitModal, setSubmitModal] = useState(false);
+  const [facToEdit, setFacToEdit] = useState(null);
+  const [salToEdit, setSalToEdit] = useState(null);
+  const [machToEdit, setMachToEdit] = useState(null);
 
   let INITIAL_FORM_STATE;
 
@@ -200,6 +203,24 @@ const ExistingDossier = ({
       navigate("/dossier");
     }
   });
+
+  useEffect(() => {
+    if (facToEdit !== null) {
+      openFacture();
+    }
+  }, [facToEdit]);
+
+  useEffect(() => {
+    if (salToEdit !== null) {
+      openSalaire();
+    }
+  }, [salToEdit]);
+
+  useEffect(() => {
+    if (machToEdit !== null) {
+      openMachinerie();
+    }
+  }, [machToEdit]);
 
   return (
     <>
@@ -324,7 +345,10 @@ const ExistingDossier = ({
                     disable={values.date_ev !== "" ? false : true}
                     btnClick={openFacture}
                   >
-                    <FacturesMiniTables data={values.factures} />
+                    <FacturesMiniTables
+                      setFacToEdit={setFacToEdit}
+                      data={values.factures}
+                    />
                   </MiniTableWrapper>
                   <Modal
                     open={factureModal}
@@ -334,6 +358,8 @@ const ExistingDossier = ({
                     <Fade in={factureModal}>
                       <Box sx={style}>
                         <FactureModalForm
+                          setFacToEdit={setFacToEdit}
+                          edit={facToEdit}
                           globalValues={values}
                           prejudices={typePrejudices}
                           closeModal={closeFacture}
@@ -367,7 +393,10 @@ const ExistingDossier = ({
                     }
                     btnClick={openSalaire}
                   >
-                    <SalairesMiniTable data={values.salaires} />
+                    <SalairesMiniTable
+                      setSalToEdit={setSalToEdit}
+                      data={values.salaires}
+                    />
                   </MiniTableWrapper>
                   <Modal
                     open={salaireModal}
@@ -377,6 +406,8 @@ const ExistingDossier = ({
                     <Fade in={salaireModal}>
                       <Box sx={style}>
                         <SalaireModalForm
+                          edit={salToEdit}
+                          setSalToEdit={setSalToEdit}
                           payroll={payroll}
                           existing={true}
                           globalValues={values}
@@ -408,7 +439,10 @@ const ExistingDossier = ({
                     disable={values.date_ev !== "" ? false : true}
                     btnClick={openMachinerie}
                   >
-                    <MachineriesMiniTable data={values.machineries} />
+                    <MachineriesMiniTable
+                      setMachToEdit={setMachToEdit}
+                      data={values.machineries}
+                    />
                   </MiniTableWrapper>
                   <Modal
                     open={machinerieModal}
@@ -418,6 +452,8 @@ const ExistingDossier = ({
                     <Fade in={machinerieModal}>
                       <Box sx={style}>
                         <MachinerieModalForm
+                          setMachToEdit={setMachToEdit}
+                          edit={machToEdit}
                           existing={true}
                           globalValues={values}
                           prejudices={typePrejudices}

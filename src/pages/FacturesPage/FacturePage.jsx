@@ -44,6 +44,7 @@ const style = {
 
 const FacturePage = ({ factures, sites, dossiers }) => {
   const [factureModal, setFactureModal] = useState(false);
+  const [facToEdit, setFacToEdit] = useState(null);
   const openFacture = () => {
     setFactureModal(true);
   };
@@ -112,6 +113,12 @@ const FacturePage = ({ factures, sites, dossiers }) => {
     setFilteredFactures(flatFactures);
   }, [factures]);
 
+  useEffect(() => {
+    if (facToEdit !== null) {
+      openFacture();
+    }
+  }, [facToEdit]);
+
   return (
     <Grid>
       <Card>
@@ -148,7 +155,10 @@ const FacturePage = ({ factures, sites, dossiers }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <FacturesTable data={filteredFactures} />
+            <FacturesTable
+              setFacToEdit={setFacToEdit}
+              data={filteredFactures}
+            />
           </Box>
         </CardContent>
       </Card>
@@ -166,6 +176,8 @@ const FacturePage = ({ factures, sites, dossiers }) => {
               numDos={dosOnly}
               dossiers={dossiers}
               factures={factures}
+              setFacToEdit={setFacToEdit}
+              edit={facToEdit}
             />
           </Box>
         </Fade>

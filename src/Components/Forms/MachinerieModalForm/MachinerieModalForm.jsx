@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -6,9 +6,18 @@ import { selectMachineriesMemo } from "../../../redux/Machineries/machineries.se
 import { addMachinerie } from "../../../redux/Machineries/machineries.actions";
 
 // ICONS
-import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Typography,
+  Box,
+  Button,
+  Stack,
+  IconButton,
+} from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
@@ -31,7 +40,10 @@ const MachinerieModalForm = ({
   machineries,
   addMachinerie,
   existing,
+  edit,
+  setMachToEdit,
 }) => {
+  const [editing, setEditing] = useState(false);
   const allowed = [];
   if (globalValues.dab) allowed.push("dab");
   if (globalValues.mpt) allowed.push("mpt");
@@ -44,19 +56,40 @@ const MachinerieModalForm = ({
       obj[key] = prejudices[key];
       return obj;
     }, {});
+  const sites = globalValues.sites.map((site) => site.site);
 
-  const INITIAL_FORM_STATE = {
-    id: "",
-    code: "",
-    desc: "",
-    type: "",
-    site_con: "",
-    maintenance: 0,
-    hrs_fonc: 0,
-    hrs_stat: 0,
-    taux_fonc: 0,
-    cout: 0,
-  };
+  let INITIAL_FORM_STATE;
+  if (edit !== null) {
+    let siteId = sites.findIndex(
+      (site, index) => site === globalValues.machineries[edit].site_con
+    );
+    siteId = siteId !== -1 ? siteId : "";
+    INITIAL_FORM_STATE = {
+      id: edit,
+      code: globalValues.machineries[edit].code,
+      desc: globalValues.machineries[edit].desc,
+      type: globalValues.machineries[edit].type,
+      site_con: siteId,
+      maintenance: globalValues.machineries[edit].maintenance,
+      hrs_fonc: globalValues.machineries[edit].hrs_fonc,
+      hrs_stat: globalValues.machineries[edit].hrs_stat,
+      taux_fonc: globalValues.machineries[edit].taux_fonc,
+      cout: globalValues.machineries[edit].cout,
+    };
+  } else {
+    INITIAL_FORM_STATE = {
+      id: "",
+      code: "",
+      desc: "",
+      type: "",
+      site_con: "",
+      maintenance: 0,
+      hrs_fonc: 0,
+      hrs_stat: 0,
+      taux_fonc: 0,
+      cout: 0,
+    };
+  }
 
   const FORM_VALIDATION = Yup.object().shape({
     type: Yup.string().required("Champ obligatoire"),
@@ -71,8 +104,6 @@ const MachinerieModalForm = ({
     hrs_stat: Yup.number().min(0, "Valeur négative !"),
     taux_fonc: Yup.number().min(0, "Valeur négative !"),
   });
-
-  const sites = globalValues.sites.map((site) => site.site);
 
   const handleSubmit = (values) => {
     let id;
@@ -90,10 +121,20 @@ const MachinerieModalForm = ({
         globalValues.sites[values.site_con].m_montant_rec + values.cout;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
-    values.id = id;
-    //values.site_con = sites[values.site_con];
     newMachine = Object.assign([], newMachine);
-    newMachine.push({ ...values, site_con: sites[values.site_con] });
+
+    if (edit === null) {
+      values.id = id;
+      newMachine.push({ ...values, site_con: sites[values.site_con] });
+    } else {
+      const otherMachs = newMachine.filter((mach) => mach.id !== edit);
+      newMachine = [
+        ...otherMachs,
+        { ...values, site_con: sites[values.site_con] },
+      ].sort((a, b) => (a.id >= b.id ? 1 : -1));
+    }
+
+    //values.site_con = sites[values.site_con];
     if (existing) {
       let newMachs = JSON.parse(JSON.stringify(machineries));
       const dosInt = globalValues.numero;
@@ -105,8 +146,22 @@ const MachinerieModalForm = ({
       addMachinerie(newMachs);
     }
     globalValues.machineries = newMachine;
+
+    setMachToEdit(null);
+    setEditing(false);
     closeModal();
   };
+
+  const handleClose = () => {
+    setMachToEdit(null);
+    closeModal();
+    setEditing(false);
+  };
+
+  const handleEdit = () => {
+    setEditing(!editing);
+  };
+
   return (
     <>
       <Grid container>
@@ -122,9 +177,21 @@ const MachinerieModalForm = ({
 
                 return (
                   <Form>
-                    <Typography variant="h5" mb={1}>
-                      Ajout machinerie
-                    </Typography>
+                    <Box display="flex" justifyContent="space-between">
+                      <Typography variant="h5" mb={1}>
+                        {edit !== null ? "Modification" : "Ajout machinerie"}
+                      </Typography>
+                      {edit !== null ? (
+                        <IconButton
+                          aria-label="delete"
+                          color={!editing ? "default" : "primary"}
+                          size="medium"
+                          onClick={handleEdit}
+                        >
+                          <EditIcon fontSize="inherit" />
+                        </IconButton>
+                      ) : null}
+                    </Box>
 
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
@@ -132,21 +199,29 @@ const MachinerieModalForm = ({
                           name="type"
                           label="Préjudice"
                           options={filteredPrejudices}
-                          disabled={!Object.keys(filteredPrejudices).length > 0}
+                          disabled={
+                            !Object.keys(filteredPrejudices).length > 0 ||
+                            (edit !== null && !editing)
+                          }
                         />
                       </Grid>
-                      {values.type === "dab" ? (
-                        <Grid item xs={6}>
+                      <Grid item xs={6}>
+                        {values.type === "dab" ? (
                           <Select
                             name="site_con"
                             label="Site concerné"
                             options={sites}
+                            disabled={edit !== null && !editing}
                           />
-                        </Grid>
-                      ) : null}
+                        ) : null}
+                      </Grid>
                     </Grid>
                     <Grid item xs={6}>
-                      <Textfield name="code" label="Code et appelation" />
+                      <Textfield
+                        name="code"
+                        disabled={edit !== null && !editing}
+                        label="Code et appelation"
+                      />
                     </Grid>
                     <Grid item xs={12}>
                       <Textfield
@@ -154,6 +229,7 @@ const MachinerieModalForm = ({
                         multiline
                         rows={4}
                         label="Description"
+                        disabled={edit !== null && !editing}
                       />
                     </Grid>
                     <Typography mt={1}>Heures</Typography>
@@ -163,6 +239,7 @@ const MachinerieModalForm = ({
                           name="hrs_fonc"
                           label="Heures en fonction"
                           type="number"
+                          disabled={edit !== null && !editing}
                         />
                       </Grid>
                       <Grid item xs={6}>
@@ -170,6 +247,7 @@ const MachinerieModalForm = ({
                           name="hrs_stat"
                           label="Heures stationnaire"
                           type="number"
+                          disabled={edit !== null && !editing}
                         />
                       </Grid>
                     </Grid>
@@ -181,6 +259,7 @@ const MachinerieModalForm = ({
                           name="taux_fonc"
                           label="Taux de fonctionnement"
                           type="number"
+                          disabled={edit !== null && !editing}
                         />
                       </Grid>
                       <Grid item xs={6}>
@@ -188,6 +267,7 @@ const MachinerieModalForm = ({
                           name="maintenance"
                           label="Taux de maintenance"
                           type="number"
+                          disabled={edit !== null && !editing}
                         />
                       </Grid>
                     </Grid>
@@ -204,19 +284,24 @@ const MachinerieModalForm = ({
                       </Box>
                     </Grid>
                     <Stack direction="row-reverse" spacing={1} mt={2}>
-                      <Submit variant="contained" size="small">
-                        Enregistrer
+                      <Submit
+                        variant="contained"
+                        disabled={edit !== null && !editing}
+                        size="small"
+                      >
+                        {edit !== null ? "Modifier" : "Enregistrer"}
                       </Submit>
                       <Button
                         type="reset"
                         size="small"
+                        disabled={edit !== null && !editing}
                         startIcon={<UndoIcon />}
                       >
                         Réinitialiser
                       </Button>
                       <Button
                         size="small"
-                        onClick={closeModal}
+                        onClick={handleClose}
                         startIcon={<CloseIcon />}
                       >
                         Annuler

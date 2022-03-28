@@ -4,7 +4,7 @@ import { TextField, MenuItem } from "@mui/material";
 
 import { useField, useFormikContext } from "formik";
 
-const SelectWrapper = ({ name, sites, ...otherProps }) => {
+const SelectWrapper = ({ name, sites, edit, ...otherProps }) => {
   const [sitesList, setSitesList] = useState([]);
   const { values, setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
@@ -34,7 +34,9 @@ const SelectWrapper = ({ name, sites, ...otherProps }) => {
       const dosInt = values.numDos;
 
       setSitesList(sites[dosInt].map((site) => site.site));
-      setFieldValue("site_con", "");
+      if (edit === null) {
+        setFieldValue("site_con", "");
+      }
     }
   }, [setFieldValue, sites, values.numDos, values.type]);
 

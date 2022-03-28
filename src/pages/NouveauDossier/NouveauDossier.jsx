@@ -115,20 +115,21 @@ const NouveauDossier = ({
   const [accord, setAccord] = useState("panel");
   const [facToEdit, setFacToEdit] = useState(null);
   const [salToEdit, setSalToEdit] = useState(null);
+  const [machToEdit, setMachToEdit] = useState(null);
 
   const dosIds = dossiers.map((dos) => dos.id);
 
   const INITIAL_FORM_STATE = {
     id: "",
-    numero: "",
-    date_ev: "",
-    date_ouv: "",
-    desc_ev: "",
-    act_of: "",
-    prgm: "",
-    dab: false,
+    numero: "2021MU11",
+    date_ev: "2022-03-01",
+    date_ouv: "2022-03-28",
+    desc_ev: "Desc",
+    act_of: "af",
+    prgm: "pm",
+    dab: true,
     mpt: false,
-    mi: false,
+    mi: true,
     bcg: false,
     MR: 0,
     siteTT: 0,
@@ -298,6 +299,12 @@ const NouveauDossier = ({
     }
   }, [salToEdit]);
 
+  useEffect(() => {
+    if (machToEdit !== null) {
+      openMachinerie();
+    }
+  }, [machToEdit]);
+
   return (
     <>
       <Formik
@@ -318,7 +325,7 @@ const NouveauDossier = ({
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"
                   id="panel1a-header"
-                  sx={{ backgroundColor: "#00F2" }}
+                  sx={{ backgroundColor: `${accord ? "#a0a0a057" : null}` }}
                 >
                   <Typography variant="h5" mr={2}>
                     Nouveau Dossier
@@ -521,7 +528,10 @@ const NouveauDossier = ({
                     disable={activeForms}
                     btnClick={openMachinerie}
                   >
-                    <MachineriesMiniTable data={values.machineries} />
+                    <MachineriesMiniTable
+                      setMachToEdit={setMachToEdit}
+                      data={values.machineries}
+                    />
                   </MiniTableWrapper>
                   <Modal
                     open={machinerieModal}
@@ -531,6 +541,8 @@ const NouveauDossier = ({
                     <Fade in={machinerieModal}>
                       <Box sx={style}>
                         <MachinerieModalForm
+                          setMachToEdit={setMachToEdit}
+                          edit={machToEdit}
                           globalValues={values}
                           prejudices={typePrejudices}
                           closeModal={closeMachinerie}

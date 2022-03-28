@@ -27,6 +27,7 @@ import Select from "../../../Components/FormUI/Select";
 import DatePicker from "../../../Components/FormUI/DateTime";
 import Checkbox from "../../../Components/FormUI/Checkbox";
 import Submit from "../../../Components/FormUI/Submit";
+//import DatePro from "../../../Components/FormUI/DateTimePro";
 
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -42,9 +43,14 @@ const FactureModalForm = ({
   setFacToEdit,
 }) => {
   const [editing, setEditing] = useState(false);
+  const sites = globalValues.sites.map((site) => site.site);
 
   let INITIAL_FORM_STATE;
   if (edit !== null) {
+    let siteId = sites.findIndex(
+      (site, index) => site === globalValues.factures[edit].site_con
+    );
+    siteId = siteId !== -1 ? siteId : "";
     INITIAL_FORM_STATE = {
       id: edit,
       desc_fact: globalValues.factures[edit].desc_fact,
@@ -52,7 +58,7 @@ const FactureModalForm = ({
       type: globalValues.factures[edit].type,
       montant_rec: globalValues.factures[edit].montant_rec,
       ajust: globalValues.factures[edit].ajust,
-      site_con: globalValues.factures[edit].site_con,
+      site_con: siteId,
       tax: globalValues.factures[edit].tax,
     };
   } else {
@@ -99,8 +105,6 @@ const FactureModalForm = ({
       obj[key] = prejudices[key];
       return obj;
     }, {});
-
-  const sites = globalValues.sites.map((site) => site.site);
 
   const handleSubmit = (values) => {
     let id;

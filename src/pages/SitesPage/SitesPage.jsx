@@ -40,6 +40,7 @@ const style = {
 
 const SitesPage = ({ dossiers, sites }) => {
   const [sitesModal, setSitesModal] = useState(false);
+  const [siteToEdit, setSiteToEdit] = useState(null);
   const openSites = () => {
     setSitesModal(true);
   };
@@ -64,7 +65,7 @@ const SitesPage = ({ dossiers, sites }) => {
   //     dosOnly.push(item);
   //   });
   dossiers.forEach((dos) => {
-    if (dos.status === "actif") dosOnly.push(dos.id);
+    dosOnly.push(dos.id);
   });
 
   useEffect(() => {
@@ -80,6 +81,12 @@ const SitesPage = ({ dossiers, sites }) => {
     );
     setFilteredSites(flatSites);
   }, [sites]);
+
+  useEffect(() => {
+    if (siteToEdit !== null) {
+      openSites();
+    }
+  }, [siteToEdit]);
 
   return (
     <Grid>
@@ -116,7 +123,7 @@ const SitesPage = ({ dossiers, sites }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <SitesTable data={filteredSites} />
+            <SitesTable setSiteToEdit={setSiteToEdit} data={filteredSites} />
           </Box>
         </CardContent>
       </Card>
@@ -132,6 +139,8 @@ const SitesPage = ({ dossiers, sites }) => {
               closeModal={closeSites}
               sites={sites}
               numDos={dosOnly}
+              setSiteToEdit={setSiteToEdit}
+              edit={siteToEdit}
             />
           </Box>
         </Fade>

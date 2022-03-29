@@ -264,25 +264,25 @@ export const machineriesColumns = [
     field: "cout",
     headerName: "Côut total",
     flex: 1,
-    minWidth: 80,
+    minWidth: 120,
     valueFormatter: (params) => {
       const valueFormatted = ins1000Sep(formatNum(params.value));
       return `$ ${valueFormatted}`;
     },
   },
-  {
-    field: "actions",
-    type: "actions",
-    width: 80,
-    getActions: (params) => [
-      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem
-        icon={<PictureAsPdfIcon />}
-        label="Télécharger"
-        showInMenu
-      />,
-    ],
-  },
+  // {
+  //   field: "actions",
+  //   type: "actions",
+  //   width: 80,
+  //   getActions: (params) => [
+  //     <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
+  //     <GridActionsCellItem
+  //       icon={<PictureAsPdfIcon />}
+  //       label="Télécharger"
+  //       showInMenu
+  //     />,
+  //   ],
+  // },
 ];
 
 export const salairesColumns = [
@@ -656,15 +656,5 @@ export const sitesColumns = [
     valueFormatter: (params) => {
       return `${params.value} %`;
     },
-  },
-
-  {
-    field: "actions",
-    type: "actions",
-    width: 80,
-    getActions: (params) => [
-      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem icon={<EditIcon />} label="Modifier" />,
-    ],
   },
 ];

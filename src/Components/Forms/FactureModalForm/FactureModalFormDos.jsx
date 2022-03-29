@@ -185,7 +185,9 @@ const FactureModalFormDos = ({
   };
 
   const handleClose = () => {
-    setFacToEdit(null);
+    if (edit !== null) {
+      setFacToEdit(null);
+    }
     closeModal();
     setEditing(false);
   };
@@ -321,7 +323,7 @@ const FactureModalFormDos = ({
                           variant="contained"
                           size="small"
                         >
-                          Enregistrer
+                          {edit !== null ? "Modifier" : "Enregistrer"}
                         </Submit>
                         <Button
                           type="reset"

@@ -4,7 +4,14 @@ import { TextField, MenuItem } from "@mui/material";
 
 import { useField, useFormikContext } from "formik";
 
-const SelectWrapper = ({ name, sites, allSites, ...otherProps }) => {
+const SelectWrapper = ({
+  name,
+  sites,
+  edit,
+  siteIfEdit,
+  allSites,
+  ...otherProps
+}) => {
   const [sitesList, setSitesList] = useState([]);
   const { values, setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
@@ -42,10 +49,17 @@ const SelectWrapper = ({ name, sites, allSites, ...otherProps }) => {
           return obj;
         }, {});
 
-      setSitesList(filteredSites);
-      setFieldValue("site", "");
+      //let siteId = allSites.findIndex((site, index) => site === siteIfEdit);
+
+      if (edit !== null) {
+        setSitesList(allSites);
+        setFieldValue("site", siteIfEdit);
+      } else {
+        setSitesList(filteredSites);
+        setFieldValue("site", "");
+      }
     }
-  }, [setFieldValue, sites, values.numDos, values.type]);
+  }, [setFieldValue, sites, values.numDos, values.type, allSites]);
 
   return (
     <TextField {...config}>

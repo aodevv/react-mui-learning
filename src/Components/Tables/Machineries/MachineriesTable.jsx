@@ -4,7 +4,10 @@ import Box from "@mui/material/Box";
 import { machineriesColumns } from "../TableColumns";
 import { DataGrid } from "@mui/x-data-grid";
 
-const MachineriesTable = ({ data }) => {
+const MachineriesTable = ({ data, setMachToEdit }) => {
+  const editMach = ({ id }) => {
+    setMachToEdit(id);
+  };
   return (
     <Box
       sx={{
@@ -35,7 +38,14 @@ const MachineriesTable = ({ data }) => {
             columns={machineriesColumns}
             pageSize={10}
             rowsPerPageOptions={[10]}
-            checkboxSelection
+            checkboxSelection={false}
+            onRowClick={editMach}
+            sx={{
+              "& .MuiDataGrid-cell:hover": {
+                color: "primary.main",
+                cursor: "pointer",
+              },
+            }}
           />
         </div>
       </div>

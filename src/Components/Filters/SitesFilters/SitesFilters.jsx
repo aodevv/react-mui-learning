@@ -132,7 +132,7 @@ const SitesFilters = ({ sites, setFilteredSites, numDos }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Grid container columnSpacing={2}>
-            <Grid item xs={12} lg={4}>
+            <Grid item xs={12} lg={12}>
               <Autocomplete
                 multiple
                 id="tags-outlined"

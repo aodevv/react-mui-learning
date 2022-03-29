@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { addSites } from "../../../redux/Sites/Sites.actions";
 
 // ICONS
-import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Typography,
+  Box,
+  Button,
+  Stack,
+  IconButton,
+} from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
 import InputAdornment from "@mui/material/InputAdornment";
+
+import EditIcon from "@mui/icons-material/Edit";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
@@ -40,17 +50,49 @@ const SitesModalFormDos = ({
   addSites,
   closeModal,
   dossiers,
+  edit,
+  setSiteToEdit,
 }) => {
-  const INITIAL_FORM_STATE = {
-    numDos: "",
-    id: "",
-    site: "",
-    nature: "",
-    part_end: "",
-    pourc_end: 0,
-    type_ret: "",
-    pourc_adm: 0,
-  };
+  const [editing, setEditing] = useState(false);
+
+  let INITIAL_FORM_STATE;
+
+  if (edit !== null) {
+    var [dosSiteEdit, idSiteEdit] = edit.split(";");
+    idSiteEdit = parseInt(idSiteEdit);
+    const siteVals = sites[dosSiteEdit].find((st) => st.id === idSiteEdit);
+
+    INITIAL_FORM_STATE = {
+      numDos: dosSiteEdit,
+      id: idSiteEdit,
+      site: siteVals.site,
+      nature: siteVals.nature,
+      part_end: siteVals.part_end,
+      pourc_end: siteVals.pourc_end,
+      type_ret: siteVals.type_ret,
+      pourc_adm: siteVals.pourc_adm,
+      montant_rec: siteVals.montant_rec,
+      f_montant_rec: siteVals.f_montant_rec,
+      s_montant_rec: siteVals.s_montant_rec,
+      m_montant_rec: siteVals.m_montant_rec,
+    };
+  } else {
+    INITIAL_FORM_STATE = {
+      numDos: "",
+      id: "",
+      site: "",
+      nature: "",
+      part_end: "",
+      pourc_end: 0,
+      type_ret: "",
+      pourc_adm: 0,
+      montant_rec: 0,
+      f_montant_rec: 0,
+      s_montant_rec: 0,
+      m_montant_rec: 0,
+    };
+  }
+
   const FORM_VALIDATION = Yup.object().shape({
     numDos: Yup.string().required("Champ obligatoire"),
     site: Yup.string().required("Champ obligatoire"),
@@ -66,12 +108,11 @@ const SitesModalFormDos = ({
       .max(100, "Ne peux pas depasser 100%")
       .required("Champ obligatoire"),
   });
-  console.log(numDos);
 
   const handleSubmit = (values, { resetForm }) => {
     const dosInt = values.numDos;
     let newSites = JSON.parse(JSON.stringify(sites));
-    const siteDos = newSites[dosInt];
+    let siteDos = newSites[dosInt];
     let id;
     const ids = siteDos
       .map((fac) => fac.id)
@@ -79,21 +120,36 @@ const SitesModalFormDos = ({
         return a - b;
       });
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
+    let siteId;
+
+    if (edit !== null) {
+      siteId = idSiteEdit;
+    } else {
+      siteId = id;
+    }
 
     const newSite = {
-      id: id,
+      id: siteId,
       site: values.site,
       nature: values.nature,
       part_end: values.part_end,
       pourc_end: values.pourc_end,
       type_ret: values.type_ret,
       pourc_adm: values.pourc_adm,
-      montant_rec: 0,
-      f_montant_rec: 0,
-      s_montant_rec: 0,
-      m_montant_rec: 0,
+      montant_rec: values.montant_rec,
+      f_montant_rec: values.f_montant_rec,
+      s_montant_rec: values.s_montant_rec,
+      m_montant_rec: values.m_montant_rec,
     };
-    siteDos.push(newSite);
+    if (edit === null) {
+      siteDos.push({ ...newSite });
+    } else {
+      const otherFacs = siteDos.filter((fac) => fac.id !== idSiteEdit);
+      siteDos = [...otherFacs, { ...newSite }].sort((a, b) =>
+        a.id >= b.id ? 1 : -1
+      );
+    }
+    //siteDos.push(newSite);
     Object.keys(newSites).forEach(function (key, index) {
       if (key === dosInt) {
         newSites[key] = siteDos;
@@ -102,7 +158,19 @@ const SitesModalFormDos = ({
 
     addSites(newSites);
     resetForm();
+    handleClose();
+  };
+
+  const handleClose = () => {
+    if (edit !== null) {
+      setSiteToEdit(null);
+    }
     closeModal();
+    setEditing(false);
+  };
+
+  const handleEdit = () => {
+    setEditing(!editing);
   };
 
   return (
@@ -120,15 +188,28 @@ const SitesModalFormDos = ({
 
                 return (
                   <Form>
-                    <Typography variant="h5" mb={1}>
-                      Ajout site
-                    </Typography>
+                    <Box display="flex" justifyContent="space-between">
+                      <Typography variant="h5" mb={1}>
+                        {edit !== null ? "Modification" : "Ajout site"}
+                      </Typography>
+                      {edit !== null ? (
+                        <IconButton
+                          aria-label="delete"
+                          color={!editing ? "default" : "primary"}
+                          size="medium"
+                          onClick={handleEdit}
+                        >
+                          <EditIcon fontSize="inherit" />
+                        </IconButton>
+                      ) : null}
+                    </Box>
                     <Grid item xs={12}>
                       <SelectDossier
                         dossiers={dossiers}
                         name="numDos"
                         label="Numéro dossier"
                         options={numDos}
+                        disabled={edit !== null}
                       />
                     </Grid>
 
@@ -138,22 +219,37 @@ const SitesModalFormDos = ({
                           defaultValue=""
                           name="site"
                           label="Site"
+                          edit={edit}
                           sites={sites}
                           allSites={SiteTempData}
+                          siteIfEdit={values.site}
+                          disabled={edit !== null}
                         />
                       </Grid>
 
                       <Grid item xs={6}>
-                        <Textfield name="nature" label="Nature" />
+                        <Textfield
+                          name="nature"
+                          disabled={edit !== null && !editing}
+                          label="Nature"
+                        />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
-                        <Textfield name="part_end" label="Partie endommagée" />
+                        <Textfield
+                          name="part_end"
+                          disabled={edit !== null && !editing}
+                          label="Partie endommagée"
+                        />
                       </Grid>
                       <Grid item xs={6}>
-                        <Textfield name="type_ret" label="Type rétabli" />
+                        <Textfield
+                          name="type_ret"
+                          disabled={edit !== null && !editing}
+                          label="Type rétabli"
+                        />
                       </Grid>
                     </Grid>
                     <Grid container spacing={2}>
@@ -161,6 +257,7 @@ const SitesModalFormDos = ({
                         <Textfield
                           name="pourc_end"
                           label="Pourcentage endommagé"
+                          disabled={edit !== null && !editing}
                           type="number"
                           min={0}
                           InputProps={{
@@ -173,6 +270,7 @@ const SitesModalFormDos = ({
                       <Grid item xs={6}>
                         <Textfield
                           name="pourc_adm"
+                          disabled={edit !== null && !editing}
                           label="Pourcentage admissible"
                           type="number"
                           InputProps={{
@@ -196,13 +294,14 @@ const SitesModalFormDos = ({
 
                     <Stack direction="row-reverse" spacing={1} mt={2}>
                       <Submit
-                        disabled={!isValid}
+                        disabled={!isValid || (edit !== null && !editing)}
                         variant="contained"
                         size="small"
                       >
-                        Enregistrer
+                        {edit !== null ? "Modifier" : "Enregistrer"}
                       </Submit>
                       <Button
+                        disabled={edit !== null && !editing}
                         type="reset"
                         size="small"
                         startIcon={<UndoIcon />}
@@ -211,7 +310,7 @@ const SitesModalFormDos = ({
                       </Button>
                       <Button
                         size="small"
-                        onClick={closeModal}
+                        onClick={handleClose}
                         startIcon={<CloseIcon />}
                       >
                         Annuler

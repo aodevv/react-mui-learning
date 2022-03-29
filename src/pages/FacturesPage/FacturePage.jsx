@@ -77,7 +77,7 @@ const FacturePage = ({ factures, sites, dossiers }) => {
   // });
 
   dossiers.forEach((dos) => {
-    if (dos.status === "actif") dosOnly.push(dos.id);
+    dosOnly.push(dos.id);
   });
 
   const remove_duplicates = (arr) => {

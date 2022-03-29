@@ -69,15 +69,21 @@ const SiteModalForm = ({
 
   const sites = globalValues.sites.map((site) => site.site);
 
-  const filteredSites = Object.keys(SiteTempData)
+  const test = Object.keys(SiteTempData)
     .filter((key) => !sites.includes(key))
     .reduce((obj, key) => {
       obj[key] = SiteTempData[key];
       return obj;
     }, {});
 
+  const filteredSites = Object.keys(SiteTempData).filter(
+    (key) => !sites.includes(SiteTempData[key])
+  );
+
   const handleSubmit = (values) => {
     let id;
+    console.log(filteredSites);
+    console.log(values);
 
     let newSite = globalValues.sites;
     // const ids = newSite
@@ -87,8 +93,21 @@ const SiteModalForm = ({
     //   });
     id = values.site;
     values.id = id;
+    let newVals = {
+      id: id,
+      site: filteredSites[parseInt(values.site)],
+      nature: values.nature,
+      part_end: values.part_end,
+      pourc_end: values.pourc_end,
+      type_ret: values.type_ret,
+      pourc_adm: values.pourc_adm,
+      montant_rec: 0,
+      f_montant_rec: 0,
+      s_montant_rec: 0,
+      m_montant_rec: 0,
+    };
     newSite = Object.assign([], newSite);
-    newSite.push(values);
+    newSite.push(newVals);
     if (existing) {
       console.log("floo");
       let newSites = JSON.parse(JSON.stringify(allSites));

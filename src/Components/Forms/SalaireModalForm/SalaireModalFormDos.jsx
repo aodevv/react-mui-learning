@@ -10,10 +10,19 @@ import { addSites } from "../../../redux/Sites/Sites.actions";
 import { addInfosDossier } from "../../../redux/DossierInfos/infosDossier.actions";
 
 // MUI ICONS
-import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Typography,
+  Box,
+  Button,
+  Stack,
+  IconButton,
+} from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
 import InputAdornment from "@mui/material/InputAdornment";
+import EditIcon from "@mui/icons-material/Edit";
 
 import Textfield from "../../../Components/FormUI/Textfield";
 import Select from "../../../Components/FormUI/Select";
@@ -47,36 +56,77 @@ const SalaireModalFormDos = ({
   addSites,
   salaires,
   payroll,
+  edit,
+  setSalToEdit,
 }) => {
   const [validDate, setValiDate] = useState("2010-01-01");
+  const [editing, setEditing] = useState(false);
   var today = new Date();
 
   var date =
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
-  const INITIAL_FORM_STATE = {
-    curSal: "",
-    numDos: "",
-    type: "",
-    nom: "",
-    prenom: "",
-    status: "",
-    date_per: "",
-    montant_rec: 0,
-    ajust: 0,
-    site_con: "",
-    Hreg: 0,
-    Hsup: 0,
-    Hsup2: 0,
-    Treg: 0,
-    Tsup: 0,
-    Tsup2: 0,
-    taux_vac: 0,
-    ae: false,
-    rrq: false,
-    rqap: false,
-    fss: false,
-    csst: false,
-  };
+
+  let INITIAL_FORM_STATE;
+  if (edit !== null) {
+    var [dosSalEdit, idSalEdit] = edit.split(";");
+    idSalEdit = parseInt(idSalEdit);
+    const salVals = salaires[dosSalEdit].find((fac) => fac.id === idSalEdit);
+    const sitesList = sites[dosSalEdit].map((site) => site.site);
+    let siteId = sitesList.findIndex(
+      (site, index) => site === salVals.site_con
+    );
+    INITIAL_FORM_STATE = {
+      curSal: "",
+      id: idSalEdit,
+      numDos: dosSalEdit,
+      type: salVals.type,
+      nom: salVals.nom,
+      prenom: salVals.prenom,
+      status: salVals.status,
+      date_per: salVals.date_per,
+      montant_rec: salVals.montant_rec,
+      ajust: salVals.ajust,
+      site_con: siteId,
+      Hreg: salVals.Hreg,
+      Hsup: salVals.Hsup,
+      Hsup2: salVals.Hsup2,
+      Treg: salVals.Treg,
+      Tsup: salVals.Tsup,
+      Tsup2: salVals.Tsup2,
+      taux_vac: salVals.taux_vac,
+      ae: salVals.ae,
+      rrq: salVals.rrq,
+      rqap: salVals.rqap,
+      fss: salVals.fss,
+      csst: salVals.csst,
+    };
+  } else {
+    INITIAL_FORM_STATE = {
+      curSal: "",
+      numDos: "",
+      type: "",
+      nom: "",
+      prenom: "",
+      status: "",
+      date_per: "",
+      montant_rec: 0,
+      ajust: 0,
+      site_con: "",
+      Hreg: 0,
+      Hsup: 0,
+      Hsup2: 0,
+      Treg: 0,
+      Tsup: 0,
+      Tsup2: 0,
+      taux_vac: 0,
+      ae: false,
+      rrq: false,
+      rqap: false,
+      fss: false,
+      csst: false,
+    };
+  }
+
   const FORM_VALIDATION = Yup.object().shape({
     numDos: Yup.string().required("Champ obligatoire"),
     type: Yup.string().required("Champ obligatoire"),
@@ -125,7 +175,7 @@ const SalaireModalFormDos = ({
   const handleSubmit = (values, { resetForm }) => {
     const dosInt = values.numDos;
     let newSals = JSON.parse(JSON.stringify(salaires));
-    const salaireDos = newSals[dosInt];
+    let salaireDos = newSals[dosInt];
     let id;
     const ids = salaireDos
       .map((fac) => fac.id)
@@ -133,13 +183,20 @@ const SalaireModalFormDos = ({
         return a - b;
       });
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
-
     const siteToAdd = sites[dosInt].map((site) => site.site)[values.site_con];
+
+    let salId;
+    if (edit !== null) {
+      salId = idSalEdit;
+    } else {
+      salId = id;
+    }
+
     const newSal = {
-      id: id,
+      id: salId,
       type: values.type,
-      prenom: values.nom,
-      nom: values.prenom,
+      prenom: values.prenom,
+      nom: values.nom,
       status: values.status,
       date_per: values.date_per,
       montant_rec: values.montant_rec,
@@ -158,7 +215,16 @@ const SalaireModalFormDos = ({
       fss: values.fss,
       csst: values.csst,
     };
-    salaireDos.push(newSal);
+
+    if (edit === null) {
+      salaireDos.push({ ...newSal });
+    } else {
+      const otherSals = salaireDos.filter((fac) => fac.id !== idSalEdit);
+      salaireDos = [...otherSals, { ...newSal }].sort((a, b) =>
+        a.id >= b.id ? 1 : -1
+      );
+    }
+
     Object.keys(newSals).forEach(function (key, index) {
       if (key === dosInt) {
         newSals[key] = salaireDos;
@@ -169,26 +235,44 @@ const SalaireModalFormDos = ({
     const siteId = siteToAdd;
 
     const dosToEdit = dosCopy.find((dossier) => dossier.id === dosId);
-    dosToEdit.MR = dosToEdit.MR + values.montant_rec;
+    if (edit === null) {
+      dosToEdit.MR = dosToEdit.MR + values.montant_rec;
 
-    const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
-    addInfosDossier(
-      [...otherDoses, dosToEdit].sort((a, b) => (a.id >= b.id ? 1 : -1))
-    );
+      const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
+      addInfosDossier(
+        [...otherDoses, dosToEdit].sort((a, b) => (a.id >= b.id ? 1 : -1))
+      );
 
-    if (values.type === "dab") {
-      const siteDos = sitesCopy[dosId];
-      const siteToEdit = siteDos.find((site) => site.site === siteId);
-      const otherSites = siteDos.filter((site) => site.site !== siteId);
-      siteToEdit.s_montant_rec = siteToEdit.s_montant_rec + values.montant_rec;
-      siteToEdit.montant_rec = siteToEdit.montant_rec + values.montant_rec;
-      Object.keys(sitesCopy).forEach((item, key) => {
-        if (key === dosId) sitesCopy[key] = [...otherSites, siteToEdit];
-      });
-      addSites(sitesCopy);
+      if (values.type === "dab") {
+        const siteDos = sitesCopy[dosId];
+        const siteToEdit = siteDos.find((site) => site.site === siteId);
+        const otherSites = siteDos.filter((site) => site.site !== siteId);
+        siteToEdit.s_montant_rec =
+          siteToEdit.s_montant_rec + values.montant_rec;
+        siteToEdit.montant_rec = siteToEdit.montant_rec + values.montant_rec;
+        Object.keys(sitesCopy).forEach((item, key) => {
+          if (key === dosId) sitesCopy[key] = [...otherSites, siteToEdit];
+        });
+        addSites(sitesCopy);
+      }
     }
+
     resetForm();
     closeModal();
+    setSalToEdit(null);
+    setEditing(false);
+  };
+
+  const handleClose = () => {
+    closeModal();
+    if (edit !== null) {
+      setSalToEdit(null);
+    }
+    setEditing(false);
+  };
+
+  const handleEdit = () => {
+    setEditing(!editing);
   };
 
   return (
@@ -207,25 +291,41 @@ const SalaireModalFormDos = ({
                 return (
                   <Form>
                     <Grid item>
-                      <Typography variant="h5" mb={1}>
-                        Ajout salaire
-                      </Typography>
+                      <Box display="flex" justifyContent="space-between">
+                        <Typography variant="h5" mb={1}>
+                          {edit !== null ? "Modification" : "Ajout salaire"}
+                        </Typography>
+                        {edit !== null ? (
+                          <IconButton
+                            aria-label="delete"
+                            color={!editing ? "default" : "primary"}
+                            size="medium"
+                            onClick={handleEdit}
+                          >
+                            <EditIcon fontSize="inherit" />
+                          </IconButton>
+                        ) : null}
+                      </Box>
                       <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                          <Select
-                            name="curSal"
-                            label="Salarié"
-                            options={payrollNameList}
-                            defaultValue=""
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
+                        {edit === null ? (
+                          <Grid item xs={6}>
+                            <Select
+                              name="curSal"
+                              label="Salarié"
+                              options={payrollNameList}
+                              defaultValue=""
+                            />
+                          </Grid>
+                        ) : null}
+
+                        <Grid item flexGrow={1}>
                           <SelectDossier
                             dossiers={dossiers}
                             setValiDate={setValiDate}
                             name="numDos"
                             label="Numéro dossier"
                             options={numDos}
+                            disabled={edit !== null}
                           />
                         </Grid>
                       </Grid>
@@ -238,7 +338,10 @@ const SalaireModalFormDos = ({
                             defaultValue=""
                             options={prejudices}
                             dossiers={dossiers}
-                            disabled={values.numDos === ""}
+                            disabled={
+                              values.numDos === "" ||
+                              (edit !== null && !editing)
+                            }
                           />
                         </Grid>
                         {values.type === "dab" ? (
@@ -248,17 +351,26 @@ const SalaireModalFormDos = ({
                               name="site_con"
                               label="Site concerné"
                               sites={sites}
-                              disabled={values.type !== "dab"}
+                              disabled={
+                                values.type !== "dab" ||
+                                (edit !== null && !editing)
+                              }
                             />
                           </Grid>
                         ) : null}
                       </Grid>
                       <Grid container spacing={1}>
                         <Grid item xs={4}>
-                          <Nom name="nom" label="Nom" payroll={payroll} />
+                          <Nom
+                            disabled={edit !== null && !editing}
+                            name="nom"
+                            label="Nom"
+                            payroll={payroll}
+                          />
                         </Grid>
                         <Grid item xs={4}>
                           <Prenom
+                            disabled={edit !== null && !editing}
                             name="prenom"
                             label="Prénom"
                             payroll={payroll}
@@ -266,6 +378,7 @@ const SalaireModalFormDos = ({
                         </Grid>
                         <Grid item xs={4}>
                           <Status
+                            disabled={edit !== null && !editing}
                             name="status"
                             label="Status"
                             options={data}
@@ -275,12 +388,17 @@ const SalaireModalFormDos = ({
                       </Grid>
 
                       <Grid item xs={12}>
-                        <DatePicker name="date_per" label="Date" />
+                        <DatePicker
+                          disabled={edit !== null && !editing}
+                          name="date_per"
+                          label="Date"
+                        />
                       </Grid>
                       <Typography mt={1}>Heures</Typography>
                       <Grid container spacing={1}>
                         <Grid item xs={4}>
                           <Textfield
+                            disabled={edit !== null && !editing}
                             name="Hreg"
                             label="Heures régulières"
                             type="number"
@@ -288,6 +406,7 @@ const SalaireModalFormDos = ({
                         </Grid>
                         <Grid item xs={4}>
                           <Textfield
+                            disabled={edit !== null && !editing}
                             name="Hsup"
                             label="Heures sup"
                             type="number"
@@ -295,6 +414,7 @@ const SalaireModalFormDos = ({
                         </Grid>
                         <Grid item xs={4}>
                           <Textfield
+                            disabled={edit !== null && !editing}
                             name="Hsup2"
                             label="Heures sup 2"
                             type="number"
@@ -305,6 +425,7 @@ const SalaireModalFormDos = ({
                       <Grid container spacing={1}>
                         <Grid item xs={3}>
                           <Treg
+                            disabled={edit !== null && !editing}
                             name="Treg"
                             label="Taux régulier"
                             payroll={payroll}
@@ -312,10 +433,16 @@ const SalaireModalFormDos = ({
                           />
                         </Grid>
                         <Grid item xs={3}>
-                          <Tsup name="Tsup" label="Taux sup" type="number" />
+                          <Tsup
+                            disabled={edit !== null && !editing}
+                            name="Tsup"
+                            label="Taux sup"
+                            type="number"
+                          />
                         </Grid>
                         <Grid item xs={3}>
                           <Tsup2
+                            disabled={edit !== null && !editing}
                             name="Tsup2"
                             label="Taux sup 2"
                             type="number"
@@ -323,6 +450,7 @@ const SalaireModalFormDos = ({
                         </Grid>
                         <Grid item xs={3}>
                           <TauxVac
+                            disabled={edit !== null && !editing}
                             name="taux_vac"
                             label="Taux vacances"
                             type="number"
@@ -339,19 +467,39 @@ const SalaireModalFormDos = ({
                       </Grid>
                       <Grid container mt={1} pl={2} spacing={2}>
                         <Grid item xs={2} l={1}>
-                          <Checkbox name="ae" label="AE" />
+                          <Checkbox
+                            disabled={edit !== null && !editing}
+                            name="ae"
+                            label="AE"
+                          />
                         </Grid>
                         <Grid item mr={2} xs={2} l={1}>
-                          <Checkbox name="rrq" label="RRQ" />
+                          <Checkbox
+                            disabled={edit !== null && !editing}
+                            name="rrq"
+                            label="RRQ"
+                          />
                         </Grid>
                         <Grid item mr={2} xs={2} l={1}>
-                          <Checkbox name="rqap" label="RQAP" />
+                          <Checkbox
+                            disabled={edit !== null && !editing}
+                            name="rqap"
+                            label="RQAP"
+                          />
                         </Grid>
                         <Grid item xs={2} l={1}>
-                          <Checkbox name="fss" label="FSS" />
+                          <Checkbox
+                            disabled={edit !== null && !editing}
+                            name="fss"
+                            label="FSS"
+                          />
                         </Grid>
                         <Grid item xs={2} l={1}>
-                          <Checkbox name="csst" label="CSST" />
+                          <Checkbox
+                            disabled={edit !== null && !editing}
+                            name="csst"
+                            label="CSST"
+                          />
                         </Grid>
                       </Grid>
                       <Grid item xs={12}>
@@ -374,10 +522,15 @@ const SalaireModalFormDos = ({
                         </Box>
                       </Grid>
                       <Stack direction="row-reverse" spacing={1} mt={2}>
-                        <Submit variant="contained" size="small">
-                          Enregistrer
+                        <Submit
+                          disabled={edit !== null && !editing}
+                          variant="contained"
+                          size="small"
+                        >
+                          {edit !== null ? "Modifier" : "Enregistrer"}
                         </Submit>
                         <Button
+                          disabled={edit !== null && !editing}
                           type="reset"
                           size="small"
                           startIcon={<UndoIcon />}
@@ -386,7 +539,7 @@ const SalaireModalFormDos = ({
                         </Button>
                         <Button
                           size="small"
-                          onClick={closeModal}
+                          onClick={handleClose}
                           startIcon={<CloseIcon />}
                         >
                           Annuler

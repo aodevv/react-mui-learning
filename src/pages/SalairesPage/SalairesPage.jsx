@@ -48,6 +48,7 @@ const style = {
 
 const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
   const [salaireModal, setSalaireModal] = useState(false);
+  const [salToEdit, setSalToEdit] = useState(null);
   const openSalaire = () => {
     setSalaireModal(true);
   };
@@ -81,7 +82,7 @@ const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
   // });
 
   dossiers.forEach((dos) => {
-    if (dos.status === "actif") dosOnly.push(dos.id);
+    dosOnly.push(dos.id);
   });
 
   let sitesOnly = [];
@@ -123,6 +124,12 @@ const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
     setFilteredSalaires(flatSalaires);
   }, [salaires]);
 
+  useEffect(() => {
+    if (salToEdit !== null) {
+      openSalaire();
+    }
+  }, [salToEdit]);
+
   return (
     <Grid>
       <Card>
@@ -159,7 +166,10 @@ const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <SalairesTable data={filteredSalaires} />
+            <SalairesTable
+              setSalToEdit={setSalToEdit}
+              data={filteredSalaires}
+            />
           </Box>
         </CardContent>
       </Card>
@@ -209,6 +219,8 @@ const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
               dossiers={dossiers}
               salaires={salaires}
               payroll={payroll}
+              setSalToEdit={setSalToEdit}
+              edit={salToEdit}
             />
           </Box>
         </Fade>

@@ -42,6 +42,7 @@ const style = {
 
 const MachineriePage = ({ machinerie, dossiers, sites }) => {
   const [machineriesModal, setMachineriesModal] = useState(false);
+  const [machToEdit, setMachToEdit] = useState(null);
 
   const openMachines = () => {
     setMachineriesModal(true);
@@ -69,8 +70,12 @@ const MachineriePage = ({ machinerie, dossiers, sites }) => {
   //   dosOnly.push(item);
   // });
 
+  // dossiers.forEach((dos) => {
+  //   if (dos.status === "actif") dosOnly.push(dos.id);
+  // });
+
   dossiers.forEach((dos) => {
-    if (dos.status === "actif") dosOnly.push(dos.id);
+    dosOnly.push(dos.id);
   });
 
   let sitesOnly = [];
@@ -112,6 +117,12 @@ const MachineriePage = ({ machinerie, dossiers, sites }) => {
     setFilteredMachineries(flatMachines);
   }, [machinerie]);
 
+  useEffect(() => {
+    if (machToEdit !== null) {
+      openMachines();
+    }
+  }, [machToEdit]);
+
   return (
     <Grid>
       <Card>
@@ -148,7 +159,10 @@ const MachineriePage = ({ machinerie, dossiers, sites }) => {
             </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
-            <MachineriesTable data={filteredMachineries} />
+            <MachineriesTable
+              setMachToEdit={setMachToEdit}
+              data={filteredMachineries}
+            />
           </Box>
         </CardContent>
       </Card>
@@ -166,6 +180,8 @@ const MachineriePage = ({ machinerie, dossiers, sites }) => {
               numDos={dosOnly}
               dossiers={dossiers}
               machineries={machinerie}
+              setMachToEdit={setMachToEdit}
+              edit={machToEdit}
             />
           </Box>
         </Fade>

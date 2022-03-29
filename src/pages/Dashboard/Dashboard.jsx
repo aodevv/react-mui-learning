@@ -369,6 +369,7 @@ const Dashboard = ({
           <Fade in={factureModal}>
             <Box sx={style}>
               <FactureModalFormDos
+                edit={null}
                 prejudices={typePrejudices}
                 closeModal={closeFacture}
                 sites={sites}
@@ -387,6 +388,7 @@ const Dashboard = ({
           <Fade in={salaireModal}>
             <Box sx={style}>
               <SalaireModalFormDos
+                edit={null}
                 prejudices={typePrejudices}
                 closeModal={closeSalaire}
                 sites={sites}
@@ -406,6 +408,7 @@ const Dashboard = ({
           <Fade in={machineriesModal}>
             <Box sx={style}>
               <MachinerieModalFormDos
+                edit={null}
                 prejudices={typePrejudices}
                 closeModal={closeMachines}
                 sites={sites}
@@ -424,6 +427,7 @@ const Dashboard = ({
           <Fade in={sitesModal}>
             <Box sx={style}>
               <SitesModalFormDos
+                edit={null}
                 closeModal={closeSites}
                 sites={sites}
                 numDos={dosOnly}

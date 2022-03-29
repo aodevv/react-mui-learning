@@ -47,6 +47,7 @@
   width: 500px;
   background-color: white;
   padding: 0 16px;
+  filter: sepia(30%) brightness(100%) opacity(100%);
 }
 
 @media only screen and (max-width: 1366px) {

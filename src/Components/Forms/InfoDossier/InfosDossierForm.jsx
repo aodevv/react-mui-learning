@@ -113,7 +113,7 @@ const InfosDossierForm = ({
                   <Box display="flex" alignItems="center">
                     <Box sx={{ width: 80 }}>
                       <Checkbox
-                        disabled={finishedInfos}
+                        disabled={editing || finishedInfos}
                         name="dab"
                         label="DAB"
                       />
@@ -125,7 +125,7 @@ const InfosDossierForm = ({
                   <Box display="flex" alignItems="center">
                     <Box sx={{ width: 80 }}>
                       <Checkbox
-                        disabled={finishedInfos}
+                        disabled={editing || finishedInfos}
                         name="mpt"
                         label="MPT"
                       />
@@ -136,7 +136,11 @@ const InfosDossierForm = ({
                 <Grid item xs={6}>
                   <Box display="flex" alignItems="center">
                     <Box sx={{ width: 80 }}>
-                      <Checkbox disabled={finishedInfos} name="mi" label="MI" />
+                      <Checkbox
+                        disabled={editing || finishedInfos}
+                        name="mi"
+                        label="MI"
+                      />
                     </Box>
                     {values.mi ? <MITotal /> : null}
                   </Box>
@@ -145,7 +149,7 @@ const InfosDossierForm = ({
                   <Box display="flex" alignItems="center">
                     <Box sx={{ width: 80 }}>
                       <Checkbox
-                        disabled={finishedInfos}
+                        disabled={editing || finishedInfos}
                         name="bcg"
                         label="BCG"
                       />

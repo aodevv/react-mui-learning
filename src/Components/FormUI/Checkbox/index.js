@@ -10,7 +10,7 @@ import {
 import { useField, useFormikContext } from "formik";
 
 const CheckBoxWrapper = ({ name, label, legend, ...otherProps }) => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext();
   const [field, meta] = useField(name);
 
   const handleChange = (e) => {
@@ -21,6 +21,7 @@ const CheckBoxWrapper = ({ name, label, legend, ...otherProps }) => {
   const configCheckbox = {
     ...field,
     ...otherProps,
+    checked: values[name],
     onChange: handleChange,
     size: "small",
   };

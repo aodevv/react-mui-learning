@@ -5,7 +5,10 @@ import { salairesTempData } from "../tempdata";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 
-const SalairesTable = ({ data }) => {
+const SalairesTable = ({ data, setSalToEdit }) => {
+  const editSal = ({ id }) => {
+    setSalToEdit(id);
+  };
   return (
     <Box
       sx={{
@@ -35,7 +38,14 @@ const SalairesTable = ({ data }) => {
           columns={salairesColumns}
           pageSize={5}
           rowsPerPageOptions={[5]}
-          checkboxSelection
+          checkboxSelection={false}
+          onRowClick={editSal}
+          sx={{
+            "& .MuiDataGrid-cell:hover": {
+              color: "primary.main",
+              cursor: "pointer",
+            },
+          }}
         />
       </div>
     </Box>

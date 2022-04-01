@@ -105,11 +105,11 @@ const InfosDossierForm = ({
                   />
                 </Grid>
               </Grid>
-              <Grid container mb={1}>
+              {/* <Grid container mb={1}>
                 <Grid item xs={6}>
                   <DateTimePro name="test" label="Bob" />
                 </Grid>
-              </Grid>
+              </Grid> */}
 
               <Grid container spacing={2} mb={1}>
                 <Grid item xs={6}>

@@ -124,7 +124,7 @@ const NouveauDossier = ({
     numero: "",
     date_ev: "",
     date_ouv: "",
-    test: "",
+    //test: null,
     desc_ev: "",
     act_of: "",
     prgm: "",
@@ -150,10 +150,21 @@ const NouveauDossier = ({
     sites: [],
   };
 
+  const formatDate = (date) => {
+    var d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+  };
+
   var today = new Date();
 
-  var date =
-    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  var date = formatDate(today);
 
   const FORM_VALIDATION = Yup.object().shape({
     numero: Yup.string().test(
@@ -163,7 +174,19 @@ const NouveauDossier = ({
     ),
     prgm: Yup.string().required("Champ obligatoire"),
     act_of: Yup.string().required("Champ obligatoire"),
-    test: Yup.date().typeError("Date invalide").required("Darori"),
+    // test: Yup.date()
+    //   .typeError("Date invalide")
+    //   .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
+    //   .required("Darori")
+    //   .when(
+    //     "date_ev",
+    //     (date_ev, Yup) =>
+    //       date_ev &&
+    //       Yup.min(
+    //         date_ev,
+    //         "La date d'ouverture ne peut pas précéder la date d'événement"
+    //       )
+    //   ),
     date_ev: Yup.date()
       .typeError("Date invalide")
       .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
@@ -266,6 +289,7 @@ const NouveauDossier = ({
   };
 
   const resetAndExit = (values, isValid) => {
+    console.log(values);
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -358,7 +382,7 @@ const NouveauDossier = ({
                         variant="contained"
                         loading={loading}
                         onClick={() => {
-                          submitForm();
+                          //submitForm();
                           if (isValid) resetAndExit(values, isValid);
                         }}
                       >

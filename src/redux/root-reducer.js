@@ -12,7 +12,14 @@ import authReducer from "./Auth/Auth.reducer";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"],
+  whitelist: [
+    "auth",
+    "dossiers",
+    "sites",
+    "factures",
+    "salaires",
+    "machineries",
+  ],
 };
 
 const rootReducer = combineReducers({

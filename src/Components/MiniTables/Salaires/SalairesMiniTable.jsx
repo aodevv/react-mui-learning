@@ -18,6 +18,7 @@ const SalairesMiniTable = ({ data, setSalToEdit }) => {
           pageSize={2}
           rowsPerPageOptions={[2]}
           checkboxSelection={false}
+          disableColumnMenu
           onRowClick={editSal}
           sx={{
             "& .MuiDataGrid-cell:hover": {

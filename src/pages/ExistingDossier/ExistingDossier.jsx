@@ -101,6 +101,7 @@ const ExistingDossier = ({
   const [facToEdit, setFacToEdit] = useState(null);
   const [salToEdit, setSalToEdit] = useState(null);
   const [machToEdit, setMachToEdit] = useState(null);
+  const [siteToEdit, setSiteToEdit] = useState(null);
 
   let INITIAL_FORM_STATE;
 
@@ -222,6 +223,12 @@ const ExistingDossier = ({
     }
   }, [machToEdit]);
 
+  useEffect(() => {
+    if (siteToEdit !== null) {
+      openSite();
+    }
+  }, [siteToEdit]);
+
   return (
     <>
       <Formik initialValues={{ ...INITIAL_FORM_STATE }} onSubmit={handleSubmit}>
@@ -304,7 +311,10 @@ const ExistingDossier = ({
                     }
                     btnClick={openSite}
                   >
-                    <SiteConcerneMiniTable data={values.sites} />
+                    <SiteConcerneMiniTable
+                      setSiteToEdit={setSiteToEdit}
+                      data={values.sites}
+                    />
                   </MiniTableWrapper>
                   <Modal
                     open={siteModal}
@@ -317,6 +327,8 @@ const ExistingDossier = ({
                           existing={true}
                           globalValues={values}
                           closeModal={closeSite}
+                          edit={siteToEdit}
+                          setSiteToEdit={setSiteToEdit}
                         />
                       </Box>
                     </Fade>

@@ -16,6 +16,7 @@ const DatePickerPro = ({ name, label, ...otherProps }) => {
 
   const config = {
     ...field,
+    ...otherProps,
     fullWidth: true,
     margin: "dense",
     size: "small",
@@ -34,6 +35,7 @@ const DatePickerPro = ({ name, label, ...otherProps }) => {
       label={label}
       value={dateVal}
       onChange={handleChange}
+      inputFormat="dd/MM/yyyy"
       renderInput={(params) => <TextField {...config} {...params} />}
     />
   );

@@ -18,6 +18,7 @@ const FacturesMiniTable = ({ data, setFacToEdit }) => {
           pageSize={2}
           rowsPerPageOptions={[2]}
           checkboxSelection={false}
+          disableColumnMenu
           onRowClick={editFac}
           sx={{
             "& .MuiDataGrid-cell:hover": {

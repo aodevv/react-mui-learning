@@ -2,6 +2,9 @@ import React, { useState } from "react";
 
 // MUI ICONS
 import { Grid, Button, Typography, Box } from "@mui/material";
+import TextField from "@mui/material/TextField";
+
+import Autocomplete from "@mui/material/Autocomplete";
 
 // FORMIK and YUP
 
@@ -20,8 +23,21 @@ import MPTTotal from "../../../pages/NouveauDossier/Cumulatives/MPTTotal";
 import MITotal from "../../../pages/NouveauDossier/Cumulatives/MIITotal";
 import BCGTotal from "../../../pages/NouveauDossier/Cumulatives/BCGTotal";
 
+import DateTimePro from "../../FormUI/DateTimePro";
+
+const ProgramsTempData = [
+  "Programme 1",
+  "Programme 2",
+  "Programme 3",
+  "Programme 4",
+  "Programme 5",
+  "Programme 6",
+  "Programme 7",
+];
+
 const InfosDossierForm = ({
   values,
+  setFieldValue,
   openSubmit,
   existing,
   isValid,
@@ -62,10 +78,23 @@ const InfosDossierForm = ({
                   />
                 </Grid>
                 <Grid item xs={4}>
-                  <Textfield
+                  <Autocomplete
+                    id="programe"
+                    value={values.prgm}
+                    onChange={(event, newValue) =>
+                      setFieldValue("prgm", newValue)
+                    }
+                    freeSolo
+                    options={ProgramsTempData}
                     disabled={editing || finishedInfos}
-                    name="prgm"
-                    label="Programme"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        margin="dense"
+                        size="small"
+                        label="Programme"
+                      />
+                    )}
                   />
                 </Grid>
                 <Grid item xs={4}>
@@ -74,6 +103,11 @@ const InfosDossierForm = ({
                     name="act_of"
                     label="Acte officiel"
                   />
+                </Grid>
+              </Grid>
+              <Grid container mb={1}>
+                <Grid item xs={6}>
+                  <DateTimePro name="test" label="Bob" />
                 </Grid>
               </Grid>
 

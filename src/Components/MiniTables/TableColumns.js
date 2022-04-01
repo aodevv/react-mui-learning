@@ -406,14 +406,4 @@ export const siteColumns = [
       return `${params.value} %`;
     },
   },
-
-  {
-    field: "actions",
-    type: "actions",
-    width: 80,
-    getActions: (params) => [
-      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem icon={<EditIcon />} label="Modifier" />,
-    ],
-  },
 ];

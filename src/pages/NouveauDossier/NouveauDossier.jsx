@@ -124,9 +124,11 @@ const NouveauDossier = ({
     numero: "",
     date_ev: "",
     date_ouv: "",
+    test: "",
     desc_ev: "",
     act_of: "",
     prgm: "",
+    prgm_test: "flala",
     dab: false,
     mpt: false,
     mi: false,
@@ -161,12 +163,13 @@ const NouveauDossier = ({
     ),
     prgm: Yup.string().required("Champ obligatoire"),
     act_of: Yup.string().required("Champ obligatoire"),
+    test: Yup.date().typeError("Date invalide").required("Darori"),
     date_ev: Yup.date()
-      .typeError("INVALID_DATE")
+      .typeError("Date invalide")
       .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
       .required("Champ obligatoire"),
     date_ouv: Yup.date()
-      .typeError("INVALID_DATE")
+      .typeError("Date invalide")
       .when(
         "date_ev",
         (date_ev, Yup) =>
@@ -313,7 +316,7 @@ const NouveauDossier = ({
         onSubmit={handleSubmit}
       >
         {(formikProps) => {
-          const { values, submitForm, isValid } = formikProps;
+          const { values, submitForm, isValid, setFieldValue } = formikProps;
 
           return (
             <Form>
@@ -333,6 +336,7 @@ const NouveauDossier = ({
                 </AccordionSummary>
                 <AccordionDetails>
                   <InfosDossierForm
+                    setFieldValue={setFieldValue}
                     isValid={isValid}
                     values={values}
                     openSubmit={openSubmit}

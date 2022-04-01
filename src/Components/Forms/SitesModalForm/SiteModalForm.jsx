@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
@@ -6,10 +6,20 @@ import { selectSitesMemo } from "../../../redux/Sites/Sites.selectors";
 import { addSites } from "../../../redux/Sites/Sites.actions";
 
 // ICONS
-import { Container, Grid, Typography, Box, Button, Stack } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Typography,
+  Box,
+  Button,
+  Stack,
+  IconButton,
+} from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
 import InputAdornment from "@mui/material/InputAdornment";
+
+import EditIcon from "@mui/icons-material/Edit";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
@@ -32,6 +42,7 @@ const SiteTempData = {
   "Site 5": "Site 5",
   "Site 6": "Site 6",
   "Site 7": "Site 7",
+  "Site 16": "Site 16",
 };
 
 const SiteModalForm = ({
@@ -40,20 +51,46 @@ const SiteModalForm = ({
   existing,
   allSites,
   addSites,
+  edit,
+  setSiteToEdit,
 }) => {
-  const INITIAL_FORM_STATE = {
-    id: "",
-    site: "",
-    nature: "",
-    part_end: "",
-    pourc_end: 0,
-    type_ret: "",
-    pourc_adm: 0,
-    montant_rec: 0,
-    f_montant_rec: 0,
-    s_montant_rec: 0,
-    m_montant_rec: 0,
-  };
+  const [editing, setEditing] = useState(false);
+  let INITIAL_FORM_STATE;
+  const sites = globalValues.sites.map((site) => site.site);
+
+  if (edit !== null) {
+    let siteId = sites.findIndex(
+      (site, index) => site === globalValues.sites[edit].site
+    );
+    siteId = siteId !== -1 ? siteId : "";
+    INITIAL_FORM_STATE = {
+      id: edit,
+      site: siteId,
+      nature: globalValues.sites[edit].nature,
+      part_end: globalValues.sites[edit].part_end,
+      pourc_end: globalValues.sites[edit].pourc_end,
+      type_ret: globalValues.sites[edit].type_ret,
+      pourc_adm: globalValues.sites[edit].pourc_adm,
+      montant_rec: globalValues.sites[edit].montant_rec,
+      f_montant_rec: globalValues.sites[edit].f_montant_rec,
+      s_montant_rec: globalValues.sites[edit].s_montant_rec,
+      m_montant_rec: globalValues.sites[edit].m_montant_rec,
+    };
+  } else {
+    INITIAL_FORM_STATE = {
+      id: "",
+      site: "",
+      nature: "",
+      part_end: "",
+      pourc_end: 0,
+      type_ret: "",
+      pourc_adm: 0,
+      montant_rec: 0,
+      f_montant_rec: 0,
+      s_montant_rec: 0,
+      m_montant_rec: 0,
+    };
+  }
 
   const FORM_VALIDATION = Yup.object().shape({
     site: Yup.string().required("Champ obligatoire"),
@@ -67,8 +104,6 @@ const SiteModalForm = ({
       .max(100, "Ne peut pas dépasser 100%"),
   });
 
-  const sites = globalValues.sites.map((site) => site.site);
-
   const test = Object.keys(SiteTempData)
     .filter((key) => !sites.includes(key))
     .reduce((obj, key) => {
@@ -80,36 +115,60 @@ const SiteModalForm = ({
     (key) => !sites.includes(SiteTempData[key])
   );
 
+  const filteredSitesEdit = Object.keys(SiteTempData).filter((key) =>
+    sites.includes(SiteTempData[key])
+  );
+
   const handleSubmit = (values) => {
-    let id;
-    console.log(filteredSites);
-    console.log(values);
+    let id, site;
 
     let newSite = globalValues.sites;
+    if (edit !== null) {
+      id = parseInt(edit);
+      site = filteredSitesEdit[parseInt(values.site)];
+    } else {
+      let SiteTempDataArr = [];
+      Object.keys(SiteTempData).forEach((key) =>
+        SiteTempDataArr.push(SiteTempData[key])
+      );
+      const newId = SiteTempDataArr.findIndex(
+        (site) => site === filteredSites[parseInt(values.site)]
+      );
+      site = filteredSites[parseInt(values.site)];
+      id = newId;
+    }
     // const ids = newSite
     //   .map((site) => site.id)
     //   .sort(function (a, b) {
     //     return a - b;
     //   });
-    id = values.site;
+
     values.id = id;
     let newVals = {
       id: id,
-      site: filteredSites[parseInt(values.site)],
+      site: site,
       nature: values.nature,
       part_end: values.part_end,
       pourc_end: values.pourc_end,
       type_ret: values.type_ret,
       pourc_adm: values.pourc_adm,
-      montant_rec: 0,
-      f_montant_rec: 0,
-      s_montant_rec: 0,
-      m_montant_rec: 0,
+      montant_rec: values.montant_rec,
+      f_montant_rec: values.f_montant_rec,
+      s_montant_rec: values.s_montant_rec,
+      m_montant_rec: values.m_montant_rec,
     };
     newSite = Object.assign([], newSite);
-    newSite.push(newVals);
+    if (edit === null) {
+      newSite.push({ ...newVals });
+    } else {
+      const otherSites = newSite.filter((fac) => fac.id !== edit);
+      newSite = [...otherSites, { ...newVals }].sort((a, b) =>
+        a.id >= b.id ? 1 : -1
+      );
+    }
+    //newSite.push(newVals);
     if (existing) {
-      console.log("floo");
+      //console.log("floo");
       let newSites = JSON.parse(JSON.stringify(allSites));
       const dosInt = globalValues.numero;
       Object.keys(newSites).forEach(function (key, index) {
@@ -120,7 +179,17 @@ const SiteModalForm = ({
       addSites(newSites);
     }
     globalValues.sites = newSite;
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setSiteToEdit(null);
     closeModal();
+    setEditing(false);
+  };
+
+  const handleEdit = () => {
+    setEditing(!editing);
   };
   return (
     <>
@@ -137,27 +206,50 @@ const SiteModalForm = ({
 
                 return (
                   <Form>
-                    <Typography variant="h5" mb={1}>
-                      Ajout site
-                    </Typography>
+                    <Box display="flex" justifyContent="space-between">
+                      <Typography variant="h5" mb={1}>
+                        {edit !== null ? "Modification" : "Ajout site"}
+                      </Typography>
+                      {edit !== null ? (
+                        <IconButton
+                          aria-label="delete"
+                          color={!editing ? "default" : "primary"}
+                          size="medium"
+                          onClick={handleEdit}
+                        >
+                          <EditIcon fontSize="inherit" />
+                        </IconButton>
+                      ) : null}
+                    </Box>
 
-                    <Grid container spacing={2}>
+                    <Grid container spacing={1}>
                       <Grid item xs={6}>
                         <Select
                           name="site"
                           label="Site"
-                          options={filteredSites}
+                          disabled={edit !== null}
+                          options={
+                            edit !== null ? filteredSitesEdit : filteredSites
+                          }
                         />
                       </Grid>
 
                       <Grid item xs={6}>
-                        <Textfield name="nature" label="Nature" />
+                        <Textfield
+                          name="nature"
+                          label="Nature"
+                          disabled={edit !== null && !editing}
+                        />
                       </Grid>
                     </Grid>
 
-                    <Grid container spacing={2}>
+                    <Grid container spacing={1}>
                       <Grid item xs={6}>
-                        <Textfield name="part_end" label="Partie endommagée" />
+                        <Textfield
+                          name="part_end"
+                          label="Partie endommagée"
+                          disabled={edit !== null && !editing}
+                        />
                       </Grid>
 
                       <Grid item xs={6}>
@@ -165,6 +257,7 @@ const SiteModalForm = ({
                           name="pourc_end"
                           label="Pourcentage endommagé"
                           type="number"
+                          disabled={edit !== null && !editing}
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="end">%</InputAdornment>
@@ -174,7 +267,11 @@ const SiteModalForm = ({
                       </Grid>
                     </Grid>
                     <Grid item xs={12}>
-                      <Textfield name="type_ret" label="Type rétabli" />
+                      <Textfield
+                        name="type_ret"
+                        label="Type rétabli"
+                        disabled={edit !== null && !editing}
+                      />
                     </Grid>
                     {/* <Grid item xs={6} mt={1}>
                       <Box>
@@ -191,6 +288,7 @@ const SiteModalForm = ({
                           name="pourc_adm"
                           label="Pourcentage admissible"
                           type="number"
+                          disabled={edit !== null && !editing}
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="end">%</InputAdornment>
@@ -221,7 +319,7 @@ const SiteModalForm = ({
                       </Button>
                       <Button
                         size="small"
-                        onClick={closeModal}
+                        onClick={handleClose}
                         startIcon={<CloseIcon />}
                       >
                         Annuler

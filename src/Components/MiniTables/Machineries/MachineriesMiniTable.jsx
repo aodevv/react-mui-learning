@@ -17,6 +17,7 @@ const MachineriesMiniTable = ({ data, setMachToEdit }) => {
           pageSize={2}
           rowsPerPageOptions={[2]}
           checkboxSelection={false}
+          disableColumnMenu
           onRowClick={editMach}
           sx={{
             "& .MuiDataGrid-cell:hover": {

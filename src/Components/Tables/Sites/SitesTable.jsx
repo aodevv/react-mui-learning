@@ -39,6 +39,7 @@ const SitesTable = ({ data, setSiteToEdit }) => {
             pageSize={10}
             rowsPerPageOptions={[10]}
             checkboxSelection={false}
+            disableColumnMenu
             onRowClick={editSite}
             sx={{
               "& .MuiDataGrid-cell:hover": {

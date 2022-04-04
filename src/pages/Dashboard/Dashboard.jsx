@@ -211,9 +211,9 @@ const Dashboard = ({
             </Box>
           </Grid>
           <Grid container item xs={12} lg={4} spacing={1}>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <Grid container display="flex">
-                <Grid item xs={11}>
+                <Grid item xs={10}>
                   <MyCard
                     onClick={() => navigate("/dossier")}
                     bgColor="#FEBE103b"
@@ -225,7 +225,34 @@ const Dashboard = ({
                   </MyCard>
                 </Grid>
 
-                <Grid item xs={1}>
+                <Grid item xs={2}>
+                  <MyCard
+                    onClick={() => navigate("/nouveau_dossier")}
+                    bgColor="#FEBE103b"
+                    textColor="#feb310"
+                    bl
+                    title=""
+                  >
+                    <AddIcon />
+                  </MyCard>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={6}>
+              <Grid container display="flex">
+                <Grid item xs={10}>
+                  <MyCard
+                    onClick={() => navigate("/dossier")}
+                    bgColor="#A0DE1F3b"
+                    textColor="#feb310"
+                    br
+                    title="Finance"
+                  >
+                    <FolderOpenOutlinedIcon />
+                  </MyCard>
+                </Grid>
+
+                <Grid item xs={2}>
                   <MyCard
                     onClick={() => navigate("/nouveau_dossier")}
                     bgColor="#FEBE103b"

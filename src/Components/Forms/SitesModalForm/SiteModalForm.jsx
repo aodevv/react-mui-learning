@@ -54,11 +54,19 @@ const SiteModalForm = ({
   edit,
   setSiteToEdit,
 }) => {
+  console.log(globalValues);
   const [editing, setEditing] = useState(false);
   let INITIAL_FORM_STATE;
   const sites = globalValues.sites.map((site) => site.site);
 
   if (edit !== null) {
+    const sitesArr = Object.keys(SiteTempData).map((key) => SiteTempData[key]);
+    console.log(sitesArr);
+    console.log(sites);
+    console.log(edit);
+    console.log(globalValues.sites[edit]);
+    let siteName = sitesArr[edit];
+    console.log(siteName);
     let siteId = sites.findIndex(
       (site, index) => site === globalValues.sites[edit].site
     );

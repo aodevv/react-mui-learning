@@ -116,6 +116,7 @@ const NouveauDossier = ({
   const [facToEdit, setFacToEdit] = useState(null);
   const [salToEdit, setSalToEdit] = useState(null);
   const [machToEdit, setMachToEdit] = useState(null);
+  const [siteToEdit, setSiteToEdit] = useState(null);
 
   const dosIds = dossiers.map((dos) => dos.id);
 
@@ -332,6 +333,12 @@ const NouveauDossier = ({
     }
   }, [machToEdit]);
 
+  useEffect(() => {
+    if (siteToEdit !== null) {
+      openSite();
+    }
+  }, [siteToEdit]);
+
   return (
     <>
       <Formik
@@ -421,7 +428,10 @@ const NouveauDossier = ({
                     }
                     btnClick={openSite}
                   >
-                    <SiteConcerneMiniTable data={values.sites} />
+                    <SiteConcerneMiniTable
+                      setSiteToEdit={setSiteToEdit}
+                      data={values.sites}
+                    />
                   </MiniTableWrapper>
                   <Modal
                     open={siteModal}
@@ -433,6 +443,8 @@ const NouveauDossier = ({
                         <SiteModalForm
                           globalValues={values}
                           closeModal={closeSite}
+                          setSiteToEdit={setSiteToEdit}
+                          edit={siteToEdit}
                           existing
                         />
                       </Box>

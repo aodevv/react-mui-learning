@@ -142,7 +142,7 @@ const DepositModal = ({
                 </Grid>
                 <Grid item xs={6}>
                   <MontantBox percent={100 - (reste / MA) * 100}>
-                    <Typography fontSize={20}>Reste</Typography>
+                    <Typography fontSize={20}>Balance</Typography>
                     <Typography variant="h5">
                       <b>{`$ ${ins1000Sep(formatNum(reste))}`}</b>
                     </Typography>

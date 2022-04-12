@@ -5,6 +5,9 @@ import { createStructuredSelector } from "reselect";
 import { selectSalairesMemo } from "../../../redux/Salaires/salaires.selectors";
 import { addSalaires } from "../../../redux/Salaires/salaires.actions";
 
+import { selectDossiers } from "../../../redux/DossierInfos/infosDossier.selectors";
+import { addInfosDossier } from "../../../redux/DossierInfos/infosDossier.actions";
+
 // ICONS
 import {
   Container,
@@ -54,6 +57,9 @@ const SalaireModalForm = ({
   payroll,
   edit,
   setSalToEdit,
+  addInfosDossier,
+  dossiers,
+  dosToEdit,
 }) => {
   const allowed = [];
   const [editing, setEditing] = useState(false);
@@ -77,7 +83,7 @@ const SalaireModalForm = ({
     payrollNameList.push(`${pay.nom} ${pay.prenom}`)
   );
 
-  let INITIAL_FORM_STATE;
+  let INITIAL_FORM_STATE, oldMontant;
 
   if (edit !== null) {
     let siteId = sites.findIndex(
@@ -108,6 +114,7 @@ const SalaireModalForm = ({
       fss: globalValues.salaires[edit].fss,
       csst: globalValues.salaires[edit].csst,
     };
+    oldMontant = globalValues.salaires[edit].montant_rec;
   } else {
     INITIAL_FORM_STATE = {
       curSal: "",
@@ -185,6 +192,23 @@ const SalaireModalForm = ({
       .sort(function (a, b) {
         return a - b;
       });
+
+    //ADD total to dossier
+    const dosCopy = JSON.parse(JSON.stringify(dossiers));
+    const dosId = dosToEdit.id;
+    if (edit === null) dosToEdit.MR = dosToEdit.MR + values.montant_rec;
+    else {
+      const diff = values.montant_rec - oldMontant;
+      dosToEdit.MR = dosToEdit.MR + diff;
+    }
+
+    const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
+    const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
+      a.id >= b.id ? 1 : -1
+    );
+    addInfosDossier(newDoses);
+    ////////////
+
     if (values.type === "dab") {
       globalValues.sites[values.site_con].montant_rec =
         globalValues.sites[values.site_con].montant_rec + values.montant_rec;
@@ -459,14 +483,16 @@ const SalaireModalForm = ({
                         >
                           {edit !== null ? "Modifier" : "Enregistrer"}
                         </Submit>
-                        <Button
-                          onClick={handleReset}
-                          size="small"
-                          disabled={edit !== null && !editing}
-                          startIcon={<UndoIcon />}
-                        >
-                          Réinitialiser
-                        </Button>
+                        {edit === null ? (
+                          <Button
+                            type="reset"
+                            size="small"
+                            disabled={edit !== null && !editing}
+                            startIcon={<UndoIcon />}
+                          >
+                            Réinitialiser
+                          </Button>
+                        ) : null}
                         <Button
                           size="small"
                           onClick={handleClose}
@@ -489,10 +515,12 @@ const SalaireModalForm = ({
 
 const mapStateToProps = createStructuredSelector({
   salaires: selectSalairesMemo,
+  dossiers: selectDossiers,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addSalaires: (newSals) => dispatch(addSalaires(newSals)),
+  addInfosDossier: (newInfos) => dispatch(addInfosDossier(newInfos)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SalaireModalForm);

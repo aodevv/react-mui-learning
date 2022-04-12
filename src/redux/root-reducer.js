@@ -14,11 +14,7 @@ const persistConfig = {
   storage,
   whitelist: [
     "auth",
-    "dossiers",
-    "factures",
-    "sites",
-    "salaires",
-    "machineries",
+
   ],
 };
 

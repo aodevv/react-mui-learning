@@ -66,7 +66,7 @@ const SalaireModalFormDos = ({
   var date =
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
-  let INITIAL_FORM_STATE;
+  let INITIAL_FORM_STATE, oldMontant;
   if (edit !== null) {
     var [dosSalEdit, idSalEdit] = edit.split(";");
     idSalEdit = parseInt(idSalEdit);
@@ -100,6 +100,7 @@ const SalaireModalFormDos = ({
       fss: salVals.fss,
       csst: salVals.csst,
     };
+    oldMontant = salVals.montant_rec;
   } else {
     INITIAL_FORM_STATE = {
       curSal: "",
@@ -235,26 +236,26 @@ const SalaireModalFormDos = ({
     const siteId = siteToAdd;
 
     const dosToEdit = dosCopy.find((dossier) => dossier.id === dosId);
-    if (edit === null) {
-      dosToEdit.MR = dosToEdit.MR + values.montant_rec;
+    const diff =
+      edit === null ? values.montant_rec : values.montant_rec - oldMontant;
 
-      const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
-      addInfosDossier(
-        [...otherDoses, dosToEdit].sort((a, b) => (a.id >= b.id ? 1 : -1))
-      );
+    dosToEdit.MR = dosToEdit.MR + diff;
 
-      if (values.type === "dab") {
-        const siteDos = sitesCopy[dosId];
-        const siteToEdit = siteDos.find((site) => site.site === siteId);
-        const otherSites = siteDos.filter((site) => site.site !== siteId);
-        siteToEdit.s_montant_rec =
-          siteToEdit.s_montant_rec + values.montant_rec;
-        siteToEdit.montant_rec = siteToEdit.montant_rec + values.montant_rec;
-        Object.keys(sitesCopy).forEach((item, key) => {
-          if (key === dosId) sitesCopy[key] = [...otherSites, siteToEdit];
-        });
-        addSites(sitesCopy);
-      }
+    const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
+    addInfosDossier(
+      [...otherDoses, dosToEdit].sort((a, b) => (a.id >= b.id ? 1 : -1))
+    );
+
+    if (values.type === "dab") {
+      const siteDos = sitesCopy[dosId];
+      const siteToEdit = siteDos.find((site) => site.site === siteId);
+      const otherSites = siteDos.filter((site) => site.site !== siteId);
+      siteToEdit.s_montant_rec = siteToEdit.s_montant_rec + diff;
+      siteToEdit.montant_rec = siteToEdit.montant_rec + diff;
+      Object.keys(sitesCopy).forEach((item, key) => {
+        if (key === dosId) sitesCopy[key] = [...otherSites, siteToEdit];
+      });
+      addSites(sitesCopy);
     }
 
     resetForm();
@@ -529,14 +530,16 @@ const SalaireModalFormDos = ({
                         >
                           {edit !== null ? "Modifier" : "Enregistrer"}
                         </Submit>
-                        <Button
-                          disabled={edit !== null && !editing}
-                          type="reset"
-                          size="small"
-                          startIcon={<UndoIcon />}
-                        >
-                          Réinitialiser
-                        </Button>
+                        {edit === null ? (
+                          <Button
+                            type="reset"
+                            size="small"
+                            disabled={edit !== null && !editing}
+                            startIcon={<UndoIcon />}
+                          >
+                            Réinitialiser
+                          </Button>
+                        ) : null}
                         <Button
                           size="small"
                           onClick={handleClose}

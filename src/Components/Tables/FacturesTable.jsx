@@ -22,11 +22,12 @@ const FacturesTable = ({ data, setFacToEdit }) => {
           fontWeight: "600",
           textTransform: "uppercase",
         },
-        "& .super-app.occ": {
-          backgroundColor: "rgba(224, 183, 60, 0.55)",
-          color: "#1a3e72",
+        "& .dosId": {
+          backgroundColor: "rgba(224, 183, 60, 0.308)",
+          color: "#091424",
           fontWeight: "600",
         },
+
         "& .super-app.dab": {
           color: "#d30c0c",
           fontWeight: "600",

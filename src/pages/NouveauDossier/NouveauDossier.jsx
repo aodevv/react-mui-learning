@@ -389,7 +389,7 @@ const NouveauDossier = ({
                         variant="contained"
                         loading={loading}
                         onClick={() => {
-                          //submitForm();
+                          submitForm();
                           if (isValid) resetAndExit(values, isValid);
                         }}
                       >

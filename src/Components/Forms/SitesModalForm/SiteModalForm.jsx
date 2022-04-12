@@ -208,6 +208,7 @@ const SiteModalForm = ({
               initialValues={{ ...INITIAL_FORM_STATE }}
               validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
+              validateOnMount
             >
               {(formikProps) => {
                 const { values, isValid } = formikProps;
@@ -322,13 +323,16 @@ const SiteModalForm = ({
                       >
                         Enregistrer
                       </Submit>
-                      <Button
-                        type="reset"
-                        size="small"
-                        startIcon={<UndoIcon />}
-                      >
-                        Réinitialiser
-                      </Button>
+                      {edit === null ? (
+                        <Button
+                          type="reset"
+                          size="small"
+                          startIcon={<UndoIcon />}
+                        >
+                          Réinitialiser
+                        </Button>
+                      ) : null}
+
                       <Button
                         size="small"
                         onClick={handleClose}

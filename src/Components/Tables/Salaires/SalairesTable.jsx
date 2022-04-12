@@ -29,6 +29,11 @@ const SalairesTable = ({ data, setSalToEdit }) => {
           color: "#d30c0c",
           fontWeight: "600",
         },
+        "& .dosId": {
+          backgroundColor: "rgba(224, 183, 60, 0.308)",
+          color: "#091424",
+          fontWeight: "600",
+        },
       }}
     >
       <div style={{ flexGrow: 1 }}>

@@ -32,6 +32,7 @@ const FilesTable = ({
   addInfosDossier,
   setFilteredDossiers,
   dossiers,
+  pageSize,
 }) => {
   const [deposit, setDeposit] = useState(false);
   const [dosId, setDosId] = useState(0);
@@ -116,6 +117,7 @@ const FilesTable = ({
     {
       field: "id",
       headerName: "Numéro",
+      cellClassName: "dosId",
     },
     {
       field: "status",
@@ -153,6 +155,7 @@ const FilesTable = ({
       headerName: "Montant réclamé",
       type: "number",
       minWidth: 140,
+      cellClassName: "Bold",
       valueFormatter: (params) => {
         const valueFormatted = ins1000Sep(formatNum(params.value));
         return `$ ${valueFormatted}`;
@@ -167,15 +170,60 @@ const FilesTable = ({
         const valueFormatted = ins1000Sep(formatNum(params.value));
         return `$ ${valueFormatted}`;
       },
+      renderCell: (cellValues) => {
+        const perc = (cellValues.value / cellValues.row.MR) * 100;
+        return (
+          <Box
+            sx={{
+              color: "blue",
+              fontSize: 16,
+              fontWeight: "bold",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row-reverse",
+              background: `linear-gradient(270deg, rgba(255,255,255,0) ${
+                100 - perc
+              }%, rgba(0,0,255,0.2) ${100 - perc}%);`,
+            }}
+          >
+            {`${cellValues.formattedValue}`}
+          </Box>
+        );
+      },
     },
     {
       field: "MV",
       headerName: "Montant vérsé",
       type: "number",
       width: 140,
+
       valueFormatter: (params) => {
         const valueFormatted = ins1000Sep(formatNum(params.value));
         return `$ ${valueFormatted}`;
+      },
+      renderCell: (cellValues) => {
+        const perc = (cellValues.value / cellValues.row.MA) * 100;
+        return (
+          <Box
+            sx={{
+              color: "red",
+              fontSize: 16,
+              fontWeight: "bold",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row-reverse",
+              background: `linear-gradient(270deg, rgba(255,255,255,0) ${
+                100 - perc
+              }%, rgba(255,0,255,0.2) ${100 - perc}%);`,
+            }}
+          >
+            {`${cellValues.formattedValue}`}
+          </Box>
+        );
       },
     },
     {
@@ -217,6 +265,17 @@ const FilesTable = ({
             fontWeight: "600",
             textTransform: "uppercase",
           },
+          "& .dosId": {
+            backgroundColor: "rgba(224, 183, 60, 0.308)",
+            color: "#091424",
+            fontWeight: "600",
+          },
+          "& .Bold": {
+            backgroundColor: "rgba(66, 66, 66, 0.123)",
+            color: "#091424",
+            fontWeight: "600",
+            fontSize: 16,
+          },
         }}
       >
         <div style={{ flexGrow: 1 }}>
@@ -224,8 +283,8 @@ const FilesTable = ({
             autoHeight
             rows={data}
             columns={filesTableColumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
+            pageSize={pageSize}
+            rowsPerPageOptions={[pageSize]}
             checkboxSelection={false}
             disableColumnMenu
             onRowClick={navigateToDos}

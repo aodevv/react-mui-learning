@@ -16,6 +16,9 @@ import MontantBox from "./MontantBox";
 import CloseIcon from "@mui/icons-material/Close";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 const style = {
   position: "absolute",
   top: "50%",
@@ -47,6 +50,7 @@ const DepositModal = ({
   const [MV, setMV] = useState(0);
   const [reste, setRest] = useState(0);
   const [mv, setMv] = useState(0);
+  const [isVerser, setIsVerser] = useState(true);
 
   const depositMoney = () => {
     const dosCopy = JSON.parse(JSON.stringify(dossiers));
@@ -64,7 +68,12 @@ const DepositModal = ({
       setFilteredDossiers(newDoses);
     }
 
+    setIsVerser(true);
     closeDeposit();
+  };
+
+  const toggleDepositAction = () => {
+    setIsVerser(!isVerser);
   };
 
   const INITIAL_FORM_STATE = {
@@ -72,13 +81,16 @@ const DepositModal = ({
   };
   const FORM_VALIDATION = Yup.object().shape({
     aVerse: Yup.number()
-      .test(
-        "first",
-        "Montant admissible dépassé !",
-        (value) => value <= MA - MV
+      .test("first", "Montant admissible dépassé !", (value) =>
+        isVerser ? value <= MA - MV : value <= MV
       )
       .min(1, "Valeur inferieur ou égale à 0 !"),
   });
+
+  const handleClose = () => {
+    closeDeposit();
+    setIsVerser(true);
+  };
 
   useEffect(() => {
     setMA(dosToEdit.MA);
@@ -166,17 +178,30 @@ const DepositModal = ({
                 return (
                   <Form>
                     <Box mt={2} mb={2}>
-                      <Grid item xs={8} margin="auto">
-                        <TextFieldWrapper
-                          name="aVerse"
-                          label="Montant à vérsé"
-                          type="number"
-                          setRest={setRest}
-                          setMv={setMv}
-                          MA={MA}
-                          MV={MV}
-                        />
+                      <Grid container spacing={1} alignItems="center">
+                        <Grid item xs={8} ml={13}>
+                          <TextFieldWrapper
+                            name="aVerse"
+                            label={isVerser ? "Montant à vérsé" : "Ajustement"}
+                            type="number"
+                            setRest={setRest}
+                            setMv={setMv}
+                            MA={MA}
+                            MV={MV}
+                            isVerser={isVerser}
+                          />
+                        </Grid>
+                        <Grid item xs={1}>
+                          <IconButton
+                            onClick={toggleDepositAction}
+                            aria-label="toggle"
+                            size="large"
+                          >
+                            {isVerser ? <AddIcon /> : <RemoveIcon />}
+                          </IconButton>
+                        </Grid>
                       </Grid>
+
                       <Box mt={1}></Box>
                       <Grid
                         item
@@ -186,7 +211,7 @@ const DepositModal = ({
                         flexDirection="row-reverse"
                       >
                         <Button
-                          onClick={closeDeposit}
+                          onClick={handleClose}
                           size="small"
                           startIcon={<CloseIcon />}
                           color="error"
@@ -201,7 +226,7 @@ const DepositModal = ({
                           disabled={MV === MA || !isValid}
                           onClick={submitForm}
                         >
-                          Vérser
+                          {isVerser ? "Vérser" : "Ajustementer"}
                         </Button>
                       </Grid>
                     </Box>
@@ -216,7 +241,15 @@ const DepositModal = ({
   );
 };
 
-const TextFieldWrapper = ({ name, setRest, setMv, MA, MV, ...otherProps }) => {
+const TextFieldWrapper = ({
+  name,
+  setRest,
+  setMv,
+  MA,
+  MV,
+  isVerser,
+  ...otherProps
+}) => {
   const [field, meta] = useField(name);
   const { values } = useFormikContext();
   const { aVerse } = values;
@@ -235,13 +268,25 @@ const TextFieldWrapper = ({ name, setRest, setMv, MA, MV, ...otherProps }) => {
   }
 
   useEffect(() => {
-    if (aVerse >= 0 && aVerse <= MA - MV) {
-      if (MV + aVerse > MA) {
-        setMv(MA);
-        setRest(0);
-      } else {
-        setRest(MA - MV - aVerse);
-        setMv(MV + aVerse);
+    if (isVerser) {
+      if (aVerse >= 0 && aVerse <= MA - MV) {
+        if (MV + aVerse > MA) {
+          setMv(MA);
+          setRest(0);
+        } else {
+          setRest(MA - MV - aVerse);
+          setMv(MV + aVerse);
+        }
+      }
+    } else {
+      if (aVerse >= 0 && aVerse <= MV) {
+        if (aVerse > MV) {
+          setMv(MA);
+          setRest(0);
+        } else {
+          setRest(MA - MV + aVerse);
+          setMv(MV - aVerse);
+        }
       }
     }
   }, [aVerse]);

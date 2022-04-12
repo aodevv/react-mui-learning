@@ -134,6 +134,7 @@ export const facturesColumns = [
     field: "dos",
     headerName: "Dossier",
     width: 100,
+    cellClassName: "dosId",
   },
   {
     field: "fournis",
@@ -208,6 +209,7 @@ export const machineriesColumns = [
     field: "dos",
     headerName: "Dossier",
     width: 100,
+    cellClassName: "dosId",
   },
   {
     field: "type",
@@ -307,6 +309,7 @@ export const salairesColumns = [
     field: "dos",
     headerName: "Dossier",
     width: 100,
+    cellClassName: "dosId",
   },
   {
     field: "type",
@@ -586,7 +589,8 @@ export const sitesColumns = [
   {
     field: "dos",
     headerName: "Dossier",
-    width: 80,
+    width: 100,
+    cellClassName: "dosId",
   },
   {
     field: "site",

@@ -72,6 +72,7 @@ const FileManager = ({ dossiers }) => {
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
             <FilesTable
+              pageSize={10}
               data={filteredDossiers}
               setFilteredDossiers={setFilteredDossiers}
             />

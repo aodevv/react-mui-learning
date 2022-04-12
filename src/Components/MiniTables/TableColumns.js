@@ -3,6 +3,8 @@ import { ins1000Sep, formatNum } from "./TableColumnsUtils";
 
 import { GridActionsCellItem } from "@mui/x-data-grid";
 
+import Box from "@mui/material/Box";
+
 import { renderCellExpand } from "./CellExpand";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -328,6 +330,25 @@ export const siteColumns = [
     valueFormatter: (params) => {
       return `${params.value} %`;
     },
+    renderCell: (cellValues) => {
+      return (
+        <Box
+          sx={{
+            color: "blue",
+            fontSize: 18,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            background: `linear-gradient(270deg, rgba(255,255,255,0) ${
+              100 - cellValues.value
+            }%, rgba(0,0,255,0.2) ${100 - cellValues.value}%);`,
+          }}
+        >
+          {`${cellValues.value} %`}
+        </Box>
+      );
+    },
   },
   {
     field: "type_ret",
@@ -382,6 +403,25 @@ export const siteColumns = [
     minWidth: 100,
     valueFormatter: (params) => {
       return `${params.value} %`;
+    },
+    renderCell: (cellValues) => {
+      return (
+        <Box
+          sx={{
+            color: "red",
+            fontSize: 18,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            background: `linear-gradient(270deg, rgba(255,255,255,0) ${
+              100 - cellValues.value
+            }%, rgba(255,0,0,0.2) ${100 - cellValues.value}%);`,
+          }}
+        >
+          {`${cellValues.value} %`}
+        </Box>
+      );
     },
   },
 ];

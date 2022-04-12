@@ -47,13 +47,6 @@ const FilesTable = ({
     setDeposit(true);
   };
 
-  const depositToDos = (id) => {
-    const dosCopy = JSON.parse(JSON.stringify(dossiers));
-    setDosId(id);
-    setDosToEdit(dosCopy.find((dossier) => dossier.id === id));
-    openDeposit();
-  };
-
   const changeStatus = (id) => {
     const dosCopy = JSON.parse(JSON.stringify(dossiers));
 
@@ -164,33 +157,75 @@ const FilesTable = ({
       field: "MR",
       headerName: "Montant réclamé",
       type: "number",
-      align: "center",
       minWidth: 140,
       valueFormatter: (params) => {
         const valueFormatted = ins1000Sep(formatNum(params.value));
         return `$ ${valueFormatted}`;
       },
+      cellClassName: "Bold",
     },
     {
       field: "MA",
       headerName: "Montant admissible",
       type: "number",
-      align: "center",
       width: 140,
       valueFormatter: (params) => {
         const valueFormatted = ins1000Sep(formatNum(params.value));
         return `$ ${valueFormatted}`;
+      },
+      renderCell: (cellValues) => {
+        const perc = (cellValues.value / cellValues.row.MR) * 100;
+        return (
+          <Box
+            sx={{
+              color: "blue",
+              fontSize: 16,
+              fontWeight: "bold",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row-reverse",
+              background: `linear-gradient(270deg, rgba(255,255,255,0) ${
+                100 - perc
+              }%, rgba(0,0,255,0.2) ${100 - perc}%);`,
+            }}
+          >
+            {`${cellValues.formattedValue}`}
+          </Box>
+        );
       },
     },
     {
       field: "MV",
       headerName: "Montant vérsé",
       type: "number",
-      align: "center",
       width: 140,
       valueFormatter: (params) => {
         const valueFormatted = ins1000Sep(formatNum(params.value));
         return `$ ${valueFormatted}`;
+      },
+      renderCell: (cellValues) => {
+        const perc = (cellValues.value / cellValues.row.MA) * 100;
+        return (
+          <Box
+            sx={{
+              color: "red",
+              fontSize: 16,
+              fontWeight: "bold",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row-reverse",
+              background: `linear-gradient(270deg, rgba(255,255,255,0) ${
+                100 - perc
+              }%, rgba(255,0,255,0.2) ${100 - perc}%);`,
+            }}
+          >
+            {`${cellValues.formattedValue}`}
+          </Box>
+        );
       },
     },
     {
@@ -205,8 +240,15 @@ const FilesTable = ({
     },
   ];
 
+  const depositToDos = (id) => {
+    const dosCopy = JSON.parse(JSON.stringify(dossiers));
+    setDosId(id);
+    setDosToEdit(dosCopy.find((dossier) => dossier.id === id));
+    openDeposit();
+  };
+
   const navigateToDos = ({ id }) => {
-    navigate(`/dossier/${id}`);
+    depositToDos(id);
   };
 
   return (
@@ -232,6 +274,12 @@ const FilesTable = ({
             fontWeight: "600",
             textTransform: "uppercase",
           },
+          "& .Bold": {
+            backgroundColor: "rgba(66, 66, 66, 0.123)",
+            color: "#091424",
+            fontWeight: "600",
+            fontSize: 16,
+          },
         }}
       >
         <div style={{ flexGrow: 1 }}>
@@ -239,10 +287,11 @@ const FilesTable = ({
             autoHeight
             rows={data}
             columns={filesTableColumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
             checkboxSelection={false}
             disableColumnMenu
+            onRowClick={navigateToDos}
             sx={{
               "& .MuiDataGrid-cell:hover": {
                 color: "primary.main",

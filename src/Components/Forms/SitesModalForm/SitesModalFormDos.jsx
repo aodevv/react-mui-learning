@@ -300,14 +300,16 @@ const SitesModalFormDos = ({
                       >
                         {edit !== null ? "Modifier" : "Enregistrer"}
                       </Submit>
-                      <Button
-                        disabled={edit !== null && !editing}
-                        type="reset"
-                        size="small"
-                        startIcon={<UndoIcon />}
-                      >
-                        Réinitialiser
-                      </Button>
+                      {edit === null ? (
+                        <Button
+                          type="reset"
+                          size="small"
+                          disabled={edit !== null && !editing}
+                          startIcon={<UndoIcon />}
+                        >
+                          Réinitialiser
+                        </Button>
+                      ) : null}
                       <Button
                         size="small"
                         onClick={handleClose}

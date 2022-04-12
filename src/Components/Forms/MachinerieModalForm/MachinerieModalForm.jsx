@@ -5,6 +5,9 @@ import { createStructuredSelector } from "reselect";
 import { selectMachineriesMemo } from "../../../redux/Machineries/machineries.selectors";
 import { addMachinerie } from "../../../redux/Machineries/machineries.actions";
 
+import { selectDossiers } from "../../../redux/DossierInfos/infosDossier.selectors";
+import { addInfosDossier } from "../../../redux/DossierInfos/infosDossier.actions";
+
 // ICONS
 import {
   Container,
@@ -42,6 +45,9 @@ const MachinerieModalForm = ({
   existing,
   edit,
   setMachToEdit,
+  addInfosDossier,
+  dossiers,
+  dosToEdit,
 }) => {
   const [editing, setEditing] = useState(false);
   const allowed = [];
@@ -58,7 +64,7 @@ const MachinerieModalForm = ({
     }, {});
   const sites = globalValues.sites.map((site) => site.site);
 
-  let INITIAL_FORM_STATE;
+  let INITIAL_FORM_STATE, oldMontant;
   if (edit !== null) {
     let siteId = sites.findIndex(
       (site, index) => site === globalValues.machineries[edit].site_con
@@ -76,6 +82,7 @@ const MachinerieModalForm = ({
       taux_fonc: globalValues.machineries[edit].taux_fonc,
       cout: globalValues.machineries[edit].cout,
     };
+    oldMontant = globalValues.machineries[edit].cout;
   } else {
     INITIAL_FORM_STATE = {
       id: "",
@@ -114,6 +121,23 @@ const MachinerieModalForm = ({
       .sort(function (a, b) {
         return a - b;
       });
+
+    //ADD total to dossier
+    const dosCopy = JSON.parse(JSON.stringify(dossiers));
+    const dosId = dosToEdit.id;
+    if (edit === null) dosToEdit.MR = dosToEdit.MR + values.montant_rec;
+    else {
+      const diff = values.cout - oldMontant;
+      dosToEdit.MR = dosToEdit.MR + diff;
+    }
+
+    const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
+    const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
+      a.id >= b.id ? 1 : -1
+    );
+    addInfosDossier(newDoses);
+    ////////////
+
     if (values.type === "dab") {
       globalValues.sites[values.site_con].montant_rec =
         globalValues.sites[values.site_con].montant_rec + values.cout;
@@ -171,6 +195,7 @@ const MachinerieModalForm = ({
               initialValues={{ ...INITIAL_FORM_STATE }}
               validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
+              validateOnMount
             >
               {(formikProps) => {
                 const { values, isValid } = formikProps;
@@ -291,14 +316,16 @@ const MachinerieModalForm = ({
                       >
                         {edit !== null ? "Modifier" : "Enregistrer"}
                       </Submit>
-                      <Button
-                        type="reset"
-                        size="small"
-                        disabled={edit !== null && !editing}
-                        startIcon={<UndoIcon />}
-                      >
-                        Réinitialiser
-                      </Button>
+                      {edit === null ? (
+                        <Button
+                          type="reset"
+                          size="small"
+                          disabled={edit !== null && !editing}
+                          startIcon={<UndoIcon />}
+                        >
+                          Réinitialiser
+                        </Button>
+                      ) : null}
                       <Button
                         size="small"
                         onClick={handleClose}
@@ -320,10 +347,12 @@ const MachinerieModalForm = ({
 
 const mapStateToProps = createStructuredSelector({
   machineries: selectMachineriesMemo,
+  dossiers: selectDossiers,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addMachinerie: (newMachs) => dispatch(addMachinerie(newMachs)),
+  addInfosDossier: (newInfos) => dispatch(addInfosDossier(newInfos)),
 });
 
 export default connect(

@@ -5,6 +5,9 @@ import { createStructuredSelector } from "reselect";
 import { selectFacturesMemo } from "../../../redux/Factures/Factures.selectors";
 import { addFactures } from "../../../redux/Factures/Factures.actions";
 
+import { selectDossiers } from "../../../redux/DossierInfos/infosDossier.selectors";
+import { addInfosDossier } from "../../../redux/DossierInfos/infosDossier.actions";
+
 // FORMIK and YUP
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -41,11 +44,14 @@ const FactureModalForm = ({
   addFactures,
   edit,
   setFacToEdit,
+  addInfosDossier,
+  dossiers,
+  dosToEdit,
 }) => {
   const [editing, setEditing] = useState(false);
   const sites = globalValues.sites.map((site) => site.site);
 
-  let INITIAL_FORM_STATE;
+  let INITIAL_FORM_STATE, oldMontant;
   if (edit !== null) {
     let siteId = sites.findIndex(
       (site, index) => site === globalValues.factures[edit].site_con
@@ -62,6 +68,7 @@ const FactureModalForm = ({
       site_con: siteId,
       tax: globalValues.factures[edit].tax,
     };
+    oldMontant = globalValues.factures[edit].montant_rec;
   } else {
     INITIAL_FORM_STATE = {
       id: "",
@@ -118,11 +125,26 @@ const FactureModalForm = ({
       .sort(function (a, b) {
         return a - b;
       });
+
+    //ADD total to dossier
+    const diff =
+      edit === null ? values.montant_rec : values.montant_rec - oldMontant;
+    const dosCopy = JSON.parse(JSON.stringify(dossiers));
+    const dosId = dosToEdit.id;
+    dosToEdit.MR = dosToEdit.MR + diff;
+
+    const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
+    const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
+      a.id >= b.id ? 1 : -1
+    );
+    addInfosDossier(newDoses);
+    ////////////
+
     if (values.type === "dab") {
       globalValues.sites[values.site_con].montant_rec =
-        globalValues.sites[values.site_con].montant_rec + values.montant_rec;
+        globalValues.sites[values.site_con].montant_rec + diff;
       globalValues.sites[values.site_con].f_montant_rec =
-        globalValues.sites[values.site_con].f_montant_rec + values.montant_rec;
+        globalValues.sites[values.site_con].f_montant_rec + diff;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     newFactures = Object.assign([], newFactures);
@@ -283,13 +305,16 @@ const FactureModalForm = ({
                         >
                           {edit !== null ? "Modifier" : "Enregistrer"}
                         </Submit>
-                        <Button
-                          type="reset"
-                          size="small"
-                          startIcon={<UndoIcon />}
-                        >
-                          Réinitialiser
-                        </Button>
+                        {edit === null ? (
+                          <Button
+                            type="reset"
+                            size="small"
+                            disabled={edit !== null && !editing}
+                            startIcon={<UndoIcon />}
+                          >
+                            Réinitialiser
+                          </Button>
+                        ) : null}
                         <Button
                           onClick={handleClose}
                           size="small"
@@ -312,10 +337,12 @@ const FactureModalForm = ({
 
 const mapStateToProps = createStructuredSelector({
   factures: selectFacturesMemo,
+  dossiers: selectDossiers,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addFactures: (newFacts) => dispatch(addFactures(newFacts)),
+  addInfosDossier: (newInfos) => dispatch(addInfosDossier(newInfos)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FactureModalForm);

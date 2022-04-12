@@ -375,7 +375,7 @@ const Dashboard = ({
               <Typography variant="h5" mb={2}>
                 <b>Dossiers en cours</b>
               </Typography>
-              <FilesTable hiddenStatus data={actif} />
+              <FilesTable hiddenStatus pageSize={5} data={actif} />
             </Box>
           </Paper>
         </Box>

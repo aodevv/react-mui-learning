@@ -112,7 +112,7 @@ const ExistingDossier = ({
   });
   const dosIdNotFound = !dosOnly.includes(dosId);
   if (!dosIdNotFound) {
-    const curInfosDos = dossiers.find((dos) => dos.id === dosId);
+    var curInfosDos = dossiers.find((dos) => dos.id === dosId);
     const curFacts = factures[dosId];
     const curSites = sites[dosId];
     const curSals = salaires[dosId];
@@ -370,6 +370,7 @@ const ExistingDossier = ({
                     <Fade in={factureModal}>
                       <Box sx={style}>
                         <FactureModalForm
+                          dosToEdit={curInfosDos}
                           setFacToEdit={setFacToEdit}
                           edit={facToEdit}
                           globalValues={values}
@@ -418,6 +419,7 @@ const ExistingDossier = ({
                     <Fade in={salaireModal}>
                       <Box sx={style}>
                         <SalaireModalForm
+                          dosToEdit={curInfosDos}
                           edit={salToEdit}
                           setSalToEdit={setSalToEdit}
                           payroll={payroll}
@@ -464,6 +466,7 @@ const ExistingDossier = ({
                     <Fade in={machinerieModal}>
                       <Box sx={style}>
                         <MachinerieModalForm
+                          dosToEdit={curInfosDos}
                           setMachToEdit={setMachToEdit}
                           edit={machToEdit}
                           existing={true}

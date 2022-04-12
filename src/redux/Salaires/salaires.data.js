@@ -30,7 +30,7 @@ export const salairesAll = {
       prenom: "Landa",
       status: "reg",
       date_per: "2021-04-30",
-      montant_rec: 9830,
+      montant_rec: 1189.2,
       ajust: 0,
       Hreg: 86,
       Hsup: 41,

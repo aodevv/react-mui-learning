@@ -286,7 +286,7 @@ const SalaireModalFormDos = ({
               onSubmit={handleSubmit}
             >
               {(formikProps) => {
-                const { values } = formikProps;
+                const { values, isValid } = formikProps;
 
                 return (
                   <Form>
@@ -523,7 +523,7 @@ const SalaireModalFormDos = ({
                       </Grid>
                       <Stack direction="row-reverse" spacing={1} mt={2}>
                         <Submit
-                          disabled={edit !== null && !editing}
+                          disabled={(edit !== null && !editing) || !isValid}
                           variant="contained"
                           size="small"
                         >

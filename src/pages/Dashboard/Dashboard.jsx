@@ -44,6 +44,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import SignpostOutlinedIcon from "@mui/icons-material/SignpostOutlined";
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 
 const style = {
   position: "absolute",
@@ -243,12 +244,14 @@ const Dashboard = ({
                 <Grid item xs={12}>
                   <MyCard
                     onClick={() => navigate("/finance")}
-                    bgColor="#c300ff3a"
-                    textColor="#c300ff"
+                    // bgColor="#c300ff3a"
+                    // textColor="#c300ff"
+                    bgColor="#31313147"
+                    textColor="#2c2c2c"
                     br
                     title="Finance"
                   >
-                    <FolderOpenOutlinedIcon />
+                    <PointOfSaleIcon />
                   </MyCard>
                 </Grid>
               </Grid>

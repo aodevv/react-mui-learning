@@ -113,6 +113,11 @@ export const facturesColumns = [
     hide: true,
   },
   {
+    field: "fournis",
+    headerName: "Fournisseur",
+    width: 160,
+  },
+  {
     field: "type",
     headerName: "Préjudice",
     width: 100,
@@ -154,15 +159,6 @@ export const facturesColumns = [
     field: "tax",
     headerName: "Taxable ?",
     type: "boolean",
-  },
-  {
-    field: "actions",
-    type: "actions",
-    width: 80,
-    getActions: (params) => [
-      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem icon={<EditIcon />} label="Modifier" />,
-    ],
   },
 ];
 
@@ -212,15 +208,6 @@ export const machineriesColumns = [
       const valueFormatted = ins1000Sep(formatNum(params.value));
       return `$ ${valueFormatted}`;
     },
-  },
-  {
-    field: "actions",
-    type: "actions",
-    width: 80,
-    getActions: (params) => [
-      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem icon={<EditIcon />} label="Modifier" />,
-    ],
   },
 ];
 
@@ -307,15 +294,6 @@ export const salairesColumns = [
       const valueFormatted = ins1000Sep(formatNum(params.value));
       return `$ ${valueFormatted}`;
     },
-  },
-  {
-    field: "actions",
-    type: "actions",
-    width: 80,
-    getActions: (params) => [
-      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-      <GridActionsCellItem icon={<EditIcon />} label="Modifier" />,
-    ],
   },
 ];
 

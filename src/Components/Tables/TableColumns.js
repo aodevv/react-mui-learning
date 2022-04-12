@@ -136,6 +136,11 @@ export const facturesColumns = [
     width: 100,
   },
   {
+    field: "fournis",
+    headerName: "Fournisseur",
+    width: 160,
+  },
+  {
     field: "type",
     headerName: "Préjudice",
     width: 220,
@@ -221,6 +226,8 @@ export const machineriesColumns = [
     headerName: "Site concerné",
     flex: 1,
     minWidth: 140,
+    align: "center",
+    headerAlign: "center",
   },
   {
     field: "code",
@@ -243,23 +250,27 @@ export const machineriesColumns = [
     headerName: "Heures en fonctionnement",
     flex: 1,
     minWidth: 100,
+    align: "center",
   },
   {
     field: "hrs_stat",
     headerName: "Heures stationnaire",
     flex: 1,
     minWidth: 100,
+    align: "center",
   },
   {
     field: "taux_fonc",
     headerName: "Taux horaire de fonctionnement",
     flex: 1,
     minWidth: 100,
+    align: "center",
   },
   {
     field: "maintenance",
     headerName: "Taux de maintenance",
     flex: 1,
+    align: "center",
   },
   {
     field: "cout",

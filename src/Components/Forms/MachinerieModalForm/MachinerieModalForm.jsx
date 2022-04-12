@@ -173,7 +173,7 @@ const MachinerieModalForm = ({
               onSubmit={handleSubmit}
             >
               {(formikProps) => {
-                const { values } = formikProps;
+                const { values, isValid } = formikProps;
 
                 return (
                   <Form>
@@ -286,7 +286,7 @@ const MachinerieModalForm = ({
                     <Stack direction="row-reverse" spacing={1} mt={2}>
                       <Submit
                         variant="contained"
-                        disabled={edit !== null && !editing}
+                        disabled={(edit !== null && !editing) || !isValid}
                         size="small"
                       >
                         {edit !== null ? "Modifier" : "Enregistrer"}

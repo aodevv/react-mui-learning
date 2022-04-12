@@ -71,6 +71,7 @@ const FactureModalFormDos = ({
       type: facVals.type,
       montant_rec: facVals.montant_rec,
       ajust: facVals.ajust,
+      fournis: facVals.fournis,
       site_con: siteId,
       tax: facVals.tax,
     };
@@ -81,6 +82,7 @@ const FactureModalFormDos = ({
       desc_fact: "",
       date_fact: "",
       type: "",
+      fournis: "",
       montant_rec: 0,
       ajust: 0,
       site_con: "",
@@ -101,6 +103,7 @@ const FactureModalFormDos = ({
       .max(date, `La date doit être égale ou postérieure à aujourd'hui`)
       .required("Champ obligatoire"),
     desc_fact: Yup.string().required("Champ obligatoire"),
+    fournis: Yup.string().required("Champ obligatoire"),
     montant_rec: Yup.number()
       .min(0, "Valeur négatif !")
       .required("Champ obligatoire"),
@@ -135,6 +138,7 @@ const FactureModalFormDos = ({
       montant_rec: values.montant_rec,
       site_con: siteToAdd,
       tax: values.tax,
+      fournis: values.fournis,
       ajust: values.ajust,
     };
 
@@ -205,9 +209,10 @@ const FactureModalFormDos = ({
               initialValues={{ ...INITIAL_FORM_STATE }}
               validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
+              validateOnMount
             >
               {(formikProps) => {
-                const { values } = formikProps;
+                const { values, isValid } = formikProps;
 
                 return (
                   <Form>
@@ -279,15 +284,26 @@ const FactureModalFormDos = ({
                           disabled={edit !== null && !editing}
                         />
                       </Grid>
-                      <Grid item xs={12}>
-                        <DatePicker
-                          name="date_fact"
-                          label="Date"
-                          disabled={
-                            values.numDos === "" || (edit !== null && !editing)
-                          }
-                        />
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <Textfield
+                            name="fournis"
+                            label="Fournisseur"
+                            disabled={edit !== null && !editing}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <DatePicker
+                            name="date_fact"
+                            label="Date"
+                            disabled={
+                              values.numDos === "" ||
+                              (edit !== null && !editing)
+                            }
+                          />
+                        </Grid>
                       </Grid>
+
                       <Grid container spacing={2}>
                         <Grid item xs={6}>
                           <Textfield
@@ -319,7 +335,7 @@ const FactureModalFormDos = ({
                       </Grid>
                       <Stack direction="row-reverse" spacing={1} mt={2}>
                         <Submit
-                          disabled={edit !== null && !editing}
+                          disabled={(edit !== null && !editing) || !isValid}
                           variant="contained"
                           size="small"
                         >

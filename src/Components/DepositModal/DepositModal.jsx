@@ -3,6 +3,10 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { addInfosDossier } from "../../redux/DossierInfos/infosDossier.actions";
 
+// FORMIK and YUP
+import { Formik, Form, useField, useFormikContext } from "formik";
+import * as Yup from "yup";
+
 import TextField from "@mui/material/TextField";
 
 import { ins1000Sep, formatNum } from "../Tables/TableColumnsUtils";
@@ -44,20 +48,6 @@ const DepositModal = ({
   const [reste, setRest] = useState(0);
   const [mv, setMv] = useState(0);
 
-  const calculations = (event) => {
-    const verse = parseFloat(event.target.value);
-    if (verse >= 0 && verse <= MA - MV) {
-      setAVerse(verse);
-      if (MV + verse > MA) {
-        setMv(MA);
-        setRest(0);
-      } else {
-        setRest(MA - MV - verse);
-        setMv(MV + verse);
-      }
-    }
-  };
-
   const depositMoney = () => {
     const dosCopy = JSON.parse(JSON.stringify(dossiers));
     const dosId = dosToEdit.id;
@@ -76,6 +66,19 @@ const DepositModal = ({
 
     closeDeposit();
   };
+
+  const INITIAL_FORM_STATE = {
+    aVerse: 0,
+  };
+  const FORM_VALIDATION = Yup.object().shape({
+    aVerse: Yup.number()
+      .test(
+        "first",
+        "Montant admissible dépassé !",
+        (value) => value <= MA - MV
+      )
+      .min(1, "Valeur inferieur ou égale à 0 !"),
+  });
 
   useEffect(() => {
     setMA(dosToEdit.MA);
@@ -150,52 +153,100 @@ const DepositModal = ({
                 </Grid>
               </Grid>
             </Box>
-            <Box mt={2} mb={2}>
-              <Grid item xs={8} margin="auto">
-                <TextField
-                  fullWidth
-                  label="Montant à vérsé"
-                  variant="outlined"
-                  size="small"
-                  type="number"
-                  value={aVerse}
-                  onChange={calculations}
-                  margin="dense"
-                />
-              </Grid>
-              <Box mt={1}></Box>
-              <Grid
-                item
-                xs={8}
-                margin="auto"
-                display="flex"
-                flexDirection="row-reverse"
-              >
-                <Button
-                  onClick={closeDeposit}
-                  size="small"
-                  startIcon={<CloseIcon />}
-                  color="error"
-                >
-                  Annuler
-                </Button>
-                <Button
-                  startIcon={<AttachMoneyIcon />}
-                  variant="contained"
-                  size="small"
-                  color="success"
-                  disabled={MV === MA}
-                  onClick={depositMoney}
-                >
-                  Vérser
-                </Button>
-              </Grid>
-            </Box>
+            <Formik
+              initialValues={{ ...INITIAL_FORM_STATE }}
+              validationSchema={FORM_VALIDATION}
+              onSubmit={depositMoney}
+              validateOnMount
+            >
+              {(formikProps) => {
+                const { values, submitForm, isValid, setFieldValue } =
+                  formikProps;
+
+                return (
+                  <Form>
+                    <Box mt={2} mb={2}>
+                      <Grid item xs={8} margin="auto">
+                        <TextFieldWrapper
+                          name="aVerse"
+                          label="Montant à vérsé"
+                          type="number"
+                          setRest={setRest}
+                          setMv={setMv}
+                          MA={MA}
+                          MV={MV}
+                        />
+                      </Grid>
+                      <Box mt={1}></Box>
+                      <Grid
+                        item
+                        xs={8}
+                        margin="auto"
+                        display="flex"
+                        flexDirection="row-reverse"
+                      >
+                        <Button
+                          onClick={closeDeposit}
+                          size="small"
+                          startIcon={<CloseIcon />}
+                          color="error"
+                        >
+                          Annuler
+                        </Button>
+                        <Button
+                          startIcon={<AttachMoneyIcon />}
+                          variant="contained"
+                          size="small"
+                          color="success"
+                          disabled={MV === MA || !isValid}
+                          onClick={submitForm}
+                        >
+                          Vérser
+                        </Button>
+                      </Grid>
+                    </Box>
+                  </Form>
+                );
+              }}
+            </Formik>
           </Box>
         </Fade>
       </Modal>
     </>
   );
+};
+
+const TextFieldWrapper = ({ name, setRest, setMv, MA, MV, ...otherProps }) => {
+  const [field, meta] = useField(name);
+  const { values } = useFormikContext();
+  const { aVerse } = values;
+  const config = {
+    ...field,
+    ...otherProps,
+    fullWidth: true,
+    variant: "outlined",
+    margin: "dense",
+    size: "small",
+  };
+
+  if (meta && meta.touched && meta.error) {
+    config.error = true;
+    config.helperText = meta.error;
+  }
+
+  useEffect(() => {
+    if (aVerse >= 0 && aVerse <= MA - MV) {
+      if (MV + aVerse > MA) {
+        setMv(MA);
+        setRest(0);
+      } else {
+        setRest(MA - MV - aVerse);
+        setMv(MV + aVerse);
+      }
+    }
+  }, [aVerse]);
+
+  return <TextField {...config} />;
 };
 
 const mapDispatchToProps = (dispatch) => ({

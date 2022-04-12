@@ -129,7 +129,7 @@ const NouveauDossier = ({
     desc_ev: "",
     act_of: "",
     prgm: "",
-    prgm_test: "flala",
+    prgm_test: "pgm",
     dab: false,
     mpt: false,
     mi: false,

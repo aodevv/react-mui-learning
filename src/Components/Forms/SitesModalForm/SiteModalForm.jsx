@@ -210,7 +210,7 @@ const SiteModalForm = ({
               onSubmit={handleSubmit}
             >
               {(formikProps) => {
-                const { values } = formikProps;
+                const { values, isValid } = formikProps;
 
                 return (
                   <Form>
@@ -315,7 +315,11 @@ const SiteModalForm = ({
                     </Grid>
 
                     <Stack direction="row-reverse" spacing={1} mt={2}>
-                      <Submit variant="contained" size="small">
+                      <Submit
+                        variant="contained"
+                        size="small"
+                        disabled={(edit !== null && !editing) || !isValid}
+                      >
                         Enregistrer
                       </Submit>
                       <Button

@@ -15,8 +15,8 @@ const persistConfig = {
   whitelist: [
     "auth",
     "dossiers",
-    "sites",
     "factures",
+    "sites",
     "salaires",
     "machineries",
   ],

@@ -37,7 +37,7 @@ const FacturesTable = ({ data, setFacToEdit }) => {
         <div style={{ flexGrow: 1 }}>
           <DataGrid
             autoHeight
-            rows={data ? data : facturesTableData[1]}
+            rows={data}
             columns={facturesColumns}
             pageSize={10}
             rowsPerPageOptions={[10]}

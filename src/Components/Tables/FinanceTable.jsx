@@ -117,6 +117,7 @@ const FilesTable = ({
       field: "id",
       headerName: "Numéro",
       flex: 1,
+      headerAlign: "right",
       minWidth: 180,
       maxWidth: 200,
       renderCell: (params) => (

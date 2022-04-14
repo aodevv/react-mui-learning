@@ -58,15 +58,18 @@ const SalaireModalFormDos = ({
   payroll,
   edit,
   setSalToEdit,
+  role,
 }) => {
   const [validDate, setValiDate] = useState("2010-01-01");
   const [editing, setEditing] = useState(false);
   var today = new Date();
+  const isAdmin = role === "admin";
+  const modifAjust = isAdmin ? "Ajustement" : "Modification";
 
   var date =
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
-  let INITIAL_FORM_STATE, oldMontant;
+  let INITIAL_FORM_STATE, oldMontant, oldAjust;
   if (edit !== null) {
     var [dosSalEdit, idSalEdit] = edit.split(";");
     idSalEdit = parseInt(idSalEdit);
@@ -101,6 +104,7 @@ const SalaireModalFormDos = ({
       csst: salVals.csst,
     };
     oldMontant = salVals.montant_rec;
+    oldAjust = salVals.ajust;
   } else {
     INITIAL_FORM_STATE = {
       curSal: "",
@@ -158,6 +162,9 @@ const SalaireModalFormDos = ({
     Hsup2: Yup.number().min(0, "Valeur négative !"),
     Tsup: Yup.number().min(0, "Valeur négative !"),
     Tsup2: Yup.number().min(0, "Valeur négative !"),
+    ajust: Yup.number()
+      .min(0, "Valeur négative !")
+      .max(oldMontant, "Valeur supérieur montant total"),
   });
   const dosCopy = JSON.parse(JSON.stringify(dossiers));
   const sitesCopy = JSON.parse(JSON.stringify(sites));
@@ -236,10 +243,12 @@ const SalaireModalFormDos = ({
     const siteId = siteToAdd;
 
     const dosToEdit = dosCopy.find((dossier) => dossier.id === dosId);
-    const diff =
+    const diffMontant =
       edit === null ? values.montant_rec : values.montant_rec - oldMontant;
+    const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
 
-    dosToEdit.MR = dosToEdit.MR + diff;
+    dosToEdit.MR = dosToEdit.MR + diffMontant;
+    dosToEdit.MR = dosToEdit.MR - diffAjust;
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     addInfosDossier(
@@ -250,8 +259,10 @@ const SalaireModalFormDos = ({
       const siteDos = sitesCopy[dosId];
       const siteToEdit = siteDos.find((site) => site.site === siteId);
       const otherSites = siteDos.filter((site) => site.site !== siteId);
-      siteToEdit.s_montant_rec = siteToEdit.s_montant_rec + diff;
-      siteToEdit.montant_rec = siteToEdit.montant_rec + diff;
+      siteToEdit.s_montant_rec = siteToEdit.s_montant_rec + diffMontant;
+      siteToEdit.montant_rec = siteToEdit.montant_rec + diffMontant;
+      siteToEdit.s_montant_rec = siteToEdit.s_montant_rec - diffAjust;
+      siteToEdit.montant_rec = siteToEdit.montant_rec - diffAjust;
       Object.keys(sitesCopy).forEach((item, key) => {
         if (key === dosId) sitesCopy[key] = [...otherSites, siteToEdit];
       });
@@ -294,9 +305,9 @@ const SalaireModalFormDos = ({
                     <Grid item>
                       <Box display="flex" justifyContent="space-between">
                         <Typography variant="h5" mb={1}>
-                          {edit !== null ? "Modification" : "Ajout salaire"}
+                          {edit !== null ? modifAjust : "Ajout salaire"}
                         </Typography>
-                        {edit !== null ? (
+                        {edit !== null && !isAdmin ? (
                           <IconButton
                             aria-label="delete"
                             color={!editing ? "default" : "primary"}
@@ -514,7 +525,7 @@ const SalaireModalFormDos = ({
                           </Typography>
                           <Grid item xs={4}>
                             <Textfield
-                              disabled
+                              disabled={!isAdmin}
                               name="ajust"
                               label="Ajustement"
                               type="number"
@@ -524,7 +535,10 @@ const SalaireModalFormDos = ({
                       </Grid>
                       <Stack direction="row-reverse" spacing={1} mt={2}>
                         <Submit
-                          disabled={(edit !== null && !editing) || !isValid}
+                          disabled={
+                            !isAdmin &&
+                            ((edit !== null && !editing) || !isValid)
+                          }
                           variant="contained"
                           size="small"
                         >

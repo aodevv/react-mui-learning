@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { selectMachineriesMemo } from "../../redux/Machineries/machineries.selectors";
 import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
+import { selectUsername } from "../../redux/Auth/Auth.selectors";
 
 // MUI components
 import Grid from "@mui/material/Grid";
@@ -40,7 +41,7 @@ const style = {
   p: "30px 10px",
 };
 
-const MachineriePage = ({ machinerie, dossiers, sites }) => {
+const MachineriePage = ({ machinerie, dossiers, sites, username }) => {
   const [machineriesModal, setMachineriesModal] = useState(false);
   const [machToEdit, setMachToEdit] = useState(null);
 
@@ -146,6 +147,7 @@ const MachineriePage = ({ machinerie, dossiers, sites }) => {
               size="small"
               startIcon={<AddIcon />}
               onClick={openMachines}
+              disabled={username === "admin"}
             >
               Ajouter
             </Button>
@@ -182,6 +184,7 @@ const MachineriePage = ({ machinerie, dossiers, sites }) => {
               machineries={machinerie}
               setMachToEdit={setMachToEdit}
               edit={machToEdit}
+              role={username}
             />
           </Box>
         </Fade>
@@ -195,6 +198,7 @@ const mapStateToProps = createStructuredSelector({
   machinerie: selectMachineriesMemo,
   dossiers: selectDossiers,
   sites: selectSitesMemo,
+  username: selectUsername,
 });
 
 export default connect(mapStateToProps)(MachineriePage);

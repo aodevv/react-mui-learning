@@ -48,6 +48,7 @@ const MachinerieModalForm = ({
   addInfosDossier,
   dossiers,
   dosToEdit,
+  role,
 }) => {
   const [editing, setEditing] = useState(false);
   const allowed = [];
@@ -55,6 +56,9 @@ const MachinerieModalForm = ({
   if (globalValues.mpt) allowed.push("mpt");
   if (globalValues.mi) allowed.push("mi");
   if (globalValues.bcg) allowed.push("bcg");
+
+  const isAdmin = role === "admin";
+  const modifAjust = isAdmin ? "Ajustement" : "Modification";
 
   const filteredPrejudices = Object.keys(prejudices)
     .filter((key) => allowed.includes(key))
@@ -64,7 +68,7 @@ const MachinerieModalForm = ({
     }, {});
   const sites = globalValues.sites.map((site) => site.site);
 
-  let INITIAL_FORM_STATE, oldMontant;
+  let INITIAL_FORM_STATE, oldCout, oldAjust;
   if (edit !== null) {
     let siteId = sites.findIndex(
       (site, index) => site === globalValues.machineries[edit].site_con
@@ -81,8 +85,10 @@ const MachinerieModalForm = ({
       hrs_stat: globalValues.machineries[edit].hrs_stat,
       taux_fonc: globalValues.machineries[edit].taux_fonc,
       cout: globalValues.machineries[edit].cout,
+      ajust: globalValues.machineries[edit].ajust,
     };
-    oldMontant = globalValues.machineries[edit].cout;
+    oldCout = globalValues.machineries[edit].cout;
+    oldAjust = globalValues.machineries[edit].ajust;
   } else {
     INITIAL_FORM_STATE = {
       id: "",
@@ -95,6 +101,7 @@ const MachinerieModalForm = ({
       hrs_stat: 0,
       taux_fonc: 0,
       cout: 0,
+      ajust: 0,
     };
   }
 
@@ -110,6 +117,9 @@ const MachinerieModalForm = ({
     hrs_fonc: Yup.number().min(0, "Valeur négative !"),
     hrs_stat: Yup.number().min(0, "Valeur négative !"),
     taux_fonc: Yup.number().min(0, "Valeur négative !"),
+    ajust: Yup.number()
+      .min(0, "Valeur négative !")
+      .max(oldCout, "Valeur supérieur au coût total"),
   });
 
   const handleSubmit = (values) => {
@@ -125,11 +135,11 @@ const MachinerieModalForm = ({
     //ADD total to dossier
     const dosCopy = JSON.parse(JSON.stringify(dossiers));
     const dosId = dosToEdit.id;
-    if (edit === null) dosToEdit.MR = dosToEdit.MR + values.montant_rec;
-    else {
-      const diff = values.cout - oldMontant;
-      dosToEdit.MR = dosToEdit.MR + diff;
-    }
+    const diffMontant = edit === null ? values.cout : values.cout - oldCout;
+    const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
+
+    dosToEdit.MR = dosToEdit.MR + diffMontant;
+    dosToEdit.MR = dosToEdit.MR - diffAjust;
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
@@ -140,9 +150,14 @@ const MachinerieModalForm = ({
 
     if (values.type === "dab") {
       globalValues.sites[values.site_con].montant_rec =
-        globalValues.sites[values.site_con].montant_rec + values.cout;
+        globalValues.sites[values.site_con].montant_rec + diffMontant;
       globalValues.sites[values.site_con].m_montant_rec =
-        globalValues.sites[values.site_con].m_montant_rec + values.cout;
+        globalValues.sites[values.site_con].m_montant_rec + diffMontant;
+
+      globalValues.sites[values.site_con].montant_rec =
+        globalValues.sites[values.site_con].montant_rec + diffAjust;
+      globalValues.sites[values.site_con].m_montant_rec =
+        globalValues.sites[values.site_con].m_montant_rec + diffAjust;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     newMachine = Object.assign([], newMachine);
@@ -204,9 +219,9 @@ const MachinerieModalForm = ({
                   <Form>
                     <Box display="flex" justifyContent="space-between">
                       <Typography variant="h5" mb={1}>
-                        {edit !== null ? "Modification" : "Ajout machinerie"}
+                        {edit !== null ? modifAjust : "Ajout machinerie"}
                       </Typography>
-                      {edit !== null ? (
+                      {edit !== null && !isAdmin ? (
                         <IconButton
                           aria-label="delete"
                           color={!editing ? "default" : "primary"}
@@ -298,20 +313,30 @@ const MachinerieModalForm = ({
                     </Grid>
 
                     <Grid item xs={12}>
-                      <Box mt={2}>
-                        <Typography variant="h5">
+                      <Box mt={2} display="flex" alignItems="center">
+                        <Typography variant="h5" mr={2}>
                           Côut total:{" "}
                           <Box sx={{ fontWeight: 600, display: "inline" }}>
                             {/* {`$ ${ins1000Sep(formatNum(values.cout))}`} */}
                             <Cout name="cout" />
                           </Box>
                         </Typography>
+                        <Grid item xs={4}>
+                          <Textfield
+                            disabled={!isAdmin}
+                            name="ajust"
+                            label="Ajustement"
+                            type="number"
+                          />
+                        </Grid>
                       </Box>
                     </Grid>
                     <Stack direction="row-reverse" spacing={1} mt={2}>
                       <Submit
                         variant="contained"
-                        disabled={(edit !== null && !editing) || !isValid}
+                        disabled={
+                          !isAdmin && ((edit !== null && !editing) || !isValid)
+                        }
                         size="small"
                       >
                         {edit !== null ? "Modifier" : "Enregistrer"}

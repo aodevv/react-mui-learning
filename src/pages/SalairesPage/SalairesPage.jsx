@@ -10,6 +10,7 @@ import {
 } from "../../redux/Salaires/salaires.selectors";
 import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
+import { selectUsername, selectAuth } from "../../redux/Auth/Auth.selectors";
 
 // MUI components
 import Grid from "@mui/material/Grid";
@@ -46,7 +47,7 @@ const style = {
   p: "30px 10px",
 };
 
-const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
+const SalairesPage = ({ salaires, dossiers, sites, payroll, username }) => {
   const [salaireModal, setSalaireModal] = useState(false);
   const [salToEdit, setSalToEdit] = useState(null);
   const openSalaire = () => {
@@ -153,6 +154,7 @@ const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
               size="small"
               startIcon={<AddIcon />}
               onClick={openSalaire}
+              disabled={username === "admin"}
             >
               Ajouter
             </Button>
@@ -187,6 +189,7 @@ const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
               size="small"
               startIcon={<AddIcon />}
               onClick={openPay}
+              disabled={username === "admin"}
             >
               Ajouter
             </Button>
@@ -221,6 +224,7 @@ const SalairesPage = ({ salaires, dossiers, sites, payroll }) => {
               payroll={payroll}
               setSalToEdit={setSalToEdit}
               edit={salToEdit}
+              role={username}
             />
           </Box>
         </Fade>
@@ -250,6 +254,8 @@ const mapStateToProps = createStructuredSelector({
   salaires: selectSalairesMemo,
   sites: selectSitesMemo,
   payroll: selectPayroll,
+  username: selectUsername,
+  isLoggedIn: selectAuth,
 });
 
 export default connect(mapStateToProps)(SalairesPage);

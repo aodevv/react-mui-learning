@@ -10,6 +10,7 @@ export const machineriesAll = {
       hrs_fonc: 99,
       hrs_stat: 12,
       cout: 2178.0,
+      ajust: 0,
       taux_fonc: 12,
       type: "dab",
     },
@@ -22,6 +23,8 @@ export const machineriesAll = {
       hrs_fonc: 40,
       hrs_stat: 33,
       cout: 1440.0,
+      ajust: 0,
+
       taux_fonc: 21,
       type: "mpt",
     },
@@ -36,6 +39,8 @@ export const machineriesAll = {
       hrs_fonc: 4,
       hrs_stat: 11,
       cout: 140,
+      ajust: 0,
+
       taux_fonc: 33,
       type: "mi",
     },
@@ -48,6 +53,8 @@ export const machineriesAll = {
       hrs_fonc: 22,
       hrs_stat: 67,
       cout: 1936,
+      ajust: 0,
+
       taux_fonc: 88,
       type: "mpt",
     },

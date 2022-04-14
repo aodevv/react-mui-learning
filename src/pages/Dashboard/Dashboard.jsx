@@ -16,6 +16,7 @@ import {
   selectSalairesMemo,
   selectPayroll,
 } from "../../redux/Salaires/salaires.selectors";
+import { selectUsername } from "../../redux/Auth/Auth.selectors";
 
 import {
   Grid,
@@ -45,6 +46,7 @@ import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import SignpostOutlinedIcon from "@mui/icons-material/SignpostOutlined";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import PeopleIcon from "@mui/icons-material/People";
 
 const style = {
   position: "absolute",
@@ -67,6 +69,7 @@ const Dashboard = ({
   machineries,
   factures,
   payroll,
+  username,
 }) => {
   const [factureModal, setFactureModal] = useState(false);
   const openFacture = () => {
@@ -153,12 +156,27 @@ const Dashboard = ({
             >
               <Paper elevation={3}>
                 <Box p={3} sx={{ textAlign: "center", height: "30%" }}>
-                  <Typography mb={isSmall ? 3 : 8} variant="h2">
-                    Municipalité X
-                  </Typography>
-                  <Typography mb={isSmall ? 3 : 8} variant="h4">
-                    Autres infos...
-                  </Typography>
+                  <Box
+                    mb={isSmall ? 3 : 8}
+                    justifyContent="center"
+                    display="flex"
+                    alignItems="center"
+                  >
+                    <Typography variant="h2" mr={3}>
+                      Municipalité X
+                    </Typography>
+                    <Typography variant="h2">-</Typography>
+                    <Typography variant="h3" ml={3}>
+                      {username}
+                    </Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="center">
+                    <PeopleIcon fontSize="large" />
+                    <Typography mb={isSmall ? 3 : 8} ml={2} variant="h4">
+                      Population <b>10,000</b>
+                    </Typography>
+                  </Box>
+
                   <Grid container>
                     <Grid item xs={12} lg={4}>
                       <Box sx={isSmall ? null : { borderRight: 1 }}>
@@ -214,7 +232,7 @@ const Dashboard = ({
           <Grid container item xs={12} lg={4} spacing={1}>
             <Grid item xs={6}>
               <Grid container display="flex">
-                <Grid item xs={10}>
+                <Grid item xs={username === "muni" ? 10 : 12}>
                   <MyCard
                     onClick={() => navigate("/dossier")}
                     bgColor="#FEBE103b"
@@ -225,18 +243,19 @@ const Dashboard = ({
                     <FolderOpenOutlinedIcon />
                   </MyCard>
                 </Grid>
-
-                <Grid item xs={2}>
-                  <MyCard
-                    onClick={() => navigate("/nouveau_dossier")}
-                    bgColor="#FEBE103b"
-                    textColor="#feb310"
-                    bl
-                    title=""
-                  >
-                    <AddIcon />
-                  </MyCard>
-                </Grid>
+                {username === "muni" ? (
+                  <Grid item xs={2}>
+                    <MyCard
+                      onClick={() => navigate("/nouveau_dossier")}
+                      bgColor="#FEBE103b"
+                      textColor="#feb310"
+                      bl
+                      title=""
+                    >
+                      <AddIcon />
+                    </MyCard>
+                  </Grid>
+                ) : null}
               </Grid>
             </Grid>
             <Grid item xs={6}>
@@ -258,7 +277,7 @@ const Dashboard = ({
             </Grid>
             <Grid item xs={6}>
               <Grid container display="flex">
-                <Grid item xs={10}>
+                <Grid item xs={username === "muni" ? 10 : 12}>
                   <MyCard
                     onClick={() => navigate("/factures")}
                     bgColor="#00308F3b"
@@ -269,23 +288,24 @@ const Dashboard = ({
                     <ReceiptOutlinedIcon />
                   </MyCard>
                 </Grid>
-
-                <Grid item xs={2}>
-                  <MyCard
-                    onClick={openFacture}
-                    bgColor="#00308f3b"
-                    textColor="#00308F"
-                    bl
-                    title=""
-                  >
-                    <AddIcon />
-                  </MyCard>
-                </Grid>
+                {username === "muni" ? (
+                  <Grid item xs={2}>
+                    <MyCard
+                      onClick={openFacture}
+                      bgColor="#00308f3b"
+                      textColor="#00308F"
+                      bl
+                      title=""
+                    >
+                      <AddIcon />
+                    </MyCard>
+                  </Grid>
+                ) : null}
               </Grid>
             </Grid>
             <Grid item xs={6}>
               <Grid container display="flex">
-                <Grid item xs={10}>
+                <Grid item xs={username === "muni" ? 10 : 12}>
                   <MyCard
                     onClick={() => navigate("/salaires")}
                     bgColor="#0187493b"
@@ -296,23 +316,24 @@ const Dashboard = ({
                     <AttachMoneyIcon />
                   </MyCard>
                 </Grid>
-
-                <Grid item xs={2}>
-                  <MyCard
-                    onClick={openSalaire}
-                    bgColor="#0187493b"
-                    textColor="#018749"
-                    bl
-                    title=""
-                  >
-                    <AddIcon />
-                  </MyCard>
-                </Grid>
+                {username === "muni" ? (
+                  <Grid item xs={2}>
+                    <MyCard
+                      onClick={openSalaire}
+                      bgColor="#0187493b"
+                      textColor="#018749"
+                      bl
+                      title=""
+                    >
+                      <AddIcon />
+                    </MyCard>
+                  </Grid>
+                ) : null}
               </Grid>
             </Grid>
             <Grid item xs={6}>
               <Grid container display="flex">
-                <Grid item xs={10}>
+                <Grid item xs={username === "muni" ? 10 : 12}>
                   <MyCard
                     onClick={() => navigate("/machineries")}
                     bgColor="#720e9e3b"
@@ -324,23 +345,24 @@ const Dashboard = ({
                     <PrecisionManufacturingOutlinedIcon />
                   </MyCard>
                 </Grid>
-
-                <Grid item xs={2}>
-                  <MyCard
-                    onClick={openMachines}
-                    bgColor="#720e9e3b"
-                    textColor="#720e9e"
-                    bl
-                    title=""
-                  >
-                    <AddIcon />
-                  </MyCard>
-                </Grid>
+                {username === "muni" ? (
+                  <Grid item xs={2}>
+                    <MyCard
+                      onClick={openMachines}
+                      bgColor="#720e9e3b"
+                      textColor="#720e9e"
+                      bl
+                      title=""
+                    >
+                      <AddIcon />
+                    </MyCard>
+                  </Grid>
+                ) : null}
               </Grid>
             </Grid>
             <Grid item xs={6}>
               <Grid container display="flex">
-                <Grid item xs={10}>
+                <Grid item xs={username === "muni" ? 10 : 12}>
                   <MyCard
                     onClick={() => navigate("/sites")}
                     bgColor="#EE292E55"
@@ -353,17 +375,19 @@ const Dashboard = ({
                   </MyCard>
                 </Grid>
 
-                <Grid item xs={2}>
-                  <MyCard
-                    onClick={openSites}
-                    bgColor="#EE292E55"
-                    textColor="#EE292E"
-                    bl
-                    title=""
-                  >
-                    <AddIcon />
-                  </MyCard>
-                </Grid>
+                {username === "muni" ? (
+                  <Grid item xs={2}>
+                    <MyCard
+                      onClick={openSites}
+                      bgColor="#EE292E55"
+                      textColor="#EE292E"
+                      bl
+                      title=""
+                    >
+                      <AddIcon />
+                    </MyCard>
+                  </Grid>
+                ) : null}
               </Grid>
             </Grid>
           </Grid>
@@ -465,6 +489,7 @@ const mapStateToProps = createStructuredSelector({
   machineries: selectMachineriesMemo,
   salaires: selectSalairesMemo,
   payroll: selectPayroll,
+  username: selectUsername,
 });
 
 export default connect(mapStateToProps)(Dashboard);

@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { selectFacturesMemo } from "../../redux/Factures/Factures.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
 import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
+import { selectUsername, selectAuth } from "../../redux/Auth/Auth.selectors";
 
 // MUI components
 import Grid from "@mui/material/Grid";
@@ -42,7 +43,7 @@ const style = {
   p: "30px 10px",
 };
 
-const FacturePage = ({ factures, sites, dossiers }) => {
+const FacturePage = ({ factures, sites, dossiers, username, isLoggedIn }) => {
   const [factureModal, setFactureModal] = useState(false);
   const [facToEdit, setFacToEdit] = useState(null);
   const openFacture = () => {
@@ -142,6 +143,7 @@ const FacturePage = ({ factures, sites, dossiers }) => {
               size="small"
               startIcon={<AddIcon />}
               onClick={openFacture}
+              disabled={username === "admin"}
             >
               Ajouter
             </Button>
@@ -178,6 +180,7 @@ const FacturePage = ({ factures, sites, dossiers }) => {
               factures={factures}
               setFacToEdit={setFacToEdit}
               edit={facToEdit}
+              role={username}
             />
           </Box>
         </Fade>
@@ -191,6 +194,8 @@ const mapStateToProps = createStructuredSelector({
   factures: selectFacturesMemo,
   sites: selectSitesMemo,
   dossiers: selectDossiers,
+  username: selectUsername,
+  isLoggedIn: selectAuth,
 });
 
 export default connect(mapStateToProps)(FacturePage);

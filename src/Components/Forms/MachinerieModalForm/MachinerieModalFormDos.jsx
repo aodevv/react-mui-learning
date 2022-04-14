@@ -48,15 +48,18 @@ const MachinerieModalFormDos = ({
   closeModal,
   edit,
   setMachToEdit,
+  role,
 }) => {
   const [validDate, setValiDate] = useState("2010-01-01");
   const [editing, setEditing] = useState(false);
   var today = new Date();
+  const isAdmin = role === "admin";
+  const modifAjust = isAdmin ? "Ajustement" : "Modification";
 
   var date =
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
-  let INITIAL_FORM_STATE, oldCout;
+  let INITIAL_FORM_STATE, oldCout, oldAjust;
 
   if (edit !== null) {
     var [dosMachEdit, idMachEdit] = edit.split(";");
@@ -80,8 +83,10 @@ const MachinerieModalFormDos = ({
       hrs_stat: machVals.hrs_stat,
       taux_fonc: machVals.taux_fonc,
       cout: machVals.cout,
+      ajust: machVals.ajust,
     };
     oldCout = machVals.cout;
+    oldAjust = machVals.ajust;
   } else {
     INITIAL_FORM_STATE = {
       numDos: "",
@@ -94,6 +99,7 @@ const MachinerieModalFormDos = ({
       hrs_stat: 0,
       taux_fonc: 0,
       cout: 0,
+      ajust: 0,
     };
   }
 
@@ -110,6 +116,9 @@ const MachinerieModalFormDos = ({
     hrs_fonc: Yup.number().min(0, "Valeur négative !"),
     hrs_stat: Yup.number().min(0, "Valeur négative !"),
     taux_fonc: Yup.number().min(0, "Valeur négative !"),
+    ajust: Yup.number()
+      .min(0, "Valeur négative !")
+      .max(oldCout, "Valeur supérieur au coût total"),
   });
 
   const dosCopy = JSON.parse(JSON.stringify(dossiers));
@@ -146,6 +155,7 @@ const MachinerieModalFormDos = ({
       hrs_stat: values.hrs_stat,
       taux_fonc: values.taux_fonc,
       cout: values.cout,
+      ajust: values.ajust,
     };
 
     if (edit === null) {
@@ -168,10 +178,15 @@ const MachinerieModalFormDos = ({
     const siteId = siteToAdd;
 
     const dosToEdit = dosCopy.find((dossier) => dossier.id === dosId);
-    const diff =
-      edit === null ? values.montant_rec : values.montant_rec - oldCout;
+    console.log(oldCout);
+    const diffMontant = edit === null ? values.cout : values.cout - oldCout;
+    const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
+    console.log(oldAjust);
+    console.log(values.ajust);
+    console.log(diffAjust);
 
-    dosToEdit.MR = dosToEdit.MR + diff;
+    dosToEdit.MR = dosToEdit.MR + diffMontant;
+    dosToEdit.MR = dosToEdit.MR - diffAjust;
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     addInfosDossier(
@@ -182,8 +197,10 @@ const MachinerieModalFormDos = ({
       const siteDos = sitesCopy[dosId];
       const siteToEdit = siteDos.find((site) => site.site === siteId);
       const otherSites = siteDos.filter((site) => site.site !== siteId);
-      siteToEdit.m_montant_rec = siteToEdit.m_montant_rec + diff;
-      siteToEdit.montant_rec = siteToEdit.montant_rec + diff;
+      siteToEdit.m_montant_rec = siteToEdit.m_montant_rec + diffMontant;
+      siteToEdit.montant_rec = siteToEdit.montant_rec + diffMontant;
+      siteToEdit.m_montant_rec = siteToEdit.m_montant_rec - diffMontant;
+      siteToEdit.montant_rec = siteToEdit.montant_rec - diffMontant;
       Object.keys(sitesCopy).forEach((item, key) => {
         if (key === dosId) sitesCopy[key] = [...otherSites, siteToEdit];
       });
@@ -224,9 +241,9 @@ const MachinerieModalFormDos = ({
                   <Form>
                     <Box display="flex" justifyContent="space-between">
                       <Typography variant="h5" mb={1}>
-                        {edit !== null ? "Modification" : "Ajout machinerie"}
+                        {edit !== null ? modifAjust : "Ajout machinerie"}
                       </Typography>
-                      {edit !== null ? (
+                      {edit !== null && !isAdmin ? (
                         <IconButton
                           aria-label="delete"
                           color={!editing ? "default" : "primary"}
@@ -332,21 +349,31 @@ const MachinerieModalFormDos = ({
                         />
                       </Grid>
                     </Grid>
-
                     <Grid item xs={12}>
-                      <Box mt={2}>
-                        <Typography variant="h5">
+                      <Box mt={2} display="flex" alignItems="center">
+                        <Typography variant="h5" mr={2}>
                           Côut total:{" "}
                           <Box sx={{ fontWeight: 600, display: "inline" }}>
                             {/* {`$ ${ins1000Sep(formatNum(values.cout))}`} */}
                             <Cout name="cout" />
                           </Box>
                         </Typography>
+                        <Grid item xs={4}>
+                          <Textfield
+                            disabled={!isAdmin}
+                            name="ajust"
+                            label="Ajustement"
+                            type="number"
+                          />
+                        </Grid>
                       </Box>
                     </Grid>
+
                     <Stack direction="row-reverse" spacing={1} mt={2}>
                       <Submit
-                        disabled={(edit !== null && !editing) || !isValid}
+                        disabled={
+                          !isAdmin && ((edit !== null && !editing) || !isValid)
+                        }
                         variant="contained"
                         size="small"
                       >

@@ -53,6 +53,7 @@ const SiteModalForm = ({
   addSites,
   edit,
   setSiteToEdit,
+  role,
 }) => {
   console.log(globalValues);
   const [editing, setEditing] = useState(false);
@@ -219,7 +220,7 @@ const SiteModalForm = ({
                       <Typography variant="h5" mb={1}>
                         {edit !== null ? "Modification" : "Ajout site"}
                       </Typography>
-                      {edit !== null ? (
+                      {edit !== null && role !== "admin" ? (
                         <IconButton
                           aria-label="delete"
                           color={!editing ? "default" : "primary"}

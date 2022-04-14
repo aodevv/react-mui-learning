@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
+import { selectUsername } from "../../redux/Auth/Auth.selectors";
 
 // MUI components
 import Grid from "@mui/material/Grid";
@@ -22,7 +23,7 @@ import AddIcon from "@mui/icons-material/Add";
 import FilesTable from "../../Components/Tables/FilesTable";
 import DossierFilters from "../../Components/Filters/DossierFilters/DossierFilters";
 
-const FileManager = ({ dossiers }) => {
+const FileManager = ({ dossiers, username }) => {
   const navigate = useNavigate();
   const [filteredDossiers, setFilteredDossiers] = useState(dossiers);
 
@@ -58,6 +59,7 @@ const FileManager = ({ dossiers }) => {
               size="small"
               onClick={openDosForm}
               startIcon={<AddIcon />}
+              disabled={username === "admin"}
             >
               Ajouter
             </Button>
@@ -85,6 +87,7 @@ const FileManager = ({ dossiers }) => {
 
 const mapStateToProps = createStructuredSelector({
   dossiers: selectDossiers,
+  username: selectUsername,
 });
 
 export default connect(mapStateToProps)(FileManager);

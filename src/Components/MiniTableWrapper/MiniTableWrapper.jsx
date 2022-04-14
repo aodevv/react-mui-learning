@@ -7,7 +7,7 @@ import { Box, Button } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 
-const MiniTableWrapper = ({ children, title, btnClick, disable }) => {
+const MiniTableWrapper = ({ children, title, btnClick, disable, role }) => {
   return (
     <Card>
       <CardHeader title={title} sx={{ padding: "10px 0 0px 10px" }} />
@@ -16,7 +16,7 @@ const MiniTableWrapper = ({ children, title, btnClick, disable }) => {
           <Button
             onClick={btnClick}
             variant="contained"
-            disabled={disable}
+            disabled={disable || role === "admin"}
             size="small"
             startIcon={<AddIcon />}
           >

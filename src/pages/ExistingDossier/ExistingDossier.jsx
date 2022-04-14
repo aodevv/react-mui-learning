@@ -12,6 +12,7 @@ import { selectSalairesMemo } from "../../redux/Salaires/salaires.selectors";
 import { selectMachineriesMemo } from "../../redux/Machineries/machineries.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
 import { selectPayroll } from "../../redux/Salaires/salaires.selectors";
+import { selectUsername } from "../../redux/Auth/Auth.selectors";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
@@ -90,6 +91,7 @@ const ExistingDossier = ({
   factures,
   salaires,
   machineries,
+  role,
 }) => {
   const navigate = useNavigate();
   const params = useParams();
@@ -256,6 +258,7 @@ const ExistingDossier = ({
                       values={values}
                       openSubmit={openSubmit}
                       existing={true}
+                      role={role}
                     />
                   </AccordionDetails>
                 </Accordion>
@@ -293,6 +296,7 @@ const ExistingDossier = ({
               <Grid container spacing={2} mt={3}>
                 <Grid item xs={12} md={6}>
                   <MiniTableWrapper
+                    role={role}
                     disable={values.dab ? false : true}
                     title={
                       <Box
@@ -329,6 +333,7 @@ const ExistingDossier = ({
                           closeModal={closeSite}
                           edit={siteToEdit}
                           setSiteToEdit={setSiteToEdit}
+                          role={role}
                         />
                       </Box>
                     </Fade>
@@ -336,6 +341,7 @@ const ExistingDossier = ({
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <MiniTableWrapper
+                    role={role}
                     title={
                       <Box
                         display="flex"
@@ -378,6 +384,7 @@ const ExistingDossier = ({
                           closeModal={closeFacture}
                           date={date}
                           existing={true}
+                          role={role}
                         />
                       </Box>
                     </Fade>
@@ -388,6 +395,7 @@ const ExistingDossier = ({
               <Grid container spacing={2} mt={1}>
                 <Grid item xs={12} md={6}>
                   <MiniTableWrapper
+                    role={role}
                     disable={values.date_ev !== "" ? false : true}
                     title={
                       <Box
@@ -428,6 +436,7 @@ const ExistingDossier = ({
                           prejudices={typePrejudices}
                           closeModal={closeSalaire}
                           date={date}
+                          role={role}
                         />
                       </Box>
                     </Fade>
@@ -435,6 +444,7 @@ const ExistingDossier = ({
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <MiniTableWrapper
+                    role={role}
                     title={
                       <Box
                         display="flex"
@@ -473,6 +483,7 @@ const ExistingDossier = ({
                           globalValues={values}
                           prejudices={typePrejudices}
                           closeModal={closeMachinerie}
+                          role={role}
                         />
                       </Box>
                     </Fade>
@@ -496,6 +507,7 @@ const mapStateToProps = createStructuredSelector({
   salaires: selectSalairesMemo,
   machineries: selectMachineriesMemo,
   payroll: selectPayroll,
+  role: selectUsername,
 });
 
 export default connect(mapStateToProps)(ExistingDossier);

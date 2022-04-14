@@ -11,6 +11,7 @@ import { selectSalairesMemo } from "../../redux/Salaires/salaires.selectors";
 import { selectMachineriesMemo } from "../../redux/Machineries/machineries.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
 import { selectPayroll } from "../../redux/Salaires/salaires.selectors";
+import { selectUsername } from "../../redux/Auth/Auth.selectors";
 
 // actions
 import { addInfosDossier } from "../../redux/DossierInfos/infosDossier.actions";
@@ -101,8 +102,14 @@ const NouveauDossier = ({
   addMachinerie,
   addSites,
   addInfosDossier,
+  role,
 }) => {
   const navigate = useNavigate();
+  useEffect(() => {
+    if (role === "admin") {
+      navigate("/dossier");
+    }
+  });
 
   const [factureModal, setFactureModal] = useState(false);
   const [salaireModal, setSalaireModal] = useState(false);
@@ -372,6 +379,7 @@ const NouveauDossier = ({
                     values={values}
                     openSubmit={openSubmit}
                     finishedInfos={finishedInfos}
+                    role={role}
                   />
                 </AccordionDetails>
               </Accordion>
@@ -608,6 +616,7 @@ const mapStateToProps = createStructuredSelector({
   salaires: selectSalairesMemo,
   machineries: selectMachineriesMemo,
   payroll: selectPayroll,
+  role: selectUsername,
 });
 
 const mapDispatchToProps = (dispatch) => ({

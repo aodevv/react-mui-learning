@@ -8,7 +8,14 @@ import CardContent from "@mui/material/CardContent";
 import { Box, IconButton } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
-const CardWrapper = ({ title, setEditing, editing, existing, children }) => {
+const CardWrapper = ({
+  title,
+  setEditing,
+  editing,
+  existing,
+  children,
+  role,
+}) => {
   const handleEdit = () => {
     setEditing(!editing);
   };
@@ -22,7 +29,7 @@ const CardWrapper = ({ title, setEditing, editing, existing, children }) => {
             <Grid item lg={10} xl={8}>
               <Box display="flex" justifyContent="space-between">
                 {title}
-                {existing ? (
+                {existing && role !== "admin" ? (
                   <IconButton
                     aria-label="delete"
                     color={editing ? "default" : "primary"}

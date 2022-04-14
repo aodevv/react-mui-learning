@@ -4,6 +4,7 @@ import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
+import { selectUsername, selectAuth } from "../../redux/Auth/Auth.selectors";
 
 // MUI components
 import Grid from "@mui/material/Grid";
@@ -38,7 +39,7 @@ const style = {
   p: "30px 10px",
 };
 
-const SitesPage = ({ dossiers, sites }) => {
+const SitesPage = ({ dossiers, sites, username }) => {
   const [sitesModal, setSitesModal] = useState(false);
   const [siteToEdit, setSiteToEdit] = useState(null);
   const openSites = () => {
@@ -110,6 +111,7 @@ const SitesPage = ({ dossiers, sites }) => {
               size="small"
               startIcon={<AddIcon />}
               onClick={openSites}
+              disabled={username === "admin"}
             >
               Ajouter
             </Button>
@@ -141,6 +143,7 @@ const SitesPage = ({ dossiers, sites }) => {
               numDos={dosOnly}
               setSiteToEdit={setSiteToEdit}
               edit={siteToEdit}
+              role={username}
             />
           </Box>
         </Fade>
@@ -152,6 +155,8 @@ const SitesPage = ({ dossiers, sites }) => {
 const mapStateToProps = createStructuredSelector({
   dossiers: selectDossiers,
   sites: selectSitesMemo,
+  username: selectUsername,
+  isLoggedIn: selectAuth,
 });
 
 export default connect(mapStateToProps)(SitesPage);

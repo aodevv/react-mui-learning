@@ -60,6 +60,7 @@ const SalaireModalForm = ({
   addInfosDossier,
   dossiers,
   dosToEdit,
+  role,
 }) => {
   const allowed = [];
   const [editing, setEditing] = useState(false);
@@ -67,6 +68,9 @@ const SalaireModalForm = ({
   if (globalValues.mpt) allowed.push("mpt");
   if (globalValues.mi) allowed.push("mi");
   if (globalValues.bcg) allowed.push("bcg");
+
+  const isAdmin = role === "admin";
+  const modifAjust = isAdmin ? "Ajustement" : "Modification";
 
   const filteredPrejudices = Object.keys(prejudices)
     .filter((key) => allowed.includes(key))
@@ -83,7 +87,7 @@ const SalaireModalForm = ({
     payrollNameList.push(`${pay.nom} ${pay.prenom}`)
   );
 
-  let INITIAL_FORM_STATE, oldMontant;
+  let INITIAL_FORM_STATE, oldMontant, oldAjust;
 
   if (edit !== null) {
     let siteId = sites.findIndex(
@@ -115,6 +119,7 @@ const SalaireModalForm = ({
       csst: globalValues.salaires[edit].csst,
     };
     oldMontant = globalValues.salaires[edit].montant_rec;
+    oldAjust = globalValues.salaires[edit].ajust;
   } else {
     INITIAL_FORM_STATE = {
       curSal: "",
@@ -177,6 +182,9 @@ const SalaireModalForm = ({
     montant_rec: Yup.number()
       .min(1, "Aucun montant n'est réclamé")
       .required("Champ obligatoire"),
+    ajust: Yup.number()
+      .min(0, "Valeur négative !")
+      .max(oldMontant, "Valeur supérieur montant total"),
   });
 
   const data = {
@@ -196,11 +204,11 @@ const SalaireModalForm = ({
     //ADD total to dossier
     const dosCopy = JSON.parse(JSON.stringify(dossiers));
     const dosId = dosToEdit.id;
-    if (edit === null) dosToEdit.MR = dosToEdit.MR + values.montant_rec;
-    else {
-      const diff = values.montant_rec - oldMontant;
-      dosToEdit.MR = dosToEdit.MR + diff;
-    }
+    const diff =
+      edit === null ? values.montant_rec : values.montant_rec - oldMontant;
+    const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
+    dosToEdit.MR = dosToEdit.MR + diff;
+    dosToEdit.MR = dosToEdit.MR - diffAjust;
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
@@ -211,9 +219,13 @@ const SalaireModalForm = ({
 
     if (values.type === "dab") {
       globalValues.sites[values.site_con].montant_rec =
-        globalValues.sites[values.site_con].montant_rec + values.montant_rec;
+        globalValues.sites[values.site_con].montant_rec + diff;
       globalValues.sites[values.site_con].s_montant_rec =
-        globalValues.sites[values.site_con].s_montant_rec + values.montant_rec;
+        globalValues.sites[values.site_con].s_montant_rec + diff;
+      globalValues.sites[values.site_con].montant_rec =
+        globalValues.sites[values.site_con].montant_rec - diffAjust;
+      globalValues.sites[values.site_con].s_montant_rec =
+        globalValues.sites[values.site_con].s_montant_rec - diffAjust;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     newSalaires = Object.assign([], newSalaires);
@@ -272,9 +284,9 @@ const SalaireModalForm = ({
                     <Grid item>
                       <Box display="flex" justifyContent="space-between">
                         <Typography variant="h5" mb={1}>
-                          {edit !== null ? "Modification" : "Ajout salaire"}
+                          {edit !== null ? modifAjust : "Ajout salaire"}
                         </Typography>
-                        {edit !== null ? (
+                        {edit !== null && !isAdmin ? (
                           <IconButton
                             aria-label="delete"
                             color={!editing ? "default" : "primary"}
@@ -465,19 +477,30 @@ const SalaireModalForm = ({
                         </Grid>
                       </Grid>
                       <Grid item xs={12}>
-                        <Box mt={2}>
-                          <Typography variant="h5">
+                        <Box mt={2} display="flex" alignItems="center">
+                          <Typography variant="h5" mr={2}>
                             Salaire réclamé:{" "}
                             <Box sx={{ fontWeight: 600, display: "inline" }}>
                               {/* {`$ ${ins1000Sep(formatNum(values.cout))}`} */}
                               <SalaireTotal name="montant_rec" />
                             </Box>
                           </Typography>
+                          <Grid item xs={4}>
+                            <Textfield
+                              disabled={!isAdmin}
+                              name="ajust"
+                              label="Ajustement"
+                              type="number"
+                            />
+                          </Grid>
                         </Box>
                       </Grid>
                       <Stack direction="row-reverse" spacing={1} mt={2}>
                         <Submit
-                          disabled={(edit !== null && !editing) || !isValid}
+                          disabled={
+                            !isAdmin &&
+                            ((edit !== null && !editing) || !isValid)
+                          }
                           variant="contained"
                           size="small"
                         >

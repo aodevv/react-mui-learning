@@ -42,6 +42,7 @@ const InfosDossierForm = ({
   existing,
   isValid,
   finishedInfos,
+  role,
 }) => {
   const [editing, setEditing] = useState(existing);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -62,6 +63,7 @@ const InfosDossierForm = ({
         setEditing={setEditing}
         editing={editing}
         title="Infos dossier"
+        role={role}
       >
         <Grid container>
           <Grid item xs={12}>

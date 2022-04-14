@@ -47,11 +47,15 @@ const FactureModalForm = ({
   addInfosDossier,
   dossiers,
   dosToEdit,
+  role,
 }) => {
   const [editing, setEditing] = useState(false);
   const sites = globalValues.sites.map((site) => site.site);
 
-  let INITIAL_FORM_STATE, oldMontant;
+  const isAdmin = role === "admin";
+  const modifAjust = isAdmin ? "Ajustement" : "Modification";
+
+  let INITIAL_FORM_STATE, oldMontant, oldAjust;
   if (edit !== null) {
     let siteId = sites.findIndex(
       (site, index) => site === globalValues.factures[edit].site_con
@@ -69,6 +73,7 @@ const FactureModalForm = ({
       tax: globalValues.factures[edit].tax,
     };
     oldMontant = globalValues.factures[edit].montant_rec;
+    oldAjust = globalValues.factures[edit].ajust;
   } else {
     INITIAL_FORM_STATE = {
       id: "",
@@ -102,6 +107,9 @@ const FactureModalForm = ({
     montant_rec: Yup.number()
       .min(0, "Valeur négatif !")
       .required("Champ obligatoire"),
+    ajust: Yup.number()
+      .min(0, "Valeur négative !")
+      .max(oldMontant, "Valeur supérieur montant total"),
   });
   const allowed = [];
   if (globalValues.dab) allowed.push("dab");
@@ -129,9 +137,11 @@ const FactureModalForm = ({
     //ADD total to dossier
     const diff =
       edit === null ? values.montant_rec : values.montant_rec - oldMontant;
+    const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
     const dosCopy = JSON.parse(JSON.stringify(dossiers));
     const dosId = dosToEdit.id;
     dosToEdit.MR = dosToEdit.MR + diff;
+    dosToEdit.MR = dosToEdit.MR - diffAjust;
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
@@ -145,6 +155,10 @@ const FactureModalForm = ({
         globalValues.sites[values.site_con].montant_rec + diff;
       globalValues.sites[values.site_con].f_montant_rec =
         globalValues.sites[values.site_con].f_montant_rec + diff;
+      globalValues.sites[values.site_con].montant_rec =
+        globalValues.sites[values.site_con].montant_rec - diffAjust;
+      globalValues.sites[values.site_con].f_montant_rec =
+        globalValues.sites[values.site_con].f_montant_rec - diffAjust;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     newFactures = Object.assign([], newFactures);
@@ -205,9 +219,9 @@ const FactureModalForm = ({
                     <Grid item>
                       <Box display="flex" justifyContent="space-between">
                         <Typography variant="h5" mb={1}>
-                          {edit !== null ? "Modification" : "Ajout facture"}
+                          {edit !== null ? modifAjust : "Ajout facture"}
                         </Typography>
-                        {edit !== null ? (
+                        {edit !== null && !isAdmin ? (
                           <IconButton
                             aria-label="delete"
                             color={!editing ? "default" : "primary"}
@@ -280,7 +294,7 @@ const FactureModalForm = ({
                         </Grid>
                         <Grid item xs={6}>
                           <Textfield
-                            disabled
+                            disabled={!isAdmin}
                             name="ajust"
                             label="Ajustement"
                             type="number"
@@ -300,7 +314,10 @@ const FactureModalForm = ({
                       <Stack direction="row-reverse" spacing={1} mt={2}>
                         <Submit
                           variant="contained"
-                          disabled={(edit !== null && !editing) || !isValid}
+                          disabled={
+                            !isAdmin &&
+                            ((edit !== null && !editing) || !isValid)
+                          }
                           size="small"
                         >
                           {edit !== null ? "Modifier" : "Enregistrer"}

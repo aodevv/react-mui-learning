@@ -27,7 +27,7 @@ const LoginForm = ({ LogIn }) => {
       .test(
         "logina",
         "L'identifiant n'existe pas",
-        (value) => value === "admin"
+        (value) => value === "admin" || value === "muni"
       ),
     password: Yup.string()
       .required("Champ obligatoire")
@@ -38,7 +38,11 @@ const LoginForm = ({ LogIn }) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      if (values.login === "admin" && values.login === "admin") LogIn();
+      console.log(values);
+      if (values.login === "admin" && values.password === "admin")
+        LogIn(values.login);
+      if (values.login === "muni" && values.password === "admin")
+        LogIn(values.login);
       values.login = "";
       values.password = "";
 
@@ -109,7 +113,7 @@ const LoginForm = ({ LogIn }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  LogIn: () => dispatch(LogIn()),
+  LogIn: (username) => dispatch(LogIn(username)),
 });
 
 export default connect(null, mapDispatchToProps)(LoginForm);

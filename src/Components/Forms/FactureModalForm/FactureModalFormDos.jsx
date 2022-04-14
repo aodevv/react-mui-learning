@@ -45,21 +45,24 @@ const FactureModalFormDos = ({
   factures,
   setFacToEdit,
   edit,
+  role,
 }) => {
   const [validDate, setValiDate] = useState("2010-01-01");
   const [editing, setEditing] = useState(false);
   var today = new Date();
+  const isAdmin = role === "admin";
+  const modifAjust = isAdmin ? "Ajustement" : "Modification";
 
   var date =
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
-  let INITIAL_FORM_STATE, oldMontant;
+  let INITIAL_FORM_STATE, oldMontant, oldAjust;
   if (edit !== null) {
     var [dosFacEdit, idFacEdit] = edit.split(";");
     idFacEdit = parseInt(idFacEdit);
     const facVals = factures[dosFacEdit].find((fac) => fac.id === idFacEdit);
+    console.log(facVals);
     const sitesList = sites[dosFacEdit].map((site) => site.site);
-    console.log(sitesList);
     let siteId = sitesList.findIndex(
       (site, index) => site === facVals.site_con
     );
@@ -77,6 +80,7 @@ const FactureModalFormDos = ({
       tax: facVals.tax,
     };
     oldMontant = facVals.montant_rec;
+    oldAjust = facVals.ajust;
   } else {
     INITIAL_FORM_STATE = {
       numDos: "",
@@ -109,6 +113,9 @@ const FactureModalFormDos = ({
     montant_rec: Yup.number()
       .min(0, "Valeur négatif !")
       .required("Champ obligatoire"),
+    ajust: Yup.number()
+      .min(0, "Valeur négative !")
+      .max(oldMontant, "Valeur supérieur montant total"),
   });
   const dosCopy = JSON.parse(JSON.stringify(dossiers));
   const sitesCopy = JSON.parse(JSON.stringify(sites));
@@ -164,10 +171,12 @@ const FactureModalFormDos = ({
     const siteId = siteToAdd;
 
     const dosToEdit = dosCopy.find((dossier) => dossier.id === dosId);
-    const diff =
+    const diffMontant =
       edit === null ? values.montant_rec : values.montant_rec - oldMontant;
+    const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
 
-    dosToEdit.MR = dosToEdit.MR + diff;
+    dosToEdit.MR = dosToEdit.MR + diffMontant;
+    dosToEdit.MR = dosToEdit.MR - diffAjust;
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     addInfosDossier(
@@ -179,8 +188,10 @@ const FactureModalFormDos = ({
       const siteDos = sitesCopy[dosId];
       const siteToEdit = siteDos.find((site) => site.site === siteId);
       const otherSites = siteDos.filter((site) => site.site !== siteId);
-      siteToEdit.f_montant_rec = siteToEdit.f_montant_rec + diff;
-      siteToEdit.montant_rec = siteToEdit.montant_rec + diff;
+      siteToEdit.f_montant_rec = siteToEdit.f_montant_rec + diffMontant;
+      siteToEdit.montant_rec = siteToEdit.montant_rec + diffMontant;
+      siteToEdit.f_montant_rec = siteToEdit.f_montant_rec - diffAjust;
+      siteToEdit.montant_rec = siteToEdit.montant_rec - diffAjust;
 
       Object.keys(sitesCopy).forEach((item, key) => {
         if (key === dosId) sitesCopy[key] = [...otherSites, siteToEdit];
@@ -225,9 +236,9 @@ const FactureModalFormDos = ({
                     <Grid item>
                       <Box display="flex" justifyContent="space-between">
                         <Typography variant="h5" mb={1}>
-                          {edit !== null ? "Modification" : "Ajout facture"}
+                          {edit !== null ? modifAjust : "Ajout facture"}
                         </Typography>
-                        {edit !== null ? (
+                        {edit !== null && !isAdmin ? (
                           <IconButton
                             aria-label="delete"
                             color={!editing ? "default" : "primary"}
@@ -321,7 +332,7 @@ const FactureModalFormDos = ({
                         </Grid>
                         <Grid item xs={6}>
                           <Textfield
-                            disabled
+                            disabled={!isAdmin}
                             name="ajust"
                             label="Ajustement"
                             type="number"
@@ -341,7 +352,10 @@ const FactureModalFormDos = ({
                       </Grid>
                       <Stack direction="row-reverse" spacing={1} mt={2}>
                         <Submit
-                          disabled={(edit !== null && !editing) || !isValid}
+                          disabled={
+                            !isAdmin &&
+                            ((edit !== null && !editing) || !isValid)
+                          }
                           variant="contained"
                           size="small"
                         >

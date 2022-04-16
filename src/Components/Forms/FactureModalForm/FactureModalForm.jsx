@@ -141,7 +141,7 @@ const FactureModalForm = ({
     const dosCopy = JSON.parse(JSON.stringify(dossiers));
     const dosId = dosToEdit.id;
     dosToEdit.MR = dosToEdit.MR + diff;
-    dosToEdit.MR = dosToEdit.MR - diffAjust;
+    dosToEdit.MA = dosToEdit.MA - diffAjust;
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
@@ -155,10 +155,6 @@ const FactureModalForm = ({
         globalValues.sites[values.site_con].montant_rec + diff;
       globalValues.sites[values.site_con].f_montant_rec =
         globalValues.sites[values.site_con].f_montant_rec + diff;
-      globalValues.sites[values.site_con].montant_rec =
-        globalValues.sites[values.site_con].montant_rec - diffAjust;
-      globalValues.sites[values.site_con].f_montant_rec =
-        globalValues.sites[values.site_con].f_montant_rec - diffAjust;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     newFactures = Object.assign([], newFactures);

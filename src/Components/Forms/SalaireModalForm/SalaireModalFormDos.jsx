@@ -248,7 +248,7 @@ const SalaireModalFormDos = ({
     const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
 
     dosToEdit.MR = dosToEdit.MR + diffMontant;
-    dosToEdit.MR = dosToEdit.MR - diffAjust;
+    dosToEdit.MA = dosToEdit.MA - diffAjust;
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     addInfosDossier(
@@ -261,8 +261,6 @@ const SalaireModalFormDos = ({
       const otherSites = siteDos.filter((site) => site.site !== siteId);
       siteToEdit.s_montant_rec = siteToEdit.s_montant_rec + diffMontant;
       siteToEdit.montant_rec = siteToEdit.montant_rec + diffMontant;
-      siteToEdit.s_montant_rec = siteToEdit.s_montant_rec - diffAjust;
-      siteToEdit.montant_rec = siteToEdit.montant_rec - diffAjust;
       Object.keys(sitesCopy).forEach((item, key) => {
         if (key === dosId) sitesCopy[key] = [...otherSites, siteToEdit];
       });

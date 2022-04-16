@@ -67,7 +67,7 @@ const InfosDossierForm = ({
       >
         <Grid container>
           <Grid item xs={12}>
-            <Grid item lg={10} xl={8}>
+            <Grid item lg={10} xl={8} sx={{ mx: "auto" }}>
               <Grid container spacing={2} mb={1}>
                 {/* <Grid item xs={4}>
                   <Textfield name="id" label="Identification dossier" />

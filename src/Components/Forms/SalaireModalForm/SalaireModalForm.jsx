@@ -208,7 +208,7 @@ const SalaireModalForm = ({
       edit === null ? values.montant_rec : values.montant_rec - oldMontant;
     const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
     dosToEdit.MR = dosToEdit.MR + diff;
-    dosToEdit.MR = dosToEdit.MR - diffAjust;
+    dosToEdit.MA = dosToEdit.MA - diffAjust;
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
@@ -222,10 +222,6 @@ const SalaireModalForm = ({
         globalValues.sites[values.site_con].montant_rec + diff;
       globalValues.sites[values.site_con].s_montant_rec =
         globalValues.sites[values.site_con].s_montant_rec + diff;
-      globalValues.sites[values.site_con].montant_rec =
-        globalValues.sites[values.site_con].montant_rec - diffAjust;
-      globalValues.sites[values.site_con].s_montant_rec =
-        globalValues.sites[values.site_con].s_montant_rec - diffAjust;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     newSalaires = Object.assign([], newSalaires);

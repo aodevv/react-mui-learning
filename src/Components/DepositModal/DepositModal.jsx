@@ -289,7 +289,7 @@ const TextFieldWrapper = ({
         }
       }
     }
-  }, [aVerse]);
+  }, [aVerse, isVerser]);
 
   return <TextField {...config} />;
 };

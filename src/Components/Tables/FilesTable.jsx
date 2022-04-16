@@ -286,7 +286,6 @@ const FilesTable = ({
             pageSize={pageSize}
             rowsPerPageOptions={[pageSize]}
             checkboxSelection={false}
-            disableColumnMenu
             onRowClick={navigateToDos}
             sx={{
               "& .MuiDataGrid-cell:hover": {

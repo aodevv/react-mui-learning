@@ -139,7 +139,7 @@ const MachinerieModalForm = ({
     const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
 
     dosToEdit.MR = dosToEdit.MR + diffMontant;
-    dosToEdit.MR = dosToEdit.MR - diffAjust;
+    dosToEdit.MA = dosToEdit.MA - diffAjust;
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
@@ -153,11 +153,6 @@ const MachinerieModalForm = ({
         globalValues.sites[values.site_con].montant_rec + diffMontant;
       globalValues.sites[values.site_con].m_montant_rec =
         globalValues.sites[values.site_con].m_montant_rec + diffMontant;
-
-      globalValues.sites[values.site_con].montant_rec =
-        globalValues.sites[values.site_con].montant_rec + diffAjust;
-      globalValues.sites[values.site_con].m_montant_rec =
-        globalValues.sites[values.site_con].m_montant_rec + diffAjust;
     }
     id = ids.length ? ids[ids.length - 1] + 1 : 0;
     newMachine = Object.assign([], newMachine);

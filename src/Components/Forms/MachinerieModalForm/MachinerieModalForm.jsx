@@ -205,7 +205,6 @@ const MachinerieModalForm = ({
               initialValues={{ ...INITIAL_FORM_STATE }}
               validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
-              validateOnMount
             >
               {(formikProps) => {
                 const { values, isValid } = formikProps;
@@ -329,9 +328,7 @@ const MachinerieModalForm = ({
                     <Stack direction="row-reverse" spacing={1} mt={2}>
                       <Submit
                         variant="contained"
-                        disabled={
-                          !isAdmin && ((edit !== null && !editing) || !isValid)
-                        }
+                        disabled={!isAdmin && edit !== null && !editing}
                         size="small"
                       >
                         {edit !== null ? "Modifier" : "Enregistrer"}

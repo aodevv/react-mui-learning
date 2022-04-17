@@ -294,7 +294,7 @@ const SitesModalFormDos = ({
 
                     <Stack direction="row-reverse" spacing={1} mt={2}>
                       <Submit
-                        disabled={!isValid || (edit !== null && !editing)}
+                        disabled={edit !== null && !editing}
                         variant="contained"
                         size="small"
                       >

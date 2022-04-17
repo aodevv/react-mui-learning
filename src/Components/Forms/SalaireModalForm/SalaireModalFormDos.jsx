@@ -533,10 +533,7 @@ const SalaireModalFormDos = ({
                       </Grid>
                       <Stack direction="row-reverse" spacing={1} mt={2}>
                         <Submit
-                          disabled={
-                            !isAdmin &&
-                            ((edit !== null && !editing) || !isValid)
-                          }
+                          disabled={!isAdmin && edit !== null && !editing}
                           variant="contained"
                           size="small"
                         >

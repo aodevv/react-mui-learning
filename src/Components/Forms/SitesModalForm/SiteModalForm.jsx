@@ -209,7 +209,6 @@ const SiteModalForm = ({
               initialValues={{ ...INITIAL_FORM_STATE }}
               validationSchema={FORM_VALIDATION}
               onSubmit={handleSubmit}
-              validateOnMount
             >
               {(formikProps) => {
                 const { values, isValid } = formikProps;
@@ -320,7 +319,7 @@ const SiteModalForm = ({
                       <Submit
                         variant="contained"
                         size="small"
-                        disabled={(edit !== null && !editing) || !isValid}
+                        disabled={edit !== null && !editing}
                       >
                         Enregistrer
                       </Submit>

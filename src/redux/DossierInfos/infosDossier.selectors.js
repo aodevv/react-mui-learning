@@ -11,3 +11,8 @@ export const selectFactures = createSelector(
   [dossiers],
   (dossiers) => dossiers.factures
 );
+
+export const selectPop = createSelector(
+  [dossiers],
+  (dossiers) => dossiers.population
+);

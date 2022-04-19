@@ -8,7 +8,10 @@ import {
 
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import { selectDossiers } from "../../redux/DossierInfos/infosDossier.selectors";
+import {
+  selectDossiers,
+  selectPop,
+} from "../../redux/DossierInfos/infosDossier.selectors";
 import { selectFacturesMemo } from "../../redux/Factures/Factures.selectors";
 import { selectSitesMemo } from "../../redux/Sites/Sites.selectors";
 import { selectMachineriesMemo } from "../../redux/Machineries/machineries.selectors";
@@ -18,6 +21,10 @@ import {
 } from "../../redux/Salaires/salaires.selectors";
 import { selectUsername } from "../../redux/Auth/Auth.selectors";
 
+import { setPopulation } from "../../redux/DossierInfos/infosDossier.actions";
+
+import { TextField } from "@mui/material";
+
 import {
   Grid,
   Typography,
@@ -26,6 +33,7 @@ import {
   Divider,
   Modal,
   Fade,
+  IconButton,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -47,6 +55,8 @@ import AddIcon from "@mui/icons-material/Add";
 import SignpostOutlinedIcon from "@mui/icons-material/SignpostOutlined";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PeopleIcon from "@mui/icons-material/People";
+import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/Check";
 
 const style = {
   position: "absolute",
@@ -70,7 +80,11 @@ const Dashboard = ({
   factures,
   payroll,
   username,
+  population,
+  setPopulation,
 }) => {
+  const [editing, setEditing] = useState(false);
+  const [pop, setPop] = useState(population);
   const [factureModal, setFactureModal] = useState(false);
   const openFacture = () => {
     setFactureModal(true);
@@ -131,6 +145,15 @@ const Dashboard = ({
     bcg: "Bris du couvert de glace",
   };
 
+  const handlePopChange = (e) => {
+    setPop(e.target.value);
+  };
+
+  const handlePopSubmit = () => {
+    setPopulation(pop);
+    setEditing(false);
+  };
+
   return (
     <>
       <Box
@@ -170,11 +193,48 @@ const Dashboard = ({
                       {username}
                     </Typography>
                   </Box>
-                  <Box display="flex" justifyContent="center">
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    mb={isSmall ? 3 : 8}
+                  >
                     <PeopleIcon fontSize="large" />
-                    <Typography mb={isSmall ? 3 : 8} ml={2} variant="h4">
-                      Population <b>10,000</b>
-                    </Typography>
+                    {editing ? (
+                      <Box mx={2}>
+                        <TextField
+                          variant="outlined"
+                          margin="dense"
+                          size="small"
+                          value={pop}
+                          onChange={handlePopChange}
+                        />
+                      </Box>
+                    ) : (
+                      <Typography mx={2} variant="h4">
+                        Population{" "}
+                        <b>{ins1000Sep(formatNum(pop)).split(".")[0]}</b>
+                      </Typography>
+                    )}
+                    {editing ? (
+                      <IconButton
+                        aria-label="delete"
+                        color="primary"
+                        size="medium"
+                        onClick={handlePopSubmit}
+                      >
+                        <CheckIcon fontSize="inherit" />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        aria-label="delete"
+                        color={!editing ? "default" : "primary"}
+                        size="medium"
+                        onClick={() => setEditing(true)}
+                      >
+                        <EditIcon fontSize="inherit" />
+                      </IconButton>
+                    )}
                   </Box>
 
                   <Grid container>
@@ -490,6 +550,11 @@ const mapStateToProps = createStructuredSelector({
   salaires: selectSalairesMemo,
   payroll: selectPayroll,
   username: selectUsername,
+  population: selectPop,
 });
 
-export default connect(mapStateToProps)(Dashboard);
+const mapDispatchToProps = (dispatch) => ({
+  setPopulation: (newPop) => dispatch(setPopulation(newPop)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

@@ -22,6 +22,8 @@ import UndoIcon from "@mui/icons-material/Undo";
 import CloseIcon from "@mui/icons-material/Close";
 import InputAdornment from "@mui/material/InputAdornment";
 import EditIcon from "@mui/icons-material/Edit";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 // FORMIK and YUP
 import { Formik, Form } from "formik";
@@ -515,6 +517,23 @@ const SalaireModalForm = ({
                           startIcon={<CloseIcon />}
                         >
                           Annuler
+                        </Button>
+                      </Stack>
+                      <Stack direction="row-reverse" spacing={1} mt={2}>
+                        <Button
+                          size="small"
+                          color="error"
+                          variant="contained"
+                          startIcon={<CloudUploadIcon />}
+                        >
+                          Upload
+                        </Button>
+                        <Button
+                          size="small"
+                          color="error"
+                          startIcon={<RemoveRedEyeIcon />}
+                        >
+                          Aperçuu
                         </Button>
                       </Stack>
                     </Grid>

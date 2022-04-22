@@ -27,11 +27,37 @@ const LoginForm = ({ LogIn }) => {
       .test(
         "logina",
         "L'identifiant n'existe pas",
-        (value) => value === "admin" || value === "muni"
+        (value) => value === "admin" || value === "muni" || value === "user"
       ),
     password: Yup.string()
       .required("Champ obligatoire")
-      .test("pwd", "Mot de passe incorrect", (value) => value === "admin"),
+      .when("login", {
+        is: "admin", // alternatively: (val) => val == true
+        then: (schema) =>
+          schema.test(
+            "pwd",
+            "Mot de passe incorrect",
+            (value) => value === "admin"
+          ),
+      })
+      .when("login", {
+        is: "muni", // alternatively: (val) => val == true
+        then: (schema) =>
+          schema.test(
+            "pwd",
+            "Mot de passe incorrect",
+            (value) => value === "muni"
+          ),
+      })
+      .when("login", {
+        is: "user", // alternatively: (val) => val == true
+        then: (schema) =>
+          schema.test(
+            "pwd",
+            "Mot de passe incorrect",
+            (value) => value === "user"
+          ),
+      }),
   });
 
   const resetAndExit = (values) => {
@@ -41,7 +67,9 @@ const LoginForm = ({ LogIn }) => {
       console.log(values);
       if (values.login === "admin" && values.password === "admin")
         LogIn(values.login);
-      if (values.login === "muni" && values.password === "admin")
+      if (values.login === "muni" && values.password === "muni")
+        LogIn(values.login);
+      if (values.login === "user" && values.password === "user")
         LogIn(values.login);
       values.login = "";
       values.password = "";

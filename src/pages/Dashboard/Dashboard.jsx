@@ -45,6 +45,7 @@ import FactureModalFormDos from "../../Components/Forms/FactureModalForm/Facture
 import SalaireModalFormDos from "../../Components/Forms/SalaireModalForm/SalaireModalFormDos";
 import MachinerieModalFormDos from "../../Components/Forms/MachinerieModalForm/MachinerieModalFormDos";
 import SitesModalFormDos from "../../Components/Forms/SitesModalForm/SitesModalFormDos";
+import InfosModal from "../../Components/Forms/InfosModal/InfosModal";
 
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PrecisionManufacturingOutlinedIcon from "@mui/icons-material/PrecisionManufacturingOutlined";
@@ -57,6 +58,7 @@ import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PeopleIcon from "@mui/icons-material/People";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const style = {
   position: "absolute",
@@ -64,6 +66,21 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
+  bgcolor: "background.paper",
+  border: "0px solid #000",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: "30px 10px",
+};
+
+const styleScroll = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  height: 600,
+  overflowY: "scroll",
   bgcolor: "background.paper",
   border: "0px solid #000",
   boxShadow: 24,
@@ -113,6 +130,15 @@ const Dashboard = ({
   const closeSites = () => {
     setSitesModal(false);
   };
+
+  const [infosModal, setInfosModal] = useState(false);
+  const openInfos = () => {
+    setInfosModal(true);
+  };
+  const closeInfos = () => {
+    setInfosModal(false);
+  };
+
   const navigate = useNavigate();
 
   const isSmall = useMediaQuery("(max-width:1200px)");
@@ -177,7 +203,31 @@ const Dashboard = ({
                 },
               }}
             >
-              <Paper elevation={3}>
+              <Paper elevation={3} sx={{ position: "relative" }}>
+                <Box
+                  position="absolute"
+                  right={0}
+                  display="flex"
+                  alignItems="center"
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{ cursor: "pointer" }}
+                    color="primary"
+                    onClick={() => openInfos()}
+                  >
+                    Infos
+                  </Typography>
+                  <IconButton
+                    aria-label="delete"
+                    color="primary"
+                    size="medium"
+                    onClick={() => openInfos()}
+                  >
+                    <InfoOutlinedIcon fontSize="inherit" />
+                  </IconButton>
+                </Box>
+
                 <Box p={3} sx={{ textAlign: "center", height: "30%" }}>
                   <Box
                     mb={isSmall ? 3 : 8}
@@ -187,10 +237,6 @@ const Dashboard = ({
                   >
                     <Typography variant="h2" mr={3}>
                       Municipalité X
-                    </Typography>
-                    <Typography variant="h2">-</Typography>
-                    <Typography variant="h3" ml={3}>
-                      {username}
                     </Typography>
                   </Box>
                   <Box
@@ -534,6 +580,17 @@ const Dashboard = ({
                 sites={sites}
                 numDos={dosOnly}
               />
+            </Box>
+          </Fade>
+        </Modal>
+        <Modal
+          open={infosModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Fade in={infosModal}>
+            <Box sx={styleScroll}>
+              <InfosModal edit={null} closeModal={closeInfos} />
             </Box>
           </Fade>
         </Modal>

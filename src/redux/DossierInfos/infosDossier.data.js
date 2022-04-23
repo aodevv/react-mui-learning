@@ -252,3 +252,20 @@ export const facturesAll = {
   8: [],
   9: [],
 };
+
+export const infosMuni = {
+  nom: "Quebec",
+  adress: "10 Rue Pierre-Olivier-Chauveau",
+  ville: "Quebec",
+  code_pos: "23027",
+  mrc: "-------",
+  region: "Centre",
+  rfu: "-------",
+  contact: "+1 418-651-9890",
+  fct: "-------",
+  num_telph: "+1 418-651-9890",
+  num_telcop: "+1 418-651-9890",
+  adress_cour: "10 Rue Pierre-Olivier-Chauveau",
+  taux_csst: 2.5,
+  taux_ae: "-------",
+};

@@ -79,7 +79,7 @@ const styleScroll = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  height: 600,
+  height: 650,
   overflowY: "scroll",
   bgcolor: "background.paper",
   border: "0px solid #000",
@@ -590,7 +590,11 @@ const Dashboard = ({
         >
           <Fade in={infosModal}>
             <Box sx={styleScroll}>
-              <InfosModal edit={null} closeModal={closeInfos} />
+              <InfosModal
+                edit={null}
+                closeModal={closeInfos}
+                username={username}
+              />
             </Box>
           </Fade>
         </Modal>

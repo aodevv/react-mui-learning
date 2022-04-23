@@ -8,6 +8,11 @@ export const addFactures = (item) => ({
   payload: item,
 });
 
+export const addInfosMuni = (item) => ({
+  type: "ADD_INFOS",
+  payload: item,
+});
+
 export const setPopulation = (item) => ({
   type: "SET_POP",
   payload: item,

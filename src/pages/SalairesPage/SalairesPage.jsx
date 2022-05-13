@@ -189,7 +189,7 @@ const SalairesPage = ({ salaires, dossiers, sites, payroll, username }) => {
               size="small"
               startIcon={<AddIcon />}
               onClick={openPay}
-              disabled={username === "admin"}
+              disabled={username !== "admin"}
             >
               Ajouter
             </Button>

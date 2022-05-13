@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+
 import { connect } from "react-redux";
 import { addSites } from "../../../redux/Sites/Sites.actions";
+import { selectSitesList } from "../../../redux/Sites/Sites.selectors";
 
 // ICONS
 import {
@@ -31,6 +33,7 @@ import Textfield from "../../../Components/FormUI/Textfield";
 import Submit from "../../../Components/FormUI/Submit";
 import Select from "../../FormUI/SelectFilterSites";
 import SelectDossier from "../../FormUI/SelectDossier";
+import { createStructuredSelector } from "reselect";
 
 const SiteTempData = {
   "": "Selectioner",
@@ -46,6 +49,7 @@ const SiteTempData = {
 
 const SitesModalFormDos = ({
   sites,
+  sitesList,
   numDos,
   addSites,
   closeModal,
@@ -221,7 +225,7 @@ const SitesModalFormDos = ({
                           label="Site"
                           edit={edit}
                           sites={sites}
-                          allSites={SiteTempData}
+                          allSites={sitesList}
                           siteIfEdit={values.site}
                           disabled={edit !== null}
                         />
@@ -329,8 +333,12 @@ const SitesModalFormDos = ({
   );
 };
 
+const mapStateToProps = createStructuredSelector({
+  sitesList: selectSitesList,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   addSites: (newSites) => dispatch(addSites(newSites)),
 });
 
-export default connect(null, mapDispatchToProps)(SitesModalFormDos);
+export default connect(mapStateToProps, mapDispatchToProps)(SitesModalFormDos);

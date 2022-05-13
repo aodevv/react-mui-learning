@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { selectSitesMemo } from "../../../redux/Sites/Sites.selectors";
+import { selectSitesList } from "../../../redux/Sites/Sites.selectors";
 import { addSites } from "../../../redux/Sites/Sites.actions";
 
 // ICONS
@@ -50,6 +51,7 @@ const SiteModalForm = ({
   globalValues,
   existing,
   allSites,
+  sitesList,
   addSites,
   edit,
   setSiteToEdit,
@@ -61,7 +63,7 @@ const SiteModalForm = ({
   const sites = globalValues.sites.map((site) => site.site);
 
   if (edit !== null) {
-    const sitesArr = Object.keys(SiteTempData).map((key) => SiteTempData[key]);
+    const sitesArr = Object.keys(sitesList).map((key) => sitesList[key]);
     console.log(sitesArr);
     console.log(sites);
     console.log(edit);
@@ -113,19 +115,19 @@ const SiteModalForm = ({
       .max(100, "Ne peut pas dépasser 100%"),
   });
 
-  const test = Object.keys(SiteTempData)
+  const test = Object.keys(sitesList)
     .filter((key) => !sites.includes(key))
     .reduce((obj, key) => {
-      obj[key] = SiteTempData[key];
+      obj[key] = sitesList[key];
       return obj;
     }, {});
 
-  const filteredSites = Object.keys(SiteTempData).filter(
-    (key) => !sites.includes(SiteTempData[key])
+  const filteredSites = Object.keys(sitesList).filter(
+    (key) => !sites.includes(sitesList[key])
   );
 
-  const filteredSitesEdit = Object.keys(SiteTempData).filter((key) =>
-    sites.includes(SiteTempData[key])
+  const filteredSitesEdit = Object.keys(sitesList).filter((key) =>
+    sites.includes(sitesList[key])
   );
 
   const handleSubmit = (values) => {
@@ -136,11 +138,11 @@ const SiteModalForm = ({
       id = parseInt(edit);
       site = filteredSitesEdit[parseInt(values.site)];
     } else {
-      let SiteTempDataArr = [];
-      Object.keys(SiteTempData).forEach((key) =>
-        SiteTempDataArr.push(SiteTempData[key])
+      let sitesListArr = [];
+      Object.keys(sitesList).forEach((key) =>
+        sitesListArr.push(sitesList[key])
       );
-      const newId = SiteTempDataArr.findIndex(
+      const newId = sitesListArr.findIndex(
         (site) => site === filteredSites[parseInt(values.site)]
       );
       site = filteredSites[parseInt(values.site)];
@@ -354,6 +356,7 @@ const SiteModalForm = ({
 
 const mapStateToProps = createStructuredSelector({
   allSites: selectSitesMemo,
+  sitesList: selectSitesList,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -95,7 +95,14 @@ const LoginForm = ({ LogIn }) => {
                 const { values, handleReset, submitForm, isValid } =
                   formikProps;
                 return (
-                  <Form>
+                  <Form
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        submitForm();
+                        if (isValid) resetAndExit(values);
+                      }
+                    }}
+                  >
                     <Grid container>
                       <Grid item xs={12}>
                         <Typography align="center" variant="h5" my={8}>

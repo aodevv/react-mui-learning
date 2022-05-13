@@ -1,7 +1,8 @@
-import { sitesAll } from "./Sites.data";
+import { sitesAll, sitesList } from "./Sites.data";
 
 const INITIAL_STATE = {
   sites: sitesAll,
+  sitesList: sitesList,
 };
 
 const sitesReducer = (state = INITIAL_STATE, action) => {
@@ -10,6 +11,11 @@ const sitesReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         sites: action.payload,
+      };
+    case "ADD_SITES_TO_LIST":
+      return {
+        ...state,
+        sitesList: action.payload,
       };
     default:
       return state;

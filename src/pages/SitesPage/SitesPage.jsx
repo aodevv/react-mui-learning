@@ -24,6 +24,7 @@ import AddIcon from "@mui/icons-material/Add";
 import SitesTable from "../../Components/Tables/Sites/SitesTable";
 
 import SitesModalFormDos from "../../Components/Forms/SitesModalForm/SitesModalFormDos";
+import NewSiteModalForm from "../../Components/Forms/SitesModalForm/NewSiteModalForm";
 import SitesFilters from "../../Components/Filters/SitesFilters/SitesFilters";
 
 const style = {
@@ -41,12 +42,19 @@ const style = {
 
 const SitesPage = ({ dossiers, sites, username }) => {
   const [sitesModal, setSitesModal] = useState(false);
+  const [newSitesModal, setNewSitesModal] = useState(false);
   const [siteToEdit, setSiteToEdit] = useState(null);
   const openSites = () => {
     setSitesModal(true);
   };
   const closeSites = () => {
     setSitesModal(false);
+  };
+  const openNewSites = () => {
+    setNewSitesModal(true);
+  };
+  const closeNewSites = () => {
+    setNewSitesModal(false);
   };
   let flatSites = [];
   Object.keys(sites).forEach((item) =>
@@ -123,6 +131,16 @@ const SitesPage = ({ dossiers, sites, username }) => {
             >
               Supprimer
             </Button>
+            <Button
+              variant="contained"
+              disabled={username !== "admin"}
+              color="error"
+              size="small"
+              onClick={openNewSites}
+              startIcon={<AddIcon />}
+            >
+              Ajout site inexistant
+            </Button>
           </Stack>
           <Box mt={2} sx={{ height: "calc(100% - 64px)" }}>
             <SitesTable setSiteToEdit={setSiteToEdit} data={filteredSites} />
@@ -143,6 +161,21 @@ const SitesPage = ({ dossiers, sites, username }) => {
               numDos={dosOnly}
               setSiteToEdit={setSiteToEdit}
               edit={siteToEdit}
+              role={username}
+            />
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        open={newSitesModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Fade in={newSitesModal}>
+          <Box sx={style}>
+            <NewSiteModalForm
+              closeModal={closeNewSites}
+              sites={sites}
               role={username}
             />
           </Box>

@@ -97,3 +97,14 @@ export const sitesAll = {
   "2021MU09": [],
   "2021MU10": [],
 };
+
+export const sitesList = {
+  "Site 1": "Site 1",
+  "Site 2": "Site 2",
+  "Site 3": "Site 3",
+  "Site 4": "Site 4",
+  "Site 5": "Site 5",
+  "Site 6": "Site 6",
+  "Site 7": "Site 7",
+  "Site 16": "Site 16",
+};

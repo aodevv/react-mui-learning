@@ -490,8 +490,6 @@ const ExistingDossier = ({
                   </Modal>
                 </Grid>
               </Grid>
-
-              <Button onClick={submitForm}>Submit</Button>
             </Form>
           );
         }}

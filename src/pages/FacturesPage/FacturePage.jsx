@@ -60,7 +60,7 @@ const FacturePage = ({ factures, sites, dossiers, username, isLoggedIn }) => {
       flatFactures.push({
         ...fac,
         id: `${item};${fac.id}`,
-        dos: parseInt(item),
+        dos: item,
       });
     })
   );

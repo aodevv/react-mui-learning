@@ -104,6 +104,7 @@ const SalaireModalFormDos = ({
       rqap: salVals.rqap,
       fss: salVals.fss,
       csst: salVals.csst,
+      role: role,
     };
     oldMontant = salVals.montant_rec;
     oldAjust = salVals.ajust;
@@ -131,6 +132,7 @@ const SalaireModalFormDos = ({
       rqap: false,
       fss: false,
       csst: false,
+      role: role,
     };
   }
 
@@ -164,9 +166,12 @@ const SalaireModalFormDos = ({
     Hsup2: Yup.number().min(0, "Valeur négative !"),
     Tsup: Yup.number().min(0, "Valeur négative !"),
     Tsup2: Yup.number().min(0, "Valeur négative !"),
-    ajust: Yup.number()
-      .min(0, "Valeur négative !")
-      .max(oldMontant, "Valeur supérieur montant total"),
+    ajust: Yup.number().when("role", {
+      is: (role) => role === "admin",
+      then: Yup.number()
+        .min(0, "Valeur négative !")
+        .max(oldMontant, "Valeur supérieur montant total"),
+    }),
   });
   const dosCopy = JSON.parse(JSON.stringify(dossiers));
   const sitesCopy = JSON.parse(JSON.stringify(sites));

@@ -73,6 +73,7 @@ const FactureModalForm = ({
       fournis: globalValues.factures[edit].fournis,
       site_con: siteId,
       tax: globalValues.factures[edit].tax,
+      role: role,
     };
     oldMontant = globalValues.factures[edit].montant_rec;
     oldAjust = globalValues.factures[edit].ajust;
@@ -87,6 +88,7 @@ const FactureModalForm = ({
       ajust: 0,
       site_con: "",
       tax: false,
+      role: role,
     };
   }
 
@@ -109,9 +111,12 @@ const FactureModalForm = ({
     montant_rec: Yup.number()
       .min(0, "Valeur négatif !")
       .required("Champ obligatoire"),
-    ajust: Yup.number()
-      .min(0, "Valeur négative !")
-      .max(oldMontant, "Valeur supérieur montant total"),
+    ajust: Yup.number().when("role", {
+      is: (role) => role === "admin",
+      then: Yup.number()
+        .min(0, "Valeur négative !")
+        .max(oldMontant, "Valeur supérieur montant total"),
+    }),
   });
   const allowed = [];
   if (globalValues.dab) allowed.push("dab");
@@ -130,18 +135,21 @@ const FactureModalForm = ({
     let id;
     let newFactures = globalValues.factures;
 
-    const ids = newFactures
-      .map((fac) => fac.id)
-      .sort(function (a, b) {
-        return a - b;
-      });
+    const ids =
+      newFactures.length > 0
+        ? newFactures
+            .map((fac) => fac.id)
+            .sort(function (a, b) {
+              return a - b;
+            })
+        : [];
 
     //ADD total to dossier
     const diff =
       edit === null ? values.montant_rec : values.montant_rec - oldMontant;
     const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
     const dosCopy = JSON.parse(JSON.stringify(dossiers));
-    const dosId = dosToEdit.id;
+    const dosId = edit === null ? globalValues.id : dosToEdit.id;
     dosToEdit.MR = dosToEdit.MR + diff;
     dosToEdit.MA = dosToEdit.MA - diffAjust;
 

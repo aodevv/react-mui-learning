@@ -124,6 +124,7 @@ const NouveauDossier = ({
   const [salToEdit, setSalToEdit] = useState(null);
   const [machToEdit, setMachToEdit] = useState(null);
   const [siteToEdit, setSiteToEdit] = useState(null);
+  const [curInfosDos, setCurInfosDos] = useState(null);
 
   const dosIds = dossiers.map((dos) => dos.id);
 
@@ -242,6 +243,8 @@ const NouveauDossier = ({
       mi: values.mi,
       bcg: values.bcg,
     };
+
+    setCurInfosDos(infoDos);
 
     addInfosDossier([...dossiers, infoDos]);
     let newFacts = factures;
@@ -495,6 +498,7 @@ const NouveauDossier = ({
                     <Fade in={factureModal}>
                       <Box sx={style}>
                         <FactureModalForm
+                          dosToEdit={curInfosDos}
                           setFacToEdit={setFacToEdit}
                           edit={facToEdit}
                           globalValues={values}
@@ -543,6 +547,7 @@ const NouveauDossier = ({
                     <Fade in={salaireModal}>
                       <Box sx={style}>
                         <SalaireModalForm
+                          dosToEdit={curInfosDos}
                           edit={salToEdit}
                           setSalToEdit={setSalToEdit}
                           payroll={payroll}
@@ -589,6 +594,7 @@ const NouveauDossier = ({
                     <Fade in={machinerieModal}>
                       <Box sx={style}>
                         <MachinerieModalForm
+                          dosToEdit={curInfosDos}
                           setMachToEdit={setMachToEdit}
                           edit={machToEdit}
                           globalValues={values}

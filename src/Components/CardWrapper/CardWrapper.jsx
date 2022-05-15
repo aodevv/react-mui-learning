@@ -26,7 +26,7 @@ const CardWrapper = ({
           disableTypography={false}
           titleTypographyProps={{ fontWeight: "bold" }}
           title={
-            <Grid item lg={10} xl={8}>
+            <Grid item lg={10} xl={8} sx={{ mx: "auto" }}>
               <Box display="flex" justifyContent="space-between">
                 {title}
                 {existing && role !== "admin" ? (
@@ -34,6 +34,7 @@ const CardWrapper = ({
                     aria-label="delete"
                     color={editing ? "default" : "primary"}
                     size="large"
+                    disabled={true}
                     onClick={handleEdit}
                   >
                     <EditIcon fontSize="inherit" />

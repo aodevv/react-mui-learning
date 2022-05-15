@@ -98,7 +98,6 @@ const FacturesFilters = ({ factures, setFilteredFactures, sites, numDos }) => {
   };
 
   const filterTable = () => {
-    console.log(factures);
     const fil = factures
       .filter((fac) => fac.montant_rec > mrFilter)
       .filter((fac) => (taxSw ? fac.tax === tax : true))

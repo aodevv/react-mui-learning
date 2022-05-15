@@ -119,6 +119,7 @@ const SalaireModalForm = ({
       rqap: globalValues.salaires[edit].rqap,
       fss: globalValues.salaires[edit].fss,
       csst: globalValues.salaires[edit].csst,
+      role: role,
     };
     oldMontant = globalValues.salaires[edit].montant_rec;
     oldAjust = globalValues.salaires[edit].ajust;
@@ -146,6 +147,7 @@ const SalaireModalForm = ({
       rqap: false,
       fss: false,
       csst: false,
+      role: role,
     };
   }
 
@@ -184,9 +186,12 @@ const SalaireModalForm = ({
     montant_rec: Yup.number()
       .min(1, "Aucun montant n'est réclamé")
       .required("Champ obligatoire"),
-    ajust: Yup.number()
-      .min(0, "Valeur négative !")
-      .max(oldMontant, "Valeur supérieur montant total"),
+    ajust: Yup.number().when("role", {
+      is: (role) => role === "admin",
+      then: Yup.number()
+        .min(0, "Valeur négative !")
+        .max(oldMontant, "Valeur supérieur montant total"),
+    }),
   });
 
   const data = {
@@ -245,7 +250,7 @@ const SalaireModalForm = ({
       let newSals = JSON.parse(JSON.stringify(salaires));
       const dosInt = globalValues.numero;
       Object.keys(newSals).forEach(function (key, index) {
-        if (parseInt(key) === dosInt) {
+        if (key === dosInt) {
           newSals[key] = newSalaires;
         }
       });

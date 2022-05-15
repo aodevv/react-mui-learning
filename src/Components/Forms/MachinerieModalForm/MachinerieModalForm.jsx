@@ -88,6 +88,7 @@ const MachinerieModalForm = ({
       taux_fonc: globalValues.machineries[edit].taux_fonc,
       cout: globalValues.machineries[edit].cout,
       ajust: globalValues.machineries[edit].ajust,
+      role: role,
     };
     oldCout = globalValues.machineries[edit].cout;
     oldAjust = globalValues.machineries[edit].ajust;
@@ -104,6 +105,7 @@ const MachinerieModalForm = ({
       taux_fonc: 0,
       cout: 0,
       ajust: 0,
+      role: role,
     };
   }
 
@@ -119,9 +121,12 @@ const MachinerieModalForm = ({
     hrs_fonc: Yup.number().min(0, "Valeur négative !"),
     hrs_stat: Yup.number().min(0, "Valeur négative !"),
     taux_fonc: Yup.number().min(0, "Valeur négative !"),
-    ajust: Yup.number()
-      .min(0, "Valeur négative !")
-      .max(oldCout, "Valeur supérieur au coût total"),
+    ajust: Yup.number().when("role", {
+      is: (role) => role === "admin",
+      then: Yup.number()
+        .min(0, "Valeur négative !")
+        .max(oldCout, "Valeur supérieur montant total"),
+    }),
   });
 
   const handleSubmit = (values) => {

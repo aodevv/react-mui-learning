@@ -118,9 +118,12 @@ const MachinerieModalFormDos = ({
     hrs_fonc: Yup.number().min(0, "Valeur négative !"),
     hrs_stat: Yup.number().min(0, "Valeur négative !"),
     taux_fonc: Yup.number().min(0, "Valeur négative !"),
-    ajust: Yup.number()
-      .min(0, "Valeur négative !")
-      .max(oldCout, "Valeur supérieur au coût total"),
+    ajust: Yup.number().when("role", {
+      is: (role) => role === "admin",
+      then: Yup.number()
+        .min(0, "Valeur négative !")
+        .max(oldCout, "Valeur supérieur montant total"),
+    }),
   });
 
   const dosCopy = JSON.parse(JSON.stringify(dossiers));

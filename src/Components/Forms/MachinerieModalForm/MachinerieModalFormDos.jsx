@@ -5,6 +5,8 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { selectPop } from "../../../redux/DossierInfos/infosDossier.selectors";
 import { addMachinerie } from "../../../redux/Machineries/machineries.actions";
 import { addSites } from "../../../redux/Sites/Sites.actions";
 import { addInfosDossier } from "../../../redux/DossierInfos/infosDossier.actions";
@@ -51,6 +53,7 @@ const MachinerieModalFormDos = ({
   edit,
   setMachToEdit,
   role,
+  population,
 }) => {
   const [validDate, setValiDate] = useState("2010-01-01");
   const [editing, setEditing] = useState(false);
@@ -185,13 +188,15 @@ const MachinerieModalFormDos = ({
     const dosToEdit = dosCopy.find((dossier) => dossier.id === dosId);
     console.log(oldCout);
     const diffMontant = edit === null ? values.cout : values.cout - oldCout;
-    const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
-    console.log(oldAjust);
-    console.log(values.ajust);
-    console.log(diffAjust);
+    const diffAjust = values.ajust - oldAjust;
 
     dosToEdit.MR = dosToEdit.MR + diffMontant;
     dosToEdit.MA = dosToEdit.MA - diffAjust;
+
+    if (population > 0) {
+      dosToEdit.Participation =
+        dosToEdit.MR > 3 * population ? 3 * population : dosToEdit.MR;
+    }
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     addInfosDossier(
@@ -427,10 +432,17 @@ const MachinerieModalFormDos = ({
   );
 };
 
+const mapStateToProps = createStructuredSelector({
+  population: selectPop,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   addMachinerie: (newMach) => dispatch(addMachinerie(newMach)),
   addInfosDossier: (newInfos) => dispatch(addInfosDossier(newInfos)),
   addSites: (newSites) => dispatch(addSites(newSites)),
 });
 
-export default connect(null, mapDispatchToProps)(MachinerieModalFormDos);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MachinerieModalFormDos);

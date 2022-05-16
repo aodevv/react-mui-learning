@@ -2,10 +2,13 @@ import React, { useState } from "react";
 
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
+import {
+  selectDossiers,
+  selectPop,
+} from "../../../redux/DossierInfos/infosDossier.selectors";
 import { selectSalairesMemo } from "../../../redux/Salaires/salaires.selectors";
 import { addSalaires } from "../../../redux/Salaires/salaires.actions";
 
-import { selectDossiers } from "../../../redux/DossierInfos/infosDossier.selectors";
 import { addInfosDossier } from "../../../redux/DossierInfos/infosDossier.actions";
 
 // ICONS
@@ -63,6 +66,7 @@ const SalaireModalForm = ({
   dossiers,
   dosToEdit,
   role,
+  population,
 }) => {
   const allowed = [];
   const [editing, setEditing] = useState(false);
@@ -213,9 +217,14 @@ const SalaireModalForm = ({
     const dosId = dosToEdit.id;
     const diff =
       edit === null ? values.montant_rec : values.montant_rec - oldMontant;
-    const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
+    const diffAjust = values.ajust - oldAjust;
     dosToEdit.MR = dosToEdit.MR + diff;
     dosToEdit.MA = dosToEdit.MA - diffAjust;
+
+    if (population > 0) {
+      dosToEdit.Participation =
+        dosToEdit.MR > 3 * population ? 3 * population : dosToEdit.MR;
+    }
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
@@ -556,6 +565,7 @@ const SalaireModalForm = ({
 const mapStateToProps = createStructuredSelector({
   salaires: selectSalairesMemo,
   dossiers: selectDossiers,
+  population: selectPop,
 });
 
 const mapDispatchToProps = (dispatch) => ({

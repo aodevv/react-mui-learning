@@ -5,7 +5,10 @@ import { createStructuredSelector } from "reselect";
 import { selectFacturesMemo } from "../../../redux/Factures/Factures.selectors";
 import { addFactures } from "../../../redux/Factures/Factures.actions";
 
-import { selectDossiers } from "../../../redux/DossierInfos/infosDossier.selectors";
+import {
+  selectDossiers,
+  selectPop,
+} from "../../../redux/DossierInfos/infosDossier.selectors";
 import { addInfosDossier } from "../../../redux/DossierInfos/infosDossier.actions";
 
 // FORMIK and YUP
@@ -50,6 +53,7 @@ const FactureModalForm = ({
   dossiers,
   dosToEdit,
   role,
+  population,
 }) => {
   const [editing, setEditing] = useState(false);
   const sites = globalValues.sites.map((site) => site.site);
@@ -150,8 +154,14 @@ const FactureModalForm = ({
     const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
     const dosCopy = JSON.parse(JSON.stringify(dossiers));
     const dosId = edit === null ? globalValues.id : dosToEdit.id;
+
     dosToEdit.MR = dosToEdit.MR + diff;
+
     dosToEdit.MA = dosToEdit.MA - diffAjust;
+    if (population > 0) {
+      dosToEdit.Participation =
+        dosToEdit.MR > 3 * population ? 3 * population : dosToEdit.MR;
+    }
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
@@ -374,6 +384,7 @@ const FactureModalForm = ({
 const mapStateToProps = createStructuredSelector({
   factures: selectFacturesMemo,
   dossiers: selectDossiers,
+  population: selectPop,
 });
 
 const mapDispatchToProps = (dispatch) => ({

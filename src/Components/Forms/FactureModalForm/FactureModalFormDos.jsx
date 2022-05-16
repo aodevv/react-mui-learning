@@ -5,6 +5,8 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+import { selectPop } from "../../../redux/DossierInfos/infosDossier.selectors";
 import { addFactures } from "../../../redux/Factures/Factures.actions";
 
 import { addSites } from "../../../redux/Sites/Sites.actions";
@@ -48,6 +50,7 @@ const FactureModalFormDos = ({
   setFacToEdit,
   edit,
   role,
+  population,
 }) => {
   const [validDate, setValiDate] = useState("2010-01-01");
   const [editing, setEditing] = useState(false);
@@ -175,10 +178,15 @@ const FactureModalFormDos = ({
     const dosToEdit = dosCopy.find((dossier) => dossier.id === dosId);
     const diffMontant =
       edit === null ? values.montant_rec : values.montant_rec - oldMontant;
-    const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
+    const diffAjust = values.ajust - oldAjust;
 
     dosToEdit.MR = dosToEdit.MR + diffMontant;
     dosToEdit.MA = dosToEdit.MA - diffAjust;
+
+    if (population > 0) {
+      dosToEdit.Participation =
+        dosToEdit.MR > 3 * population ? 3 * population : dosToEdit.MR;
+    }
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     addInfosDossier(
@@ -407,10 +415,17 @@ const FactureModalFormDos = ({
   );
 };
 
+const mapStateToProps = createStructuredSelector({
+  population: selectPop,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   addFactures: (newFacts) => dispatch(addFactures(newFacts)),
   addInfosDossier: (newInfos) => dispatch(addInfosDossier(newInfos)),
   addSites: (newSites) => dispatch(addSites(newSites)),
 });
 
-export default connect(null, mapDispatchToProps)(FactureModalFormDos);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FactureModalFormDos);

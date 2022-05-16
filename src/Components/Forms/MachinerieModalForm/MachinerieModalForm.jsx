@@ -5,7 +5,10 @@ import { createStructuredSelector } from "reselect";
 import { selectMachineriesMemo } from "../../../redux/Machineries/machineries.selectors";
 import { addMachinerie } from "../../../redux/Machineries/machineries.actions";
 
-import { selectDossiers } from "../../../redux/DossierInfos/infosDossier.selectors";
+import {
+  selectDossiers,
+  selectPop,
+} from "../../../redux/DossierInfos/infosDossier.selectors";
 import { addInfosDossier } from "../../../redux/DossierInfos/infosDossier.actions";
 
 // ICONS
@@ -51,6 +54,7 @@ const MachinerieModalForm = ({
   dossiers,
   dosToEdit,
   role,
+  population,
 }) => {
   const [editing, setEditing] = useState(false);
   const allowed = [];
@@ -143,10 +147,15 @@ const MachinerieModalForm = ({
     const dosCopy = JSON.parse(JSON.stringify(dossiers));
     const dosId = dosToEdit.id;
     const diffMontant = edit === null ? values.cout : values.cout - oldCout;
-    const diffAjust = isAdmin ? values.ajust - oldAjust : values.ajust;
+    const diffAjust = values.ajust - oldAjust;
 
     dosToEdit.MR = dosToEdit.MR + diffMontant;
     dosToEdit.MA = dosToEdit.MA - diffAjust;
+
+    if (population > 0) {
+      dosToEdit.Participation =
+        dosToEdit.MR > 3 * population ? 3 * population : dosToEdit.MR;
+    }
 
     const otherDoses = dosCopy.filter((dossier) => dossier.id !== dosId);
     const newDoses = [...otherDoses, dosToEdit].sort((a, b) =>
@@ -389,6 +398,7 @@ const MachinerieModalForm = ({
 const mapStateToProps = createStructuredSelector({
   machineries: selectMachineriesMemo,
   dossiers: selectDossiers,
+  population: selectPop,
 });
 
 const mapDispatchToProps = (dispatch) => ({
